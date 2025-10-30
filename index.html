@@ -1,62 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nexa Hub Update Logs</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nexa Hub Update Sender</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
       background-color: #0d1117;
       color: #e6edf3;
-      margin: 0;
-      padding: 40px 0;
       display: flex;
       flex-direction: column;
       align-items: center;
+      margin: 0;
+      padding: 30px;
     }
-    .embed {
+    .container {
       background-color: #1c1f26;
       border-left: 5px solid #ec4c4c;
       padding: 20px;
       border-radius: 10px;
       width: 600px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.5);
-      margin-bottom: 20px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.4);
     }
-    .embed h2 {
-      font-size: 22px;
-      margin-bottom: 15px;
-      color: #ff8080;
+    h2 {
       text-align: center;
+      color: #ff8080;
     }
-    .field {
-      margin-bottom: 15px;
-    }
-    .field-name {
+    label {
+      display: block;
+      margin-top: 15px;
+      margin-bottom: 5px;
       color: #9ba3b4;
       font-weight: 600;
-      margin-bottom: 5px;
     }
-    .code {
-      background-color: #0e1118;
-      border-radius: 5px;
-      padding: 10px;
-      font-family: monospace;
-      white-space: pre-wrap;
-      color: #d1d5db;
-    }
-    textarea, select {
+    select, input, textarea {
       width: 100%;
-      background-color: #0e1118;
-      border: 1px solid #30363d;
-      border-radius: 6px;
-      color: #e6edf3;
       padding: 10px;
-      font-family: monospace;
-      resize: vertical;
+      border-radius: 5px;
+      border: none;
+      background-color: #0e1118;
+      color: #d1d5db;
+      resize: none;
+      font-size: 14px;
+    }
+    textarea {
+      height: 120px;
+      white-space: pre-wrap;
     }
     button {
+      margin-top: 20px;
       background-color: #238636;
       border: none;
       color: white;
@@ -65,65 +58,95 @@
       cursor: pointer;
       font-size: 15px;
       transition: 0.2s;
-      margin-top: 15px;
+      width: 100%;
     }
     button:hover {
       background-color: #2ea043;
     }
+    .preview {
+      margin-top: 25px;
+      border-top: 1px solid #2f343f;
+      padding-top: 20px;
+    }
     footer {
       text-align: center;
-      color: #888;
+      color: #777;
       font-size: 13px;
-      margin-top: 15px;
+      margin-top: 20px;
     }
   </style>
 </head>
 <body>
+  <div class="container">
+    <h2>Nexa Hub Update Logs</h2>
 
-  <div class="embed" id="preview">
-    <h2>Nexa Hub: Update Logs</h2>
+    <label for="gameSelect">🎮 Select Game</label>
+    <select id="gameSelect">
+      <option value="Fish It">Fish It</option>
+      <option value="Plant Vs Brainrot">Plant Vs Brainrot</option>
+    </select>
 
-    <div class="field">
-      <div class="field-name">🎮 Game</div>
-      <select id="gameSelect">
-        <option value="Fish It">Fish It</option>
-        <option value="Plant vs Brainrot">Plant vs Brainrot</option>
-      </select>
-    </div>
+    <label for="scriptSelect">📦 Script Type</label>
+    <select id="scriptSelect">
+      <option value="Free">Free</option>
+      <option value="Premium">Premium</option>
+    </select>
 
-    <div class="field">
-      <div class="field-name">💎 Version</div>
-      <select id="versionSelect">
-        <option value="Free">Free</option>
-        <option value="Premium">Premium</option>
-      </select>
-    </div>
+    <label for="versionInput">✅ Version</label>
+    <input type="text" id="versionInput" placeholder="Example: v1.2.3" />
 
-    <div class="field">
-      <div class="field-name">📋 Update List</div>
-      <textarea id="updateList" rows="6" placeholder="Contoh:&#10;[+] Added Auto Quest&#10;[+] Fixed bugs"></textarea>
-    </div>
+    <label for="updateList">📋 Update List</label>
+    <textarea id="updateList" placeholder="Example:&#10;[+] Tab Farm&#10; - Added Auto Collect Fruit"></textarea>
 
     <button id="sendBtn">Send Update to Discord</button>
 
-    <footer>Nexa Hub Update | discord.gg/ECxQFc97F5</footer>
+    <div class="preview" id="preview">
+      <h3>Live Preview</h3>
+      <pre id="previewText" style="background:#0e1118;padding:10px;border-radius:6px;color:#c9d1d9;"></pre>
+    </div>
+
+    <footer>Nexa Hub Update Sender | discord.gg/ECxQFc97F5</footer>
   </div>
 
   <script>
-    const webhookURL = "https://discord.com/api/webhooks/1389650936779112680/n0_vYgnRtCnmX8v0d2buMpnQrXn6SDZYELeNvdI50pRx7HiTR78JN-XVPdr0PuLzS6V1";
+    const webhookURL = "https://discord.com/api/webhooks/1389650936779112680/n0_vYgnRtCnmX8v0d2buMpnQrXn6SDZYELeNvdI50pRx7HiTR78JN-XVPdr0PuLzS6V1"; // Ganti dengan Webhook kamu
 
-    document.getElementById("sendBtn").addEventListener("click", async () => {
-      const game = document.getElementById("gameSelect").value;
-      const version = document.getElementById("versionSelect").value;
-      const updateList = document.getElementById("updateList").value.trim();
+    const gameSelect = document.getElementById("gameSelect");
+    const scriptSelect = document.getElementById("scriptSelect");
+    const versionInput = document.getElementById("versionInput");
+    const updateList = document.getElementById("updateList");
+    const previewText = document.getElementById("previewText");
+    const sendBtn = document.getElementById("sendBtn");
 
-      if (!updateList) {
-        alert("Isi dulu update list-nya!");
+    function updatePreview() {
+      const game = gameSelect.value;
+      const script = scriptSelect.value;
+      const version = versionInput.value || "vX.X.X";
+      const updates = updateList.value || "[No updates listed]";
+
+      previewText.textContent =
+        `Game: ${game} ${script}\nVersion: ${version}\n\nUpdate List:\n${updates}`;
+    }
+
+    [gameSelect, scriptSelect, versionInput, updateList].forEach(el => {
+      el.addEventListener("input", updatePreview);
+    });
+
+    updatePreview();
+
+    sendBtn.addEventListener("click", async () => {
+      const game = gameSelect.value;
+      const script = scriptSelect.value;
+      const version = versionInput.value.trim();
+      const updates = updateList.value.trim();
+
+      if (!webhookURL || webhookURL === "PASTE_WEBHOOK_URL_KAMU_DI_SINI") {
+        alert("⚠️ Silakan isi Webhook URL Discord dulu di kode!");
         return;
       }
 
-      if (webhookURL === "https://discord.com/api/webhooks/1389650936779112680/n0_vYgnRtCnmX8v0d2buMpnQrXn6SDZYELeNvdI50pRx7HiTR78JN-XVPdr0PuLzS6V1") {
-        alert("Masukkan Webhook URL Discord dulu di kode!");
+      if (!version) {
+        alert("⚠️ Isi dulu versi update-nya!");
         return;
       }
 
@@ -137,17 +160,17 @@
             fields: [
               {
                 name: "`🎮 Games`",
-                value: `\`\`\`${game} ${version}\`\`\``,
+                value: `\`\`\`${game} ${script}\`\`\``,
                 inline: true
               },
               {
                 name: "`✅ Version`",
-                value: "```lua\n" + "v" + new Date().getFullYear().toString().slice(2) + "." + (new Date().getMonth()+1) + "." + new Date().getDate() + "\n```",
+                value: `\`\`\`lua\n${version}\n\`\`\``,
                 inline: true
               },
               {
                 name: "`📋 Update List`",
-                value: "```yml\n" + updateList + "\n```"
+                value: `\`\`\`yml\n${updates}\n\`\`\``
               },
               {
                 name: "Buy Key Premium https://discord.com/channels/1337779481477382174/1392861188152627331",
@@ -166,9 +189,7 @@
                 value: "Rejoin to see new update"
               }
             ],
-            footer: {
-              text: "Nexa Hub Update | discord.gg/ECxQFc97F5"
-            }
+            footer: { text: "Nexa Hub Update | discord.gg/ECxQFc97F5" }
           }
         ]
       };
@@ -179,17 +200,15 @@
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload)
         });
-
         if (res.ok) {
-          alert(`✅ Update ${game} (${version}) berhasil dikirim ke Discord!`);
+          alert("✅ Update berhasil dikirim ke Discord!");
         } else {
-          alert("❌ Gagal kirim update. Cek Webhook URL.");
+          alert("❌ Gagal kirim (periksa webhook atau permission).");
         }
-      } catch (e) {
-        alert("❌ Error: " + e.message);
+      } catch (err) {
+        alert("❌ Error: " + err.message);
       }
     });
   </script>
-
 </body>
 </html>
