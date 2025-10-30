@@ -2,7 +2,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Nexa Hub Update Sender v2.0</title>
+<title>Nexa Hub Update Sender v2.2</title>
 <style>
   :root {
     --bg-dark: #0d1117;
@@ -78,10 +78,16 @@
     outline: none;
     box-shadow: 0 0 5px rgba(236, 76, 76, 0.5);
   }
+  select[multiple] {
+    height: 120px;
+  }
   textarea {
     height: 150px;
     resize: vertical;
     line-height: 1.4;
+  }
+  input[type="file"] {
+    padding: 8px;
   }
   .button-group {
     display: flex;
@@ -174,7 +180,17 @@
 <body>
   <div class="container">
     <h1>Nexa Hub</h1>
-    <h2>Update Log Sender (Webhook System) v2.0</h2>
+    <h2>Update Log Sender (Webhook System) v2.2</h2>
+
+    <div class="form-group">
+      <label for="webhookSelect">🔗 Select Webhook URLs (Multi-Select)</label>
+      <select id="webhookSelect" multiple>
+        <option value="https://discord.com/api/webhooks/1389650936779112680/n0_vYgnRtCnmX8v0d2buMpnQrXn6SDZYELeNvdI50pRx7HiTR78JN-XVPdr0PuLzS6V1">Main Webhook</option>
+        <option value="https://discord.com/api/webhooks/EXAMPLE_WEBHOOK_2">Backup Webhook 1</option>
+        <option value="https://discord.com/api/webhooks/EXAMPLE_WEBHOOK_3">Backup Webhook 2</option>
+      </select>
+      <small style="color: var(--secondary); font-size: 12px;">Hold Ctrl (or Cmd) to select multiple. Edit options in script if needed.</small>
+    </div>
 
     <div class="form-group">
       <label for="gameSelect">🎮 Select Game</label>
@@ -202,6 +218,12 @@
       <textarea id="updateList" placeholder="[+] Tab Farm
  - Added Auto Collect Fruit
  - Fixed Bug in XYZ"></textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="fileInput">📎 Upload Image/Video (Optional)</label>
+      <input type="file" id="fileInput" accept="image/*,video/*" />
+      <small style="color: var(--secondary); font-size: 12px;">Max 8MB. Will be attached to the message.</small>
     </div>
 
     <div class="button-group">
@@ -234,16 +256,16 @@
       </div>
     </div>
 
-    <footer>Nexa Hub Update Sender v2.0 • discord.gg/ECxQFc97F5</footer>
+    <footer>Nexa Hub Update Sender v2.2 • discord.gg/ECxQFc97F5</footer>
   </div>
 
   <script>
-    const webhookURL = "https://discord.com/api/webhooks/1389650936779112680/n0_vYgnRtCnmX8v0d2buMpnQrXn6SDZYELeNvdI50pRx7HiTR78JN-XVPdr0PuLzS6V1"; // Ganti dengan URL webhook Discord kamu
-
+    const webhookSelect = document.getElementById("webhookSelect");
     const gameSelect = document.getElementById("gameSelect");
     const scriptSelect = document.getElementById("scriptSelect");
     const versionInput = document.getElementById("versionInput");
     const updateList = document.getElementById("updateList");
+    const fileInput = document.getElementById("fileInput");
     const previewBtn = document.getElementById("previewBtn");
     const sendBtn = document.getElementById("sendBtn");
     const previewSection = document.getElementById("previewSection");
@@ -278,18 +300,25 @@
     });
 
     sendBtn.addEventListener("click", async () => {
+      const selectedWebhooks = Array.from(webhookSelect.selectedOptions).map(option => option.value);
       const game = gameSelect.value;
       const script = scriptSelect.value;
       const version = versionInput.value.trim();
       const updates = updateList.value.trim();
+      const file = fileInput.files[0];
 
-      if (!webhookURL || webhookURL === "PASTE_WEBHOOK_URL_KAMU_DI_SINI") {
-        status.textContent = "⚠️ Silakan isi Webhook URL Discord di script terlebih dahulu.";
+      if (selectedWebhooks.length === 0) {
+        status.textContent = "⚠️ Pilih setidaknya satu Webhook URL!";
         status.className = "status error";
         return;
       }
       if (!version) {
         status.textContent = "⚠️ Isi versi update terlebih dahulu!";
+        status.className = "status error";
+        return;
+      }
+      if (file && file.size > 8 * 1024 * 1024) { // 8MB limit
+        status.textContent = "⚠️ File terlalu besar! Max 8MB.";
         status.className = "status error";
         return;
       }
@@ -299,14 +328,14 @@
       const payload = {
         content: "<@&1390026095855796284>",
         username: "Nexa Hub〢Update Log",
-        avatar_url: "https://i.imgur.com/your-avatar.png", // Tambah avatar jika ada
+        avatar_url: "https://i.imgur.com/B2NvjqW.png", // Tambah avatar jika ada
         embeds: [
           {
             title: "```Nexa Hub: Update Logs```",
             description: "🚀 New update available for Nexa Hub!",
             color: 15527138,
             thumbnail: {
-              url: "https://i.imgur.com/your-thumbnail.png" // Tambah thumbnail
+              url: "https://i.imgur.com/B2NvjqW.png" // Tambah thumbnail
             },
             fields: [
               {
@@ -346,24 +375,48 @@
         ]
       };
 
-      status.textContent = "⏳ Sending...";
+      status.textContent = "⏳ Sending to selected webhooks...";
       status.className = "status";
 
-      try {
-        const res = await fetch(webhookURL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        });
-        if (res.ok) {
-          status.textContent = "✅ Update berhasil dikirim ke Discord!";
-          status.className = "status success";
-        } else {
-          status.textContent = "❌ Gagal mengirim (cek URL webhook).";
-          status.className = "status error";
+      let successCount = 0;
+      let errorCount = 0;
+
+      for (const webhookURL of selectedWebhooks) {
+        try {
+          let body;
+          let headers = {};
+
+          if (file) {
+            // Use FormData for file upload
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('payload_json', JSON.stringify(payload));
+            body = formData;
+          } else {
+            headers['Content-Type'] = 'application/json';
+            body = JSON.stringify(payload);
+          }
+
+          const res = await fetch(webhookURL, {
+            method: "POST",
+            headers: headers,
+            body: body
+          });
+          if (res.ok) {
+            successCount++;
+          } else {
+            errorCount++;
+          }
+        } catch (err) {
+          errorCount++;
         }
-      } catch (err) {
-        status.textContent = "❌ Error: " + err.message;
+      }
+
+      if (errorCount === 0) {
+        status.textContent = `✅ Update berhasil dikirim ke semua ${successCount} webhook!`;
+        status.className = "status success";
+      } else {
+        status.textContent = `⚠️ Dikirim ke ${successCount} webhook, gagal ${errorCount}.`;
         status.className = "status error";
       }
     });
