@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nexa Hub Update Logs</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #0d1117;
+      color: #e6edf3;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .embed {
+      background-color: #1c1f26;
+      border-left: 5px solid #ec4c4c;
+      padding: 20px;
+      border-radius: 10px;
+      width: 600px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    }
+    .embed h2 {
+      font-size: 22px;
+      margin-bottom: 15px;
+      color: #ff8080;
+      text-align: center;
+    }
+    .field {
+      margin-bottom: 15px;
+    }
+    .field-name {
+      color: #9ba3b4;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+    .code {
+      background-color: #0e1118;
+      border-radius: 5px;
+      padding: 10px;
+      font-family: monospace;
+      white-space: pre-wrap;
+      color: #d1d5db;
+    }
+    a {
+      color: #58a6ff;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    footer {
+      text-align: center;
+      color: #888;
+      font-size: 13px;
+      margin-top: 15px;
+    }
+    button {
+      margin-top: 30px;
+      background-color: #238636;
+      border: none;
+      color: white;
+      padding: 12px 25px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 15px;
+      transition: 0.2s;
+    }
+    button:hover {
+      background-color: #2ea043;
+    }
+  </style>
+</head>
+<body>
+  <div class="embed" id="preview">
+    <h2>Nexa Hub: Update Logs</h2>
+    <div class="field">
+      <div class="field-name">🎮 Games</div>
+      <div class="code">Fish It Premium</div>
+    </div>
+    <div class="field">
+      <div class="field-name">✅ Version</div>
+      <div class="code">v1.3.2</div>
+    </div>
+    <div class="field">
+      <div class="field-name">📋 Update List</div>
+      <div class="code">[+] Tab Automaticaly:
+ - Added TempleLever Quest
+[+] Tab Farm
+ - Added Auto Fish Legit
+[+] Tab Player
+ - Added Disabled Username & Level</div>
+    </div>
+    <div class="field">
+      <div class="field-name">🔗 Links</div>
+      <div>
+        <a href="https://discord.com/channels/1337779481477382174/1392861188152627331">Buy Key Premium</a><br>
+        <a href="https://discord.com/channels/1337779481477382174/1389547349520416858">Get Script</a><br>
+        <a href="https://discord.com/channels/1337779481477382174/1405933599655723159">Report Bug</a>
+      </div>
+    </div>
+    <div class="field">
+      <div class="field-name">📦 Script Free (PC)</div>
+      <div class="code">loadstring(game:HttpGet("https://nexahubb.netlify.app/loader"))()</div>
+    </div>
+    <div class="field">
+      <div class="field-name">📱 Mobile Copy</div>
+      <div class="code">loadstring(game:HttpGet("https://nexahubb.netlify.app/loader"))()</div>
+    </div>
+    <div class="field">
+      <div class="field-name">📝 Note</div>
+      <div>Rejoin to see new update</div>
+    </div>
+    <footer>Nexa Hub Update | discord.gg/ECxQFc97F5</footer>
+  </div>
+
+  <button id="sendBtn">Send Update to Discord</button>
+
+  <script>
+    const webhookURL = "PASTE_WEBHOOK_URL_KAMU_DI_SINI";
+
+    const payload = {
+      content: "<@&1390026095855796284>",
+      username: "Nexa Hub〢Update Log",
+      embeds: [
+        {
+          title: "```Nexa Hub: Update Logs```",
+          color: 15527138,
+          fields: [
+            {
+              name: "`🎮 Games`",
+              value: "```Fish It  Premium```",
+              inline: true
+            },
+            {
+              name: "`✅ Version`",
+              value: "```lua\nv1.3.2\n```",
+              inline: true
+            },
+            {
+              name: "`📋 Update List`",
+              value: "```yml\n[+] Tab Automaticaly:\n - Added TempleLever Quest\n[+] Tab Farm\n - Added Auto Fish Legit\n[+] Tab Player\n - Added Disabled Username & Level\n```"
+            },
+            {
+              name: "Buy Key Premium https://discord.com/channels/1337779481477382174/1392861188152627331",
+              value: "If u want get script, go to ⁠https://discord.com/channels/1337779481477382174/1389547349520416858\n\nIf u got bug , report on https://discord.com/channels/1337779481477382174/1405933599655723159"
+            },
+            {
+              name: "`📦Script Free` PC Copy",
+              value: "```lua\nloadstring(game:HttpGet(\"https://nexahubb.netlify.app/loader\"))()\n```"
+            },
+            {
+              name: "Mobile Copy",
+              value: "loadstring(game:HttpGet(\"https://nexahubb.netlify.app/loader\"))()"
+            },
+            {
+              name: "**Note**",
+              value: "Rejoin to see new update"
+            }
+          ],
+          footer: {
+            text: "Nexa Hub Update | discord.gg/ECxQFc97F5"
+          }
+        }
+      ]
+    };
+
+    document.getElementById("sendBtn").addEventListener("click", async () => {
+      if (webhookURL === "PASTE_WEBHOOK_URL_KAMU_DI_SINI") {
+        alert("Silakan isi Webhook URL Discord dulu di kode!");
+        return;
+      }
+      try {
+        const res = await fetch(webhookURL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        if (res.ok) {
+          alert("✅ Update berhasil dikirim ke Discord!");
+        } else {
+          alert("❌ Gagal mengirim update (periksa webhook URL atau permission).");
+        }
+      } catch (e) {
+        alert("❌ Error: " + e.message);
+      }
+    });
+  </script>
+</body>
+</html>
