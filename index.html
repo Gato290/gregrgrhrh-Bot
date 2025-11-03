@@ -1,4 +1,4 @@
-
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
@@ -206,6 +206,7 @@
       <select id="scriptSelect">
         <option value="Free">Free</option>
         <option value="Premium">Premium</option>
+        <option value="Fixed">Fixed</option>
       </select>
     </div>
 
@@ -282,8 +283,7 @@
       const script = scriptSelect.value;
       const version = versionInput.value || "vX.X.X";
       const updates = updateList.value || "[No updates listed]";
-      const loader = script === "Free" ? "loadstring(game:HttpGet(\"https://nexahubb.netlify.app/loader\"))()" : "loadstring(game:HttpGet(\"https://nexahubb.netlify.app/loader\"))()";
-
+      let loader = "loadstring(game:HttpGet(\"https://nexahubb.netlify.app/loader\"))()";
       embedGame.textContent = `${game} (${script})`;
       embedVersion.textContent = version;
       embedUpdates.textContent = updates;
@@ -318,57 +318,36 @@
         status.className = "status error";
         return;
       }
-      if (file && file.size > 8 * 1024 * 1024) { // 8MB limit
+      if (file && file.size > 8 * 1024 * 1024) {
         status.textContent = "⚠️ File terlalu besar! Max 8MB.";
         status.className = "status error";
         return;
       }
 
-      const scriptTitle = script === "Free" ? "`📦Script Free` PC Copy" : "`💎Script Free` PC Copy";
+      let scriptTitle;
+      if (script === "Free") scriptTitle = "`📦 Script Free` PC Copy";
+      else if (script === "Premium") scriptTitle = "`💎 Script Premium` PC Copy";
+      else if (script === "Fixed") scriptTitle = "`🛠 Script Fixed` PC Copy";
 
       const payload = {
         content: "<@&1390026095855796284>",
         username: "Nexa Hub〢Update Log",
-        avatar_url: "https://i.imgur.com/B2NvjqW.png", // Tambah avatar jika ada
+        avatar_url: "https://i.imgur.com/B2NvjqW.png",
         embeds: [
           {
             title: "```Nexa Hub: Update Logs```",
             description: "🚀 New update available for Nexa Hub!",
             color: 15527138,
-            thumbnail: {
-              url: "https://i.imgur.com/B2NvjqW.png" // Tambah thumbnail
-            },
+            thumbnail: { url: "https://i.imgur.com/B2NvjqW.png" },
             fields: [
-              {
-                name: "`🎮 Games`",
-                value: `\`\`\`${game} ${script}\`\`\``,
-                inline: true
-              },
-              {
-                name: "`✅ Version`",
-                value: `\`\`\`lua\n${version}\n\`\`\``,
-                inline: true
-              },
-              {
-                name: "`📋 Update List`",
-                value: `\`\`\`yml\n${updates}\n\`\`\``
-              },
-              {
-                name: "Buy Key Premium https://discord.com/channels/1337779481477382174/1392861188152627331",
-                value: "If u want get script, go to ⁠https://discord.com/channels/1337779481477382174/1389547349520416858\n\nIf u got bug , report on https://discord.com/channels/1337779481477382174/1405933599655723159"
-              },
-              {
-                name: scriptTitle,
-                value: "```lua\nloadstring(game:HttpGet(\"https://nexahubb.netlify.app/loader\"))()\n```"
-              },
-              {
-                name: "Mobile Copy",
-                value: "loadstring(game:HttpGet(\"https://nexahubb.netlify.app/loader\"))()"
-              },
-              {
-                name: "**Note**",
-                value: "Rejoin to see new update"
-              }
+              { name: "`🎮 Games`", value: `\`\`\`${game} ${script}\`\`\``, inline: true },
+              { name: "`✅ Version`", value: `\`\`\`lua\n${version}\n\`\`\``, inline: true },
+              { name: "`📋 Update List`", value: `\`\`\`yml\n${updates}\n\`\`\`` },
+              { name: "Buy Key Premium https://discord.com/channels/1337779481477382174/1392861188152627331",
+                value: "If u want get script, go to ⁠https://discord.com/channels/1337779481477382174/1389547349520416858\n\nIf u got bug , report on https://discord.com/channels/1337779481477382174/1405933599655723159" },
+              { name: scriptTitle, value: "```lua\nloadstring(game:HttpGet(\"https://nexahubb.netlify.app/loader\"))()\n```" },
+              { name: "Mobile Copy", value: "loadstring(game:HttpGet(\"https://nexahubb.netlify.app/loader\"))()" },
+              { name: "**Note**", value: "Rejoin to see new update" }
             ],
             timestamp: new Date().toISOString(),
             footer: { text: "Nexa Hub Update | discord.gg/ECxQFc97F5", icon_url: "https://i.imgur.com/your-icon.png" }
@@ -386,9 +365,7 @@
         try {
           let body;
           let headers = {};
-
           if (file) {
-            // Use FormData for file upload
             const formData = new FormData();
             formData.append('file', file);
             formData.append('payload_json', JSON.stringify(payload));
@@ -398,19 +375,9 @@
             body = JSON.stringify(payload);
           }
 
-          const res = await fetch(webhookURL, {
-            method: "POST",
-            headers: headers,
-            body: body
-          });
-          if (res.ok) {
-            successCount++;
-          } else {
-            errorCount++;
-          }
-        } catch (err) {
-          errorCount++;
-        }
+          const res = await fetch(webhookURL, { method: "POST", headers, body });
+          if (res.ok) successCount++; else errorCount++;
+        } catch (err) { errorCount++; }
       }
 
       if (errorCount === 0) {
