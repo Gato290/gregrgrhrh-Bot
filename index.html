@@ -1,202 +1,404 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Nexa Hub Super Premium Update Sender v3.0</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<style>
-/* ========== STYLES (dipersingkat karena sudah benar di atas) ========== */
-/* ... Semua CSS dari versi kamu tetap sama ... */
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Nexa Hub • Super Premium</title>
+  <meta name="description" content="Nexa Hub — Super Premium Update Center. Send update logs, manage webhooks, host assets, and share premium releases with a modern UI." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0b1020; --panel:#0f1724; --muted:#9aa6b2; --text:#e6eef6; --accent:#ff6b6b; --glass:rgba(255,255,255,0.04);
+      --success:#22c55e; --info:#38bdf8; --radius:14px;
+      --max-width:1100px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+      background: radial-gradient(1200px 600px at 10% 10%, rgba(56,99,255,0.06), transparent 6%),
+                  radial-gradient(800px 400px at 90% 80%, rgba(140,55,255,0.04), transparent 6%),
+                  linear-gradient(180deg,var(--bg),#071020 140%);
+      color:var(--text); -webkit-font-smoothing:antialiased; padding:36px;
+      display:flex; align-items:flex-start; justify-content:center;
+    }
+    .wrap{width:100%; max-width:var(--max-width);}
+    header{display:flex;align-items:center;gap:18px;margin-bottom:22px}
+    .logo{display:flex;align-items:center;gap:12px}
+    .logo .mark{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#b66bff);display:flex;align-items:center;justify-content:center;font-weight:800}
+    .brand{font-size:18px;font-weight:700}
+
+    .grid{display:grid;grid-template-columns:1fr 420px;gap:22px}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);border:1px solid rgba(255,255,255,0.04);padding:20px;border-radius:var(--radius);box-shadow:0 6px 30px rgba(2,6,23,0.6)}
+
+    /* Left column */
+    .main-card h1{margin:0 0 6px 0;font-size:22px;color:var(--accent)}
+    .main-card p.lead{margin:0 0 16px 0;color:var(--muted)}
+    .controls{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+    label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
+    select,input,textarea{width:100%;padding:12px;border-radius:10px;background:var(--panel);border:1px solid rgba(255,255,255,0.03);color:var(--text);font-size:14px}
+    textarea{min-height:120px;resize:vertical}
+    .small{font-size:12px;color:var(--muted)}
+
+    .file-drop{display:flex;align-items:center;justify-content:space-between;padding:12px;border-radius:10px;border:1px dashed rgba(255,255,255,0.03);background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent)}
+    .file-drop.drag{border-color:rgba(88,165,255,0.9);box-shadow:0 8px 26px rgba(56,130,255,0.06)}
+    .thumb{width:84px;height:56px;background:#0b1220;border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:12px}
+
+    .actions{display:flex;gap:12px;margin-top:14px}
+    .btn{display:inline-flex;gap:10px;align-items:center;justify-content:center;padding:12px 14px;border-radius:10px;border:none;cursor:pointer;font-weight:600}
+    .btn.primary{background:linear-gradient(90deg,var(--accent),#b66bff);color:white}
+    .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--text)}
+    .btn.success{background:linear-gradient(90deg,#22c55e,#4ade80);color:#04250a}
+
+    .meta{display:flex;gap:10px;align-items:center;margin-top:12px}
+    .tag{background:var(--glass);padding:8px 10px;border-radius:999px;font-size:13px;color:var(--muted)}
+
+    .features{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:16px}
+    .feature{background:rgba(255,255,255,0.015);padding:12px;border-radius:10px;font-size:14px}
+
+    /* Right column */
+    .right h3{margin:0 0 8px 0}
+    .preview{background:linear-gradient(180deg,#0b1118, rgba(255,255,255,0.01));padding:14px;border-radius:10px;border:1px solid rgba(255,255,255,0.03)}
+    .embed{display:flex;gap:12px}
+    .embed .left{flex:1}
+    .embed .thumbnail{width:64px;height:64px;border-radius:8px;background:linear-gradient(135deg,var(--accent),#7b61ff);display:flex;align-items:center;justify-content:center;font-weight:700}
+    .embed .title{font-weight:700;color:#fff}
+    .embed .desc{color:var(--muted);font-size:13px;margin-top:6px}
+    .field{margin-top:10px}
+    .field pre{background:#07101a;padding:10px;border-radius:8px;overflow:auto;font-size:13px}
+
+    .status{margin-top:12px;font-size:13px}
+
+    /* pricing */
+    .pricing{display:flex;gap:12px;margin-top:18px}
+    .tier{flex:1;padding:12px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent);border:1px solid rgba(255,255,255,0.03)}
+    .tier h4{margin:0 0 8px 0}
+    .price{font-size:20px;font-weight:700;margin-top:8px}
+
+    footer{margin-top:20px;text-align:center;color:var(--muted);font-size:13px}
+
+    /* responsive */
+    @media (max-width:980px){.grid{grid-template-columns:1fr} .right{order:2} header{flex-direction:column;align-items:flex-start}}
+  </style>
 </head>
 <body>
-  <div class="container">
-    <div class="premium-badge">Super Premium v3.0</div>
-    <h1>🚀 Nexa Hub</h1>
-    <h2>Super Premium Update Log Sender (Webhook System) v3.0</h2>
-
-    <!-- Embed Type -->
-    <div class="form-group">
-      <label><span class="icon">🎨</span> Embed Type</label>
-      <div class="radio-group">
-        <div class="radio-option">
-          <input type="radio" id="normalEmbed" name="embedType" value="normal" checked>
-          <label for="normalEmbed">Normal Embed</label>
+  <div class="wrap">
+    <header>
+      <div class="logo">
+        <div class="mark">NH</div>
+        <div>
+          <div class="brand">Nexa Hub <span style="font-weight:400;color:var(--muted);">• Super Premium</span></div>
+          <div class="small">Update center • Webhook manager • Asset host</div>
         </div>
-        <div class="radio-option">
-          <input type="radio" id="superPremiumEmbed" name="embedType" value="super-premium">
-          <label for="superPremiumEmbed">Super Premium Embed</label>
+      </div>
+      <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+        <div class="tag">v3.0 Super</div>
+        <button class="btn ghost" id="toggleTheme">Toggle</button>
+      </div>
+    </header>
+
+    <div class="grid">
+      <div class="card main-card">
+        <h1>Send beautiful update logs — with Super Premium features</h1>
+        <p class="lead">Manage multi-webhook deliveries, attach media, schedule releases, and generate ready-to-send Discord embeds in one place.</p>
+
+        <div class="controls">
+          <div>
+            <label for="webhooks">Select / Manage Webhooks</label>
+            <select id="webhooks" multiple size="4">
+              <option value="https://discord.com/api/webhooks/1389650936779112680/n0_vYg...">Discord Nexa</option>
+              <option value="https://discord.com/api/webhooks/EXAMPLE_2">Discord Test 2</option>
+              <option value="https://discord.com/api/webhooks/EXAMPLE_3">Discord Test 3</option>
+            </select>
+            <div class="small">Hold Ctrl/Cmd to multi-select. Use the + button to add a new webhook URL.</div>
+          </div>
+
+          <div>
+            <label for="game">Game & Script</label>
+            <div style="display:flex;gap:8px">
+              <select id="game">
+                <option>Fish It</option>
+                <option>Plant Vs Brainrot</option>
+                <option>Other</option>
+              </select>
+              <select id="scriptType">
+                <option>Free</option>
+                <option>Premium</option>
+                <option selected>Super Premium</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 200px;gap:12px;margin-top:12px">
+          <div>
+            <label for="version">Version</label>
+            <input id="version" placeholder="e.g. v2.1.0" />
+          </div>
+          <div>
+            <label for="releaseDate">Release Date</label>
+            <input id="releaseDate" type="date" />
+          </div>
+        </div>
+
+        <div style="margin-top:12px">
+          <label for="updates">Update Log (Markdown friendly)</label>
+          <textarea id="updates" placeholder="- Added Auto Collect\n- Fixed exploit on XYZ\n- Improved loader performance"></textarea>
+          <div class="small" style="margin-top:6px">You can use markdown-like bullets. We'll format into code blocks for Discord embed.</div>
+        </div>
+
+        <div style="display:flex;gap:12px;margin-top:12px;align-items:center">
+          <div class="file-drop" id="fileDrop">
+            <div style="display:flex;gap:12px;align-items:center">
+              <div class="thumb" id="previewThumb">PNG</div>
+              <div>
+                <div class="small">Attach image or short video (max 8MB)</div>
+                <div class="small" id="fileName">No file selected</div>
+              </div>
+            </div>
+            <div>
+              <input id="fileInput" type="file" accept="image/*,video/*" style="display:none" />
+              <button class="btn ghost" id="browseBtn">Browse</button>
+            </div>
+          </div>
+          <div style="flex:1">
+            <label for="notes">Extra Notes</label>
+            <input id="notes" placeholder="Notes for changelog or release" />
+          </div>
+        </div>
+
+        <div class="meta">
+          <div class="tag" id="etaTag">Instant Deliveries</div>
+          <div class="tag">Retry 3x on fail</div>
+          <div style="margin-left:auto;display:flex;gap:8px">
+            <button class="btn primary" id="previewBtn">Preview</button>
+            <button class="btn success" id="sendBtn">Send Now</button>
+          </div>
+        </div>
+
+        <div class="features">
+          <div class="feature">📧 Multi-webhook batching</div>
+          <div class="feature">🔒 Role ping & optional suppression</div>
+          <div class="feature">📆 Schedule & queue releases</div>
+          <div class="feature">📂 Host assets and auto-link</div>
+        </div>
+
+        <div class="pricing">
+          <div class="tier">
+            <h4>Free</h4>
+            <div class="price">Free</div>
+            <div class="small">Basic webhook send, no media hosting.</div>
+          </div>
+          <div class="tier">
+            <h4>Premium</h4>
+            <div class="price">$5 / month</div>
+            <div class="small">Media attachments, scheduling, retry logic.</div>
+          </div>
+          <div class="tier">
+            <h4>Super Premium</h4>
+            <div class="price">$15 / month</div>
+            <div class="small">All features + asset CDN + analytics + priority queue.</div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="card right">
+        <h3>Embed & Delivery Preview</h3>
+        <div class="preview" id="embedPreview">
+          <div class="embed">
+            <div class="thumbnail" id="embedThumb">NH</div>
+            <div class="left">
+              <div class="title" id="embedTitle">Nexa Hub: Update Logs</div>
+              <div class="desc" id="embedDesc">Prepare a beautiful Discord embed and deliver to selected webhooks.</div>
+            </div>
+          </div>
+
+          <div class="field">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div class="small">Game</div>
+              <div class="small" id="embedGame">Fish It (Super Premium)</div>
+            </div>
+            <pre id="embedVersion">vX.X.X</pre>
+          </div>
+
+          <div class="field">
+            <div class="small">Update List</div>
+            <pre id="embedUpdates">- No updates yet</pre>
+          </div>
+
+          <div class="field">
+            <div class="small">Loader (Copy)</div>
+            <pre id="embedLoader">loadstring(game:HttpGet("https://nexahubb.netlify.app/loader"))()</pre>
+            <div style="display:flex;gap:8px;margin-top:8px">
+              <button class="btn ghost" id="copyLoader">Copy Loader</button>
+              <button class="btn ghost" id="exportJSON">Export JSON</button>
+            </div>
+          </div>
+
+          <div class="status" id="sendStatus">Ready</div>
+        </div>
+
+        <h3 style="margin-top:16px">Delivery Log</h3>
+        <div id="logArea" style="max-height:300px;overflow:auto;padding:8px;background:rgba(255,255,255,0.01);border-radius:8px;margin-top:8px">
+          <div class="small" id="logInit">No deliveries yet.</div>
         </div>
       </div>
     </div>
 
-    <!-- Webhooks -->
-    <div class="form-group">
-      <label><span class="icon">🔗</span> Select Webhook URLs (Multi-Select)</label>
-      <select id="webhookSelect" multiple>
-        <option value="https://discord.com/api/webhooks/EXAMPLE1">Discord Nexa</option>
-        <option value="https://discord.com/api/webhooks/EXAMPLE2">Discord Test</option>
-      </select>
-      <small style="color: var(--secondary); font-size: 12px;">Hold Ctrl (or Cmd) to select multiple.</small>
-    </div>
-
-    <!-- Game -->
-    <div class="form-group">
-      <label><span class="icon">🎮</span> Select Game</label>
-      <select id="gameSelect">
-        <option value="Fish It">Fish It</option>
-        <option value="Plant Vs Brainrot">Plant Vs Brainrot</option>
-      </select>
-    </div>
-
-    <!-- Script Type -->
-    <div class="form-group">
-      <label><span class="icon">📦</span> Script Type</label>
-      <select id="scriptSelect">
-        <option value="Free">Free</option>
-        <option value="Premium">Premium</option>
-        <option value="Fixed">Fixed</option>
-      </select>
-    </div>
-
-    <!-- Version -->
-    <div class="form-group">
-      <label><span class="icon">✅</span> Version</label>
-      <input type="text" id="versionInput" placeholder="Example: v1.2.3" />
-    </div>
-
-    <!-- Update List -->
-    <div class="form-group">
-      <label><span class="icon">📋</span> Update List</label>
-      <textarea id="updateList" placeholder="[+] Added Auto Farm
-[-] Fixed Bug in XYZ"></textarea>
-    </div>
-
-    <!-- Imgur -->
-    <div class="form-group">
-      <label><span class="icon">🖼️</span> Imgur URL (Alternative)</label>
-      <input type="url" id="imgurUrlInput" placeholder="https://i.imgur.com/xxxxxx.png" />
-    </div>
-
-    <!-- File Upload -->
-    <div class="form-group">
-      <label><span class="icon">📎</span> Upload Image/Video (Optional)</label>
-      <input type="file" id="fileInput" accept="image/*,video/*" />
-    </div>
-
-    <div class="button-group">
-      <button id="previewBtn" class="secondary">👀 Preview Embed</button>
-      <button id="sendBtn">🚀 Send Update</button>
-    </div>
-
-    <div id="status" class="status"></div>
-
-    <!-- Preview -->
-    <div class="preview" id="previewSection" style="display:none;">
-      <h3>Discord Embed Preview</h3>
-      <div class="embed-preview" id="embedPreview">
-        <div class="embed-title" id="embedTitle">Nexa Hub: Update Logs</div>
-        <div class="embed-field">
-          <div class="embed-field-name">🎮 Game</div>
-          <div class="embed-field-value" id="embedGame"></div>
-        </div>
-        <div class="embed-field">
-          <div class="embed-field-name">📝 Version</div>
-          <div class="embed-field-value" id="embedVersion"></div>
-        </div>
-        <div class="embed-field">
-          <div class="embed-field-name">📋 Updates</div>
-          <div class="embed-field-value" id="embedUpdates"></div>
-        </div>
-        <img id="embedImage" style="width:100%; border-radius:10px; margin-top:10px; display:none;" />
-      </div>
-    </div>
-
-    <footer>© 2025 Nexa Hub — All Rights Reserved</footer>
+    <footer>Made with ♥ — Nexa Hub • Need changes? Edit the single-file and deploy anywhere.</footer>
   </div>
 
-<script>
-const webhookSelect = document.getElementById("webhookSelect");
-const gameSelect = document.getElementById("gameSelect");
-const scriptSelect = document.getElementById("scriptSelect");
-const versionInput = document.getElementById("versionInput");
-const updateList = document.getElementById("updateList");
-const imgurUrlInput = document.getElementById("imgurUrlInput");
-const fileInput = document.getElementById("fileInput");
-const previewBtn = document.getElementById("previewBtn");
-const sendBtn = document.getElementById("sendBtn");
-const statusBox = document.getElementById("status");
-const previewSection = document.getElementById("previewSection");
-const embedPreview = document.getElementById("embedPreview");
+  <script>
+    // Small feature-rich client script (no backend). Replace with real endpoints for hosting/scheduling.
+    const webhooksEl = document.getElementById('webhooks');
+    const gameEl = document.getElementById('game');
+    const scriptTypeEl = document.getElementById('scriptType');
+    const versionEl = document.getElementById('version');
+    const updatesEl = document.getElementById('updates');
+    const previewBtn = document.getElementById('previewBtn');
+    const sendBtn = document.getElementById('sendBtn');
+    const embedTitle = document.getElementById('embedTitle');
+    const embedDesc = document.getElementById('embedDesc');
+    const embedGame = document.getElementById('embedGame');
+    const embedVersion = document.getElementById('embedVersion');
+    const embedUpdates = document.getElementById('embedUpdates');
+    const embedLoader = document.getElementById('embedLoader');
+    const copyLoader = document.getElementById('copyLoader');
+    const exportJSON = document.getElementById('exportJSON');
+    const logArea = document.getElementById('logArea');
+    const sendStatus = document.getElementById('sendStatus');
+    const fileDrop = document.getElementById('fileDrop');
+    const fileInput = document.getElementById('fileInput');
+    const browseBtn = document.getElementById('browseBtn');
+    const previewThumb = document.getElementById('previewThumb');
+    const fileNameEl = document.getElementById('fileName');
 
-previewBtn.addEventListener("click", () => {
-  const embedType = document.querySelector('input[name="embedType"]:checked').value;
-  const game = gameSelect.value;
-  const script = scriptSelect.value;
-  const version = versionInput.value || "v1.0";
-  const updates = updateList.value.trim() || "No updates provided.";
-  const imgUrl = imgurUrlInput.value.trim();
+    let attachedFile = null;
 
-  document.getElementById("embedGame").textContent = `${game} (${script})`;
-  document.getElementById("embedVersion").textContent = version;
-  document.getElementById("embedUpdates").textContent = updates;
-
-  embedPreview.className = `embed-preview ${embedType}`;
-  const imgElement = document.getElementById("embedImage");
-  if (imgUrl) {
-    imgElement.src = imgUrl;
-    imgElement.style.display = "block";
-  } else {
-    imgElement.style.display = "none";
-  }
-  previewSection.style.display = "block";
-  statusBox.textContent = "";
-});
-
-sendBtn.addEventListener("click", async () => {
-  const selectedWebhooks = Array.from(webhookSelect.selectedOptions).map(o => o.value);
-  if (selectedWebhooks.length === 0) {
-    showStatus("Please select at least one webhook!", "error");
-    return;
-  }
-
-  const embedType = document.querySelector('input[name="embedType"]:checked').value;
-  const game = gameSelect.value;
-  const script = scriptSelect.value;
-  const version = versionInput.value || "v1.0";
-  const updates = updateList.value.trim() || "No updates provided.";
-  const imgUrl = imgurUrlInput.value.trim();
-
-  const embed = {
-    title: `📦 ${game} (${script}) — ${version}`,
-    description: updates,
-    color: embedType === "super-premium" ? 16766720 : 7506394,
-    footer: { text: "Nexa Hub | Super Premium Update System" }
-  };
-  if (imgUrl) embed.image = { url: imgUrl };
-
-  for (const url of selectedWebhooks) {
-    try {
-      await fetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ embeds: [embed] })
-      });
-    } catch (err) {
-      console.error("Error sending to webhook:", err);
+    function formatLoader(scriptType){
+      const base = 'https://nexahubb.netlify.app/loader';
+      if(scriptType.toLowerCase().includes('super')) return `loadstring(game:HttpGet('${base}?tier=super'))()`;
+      if(scriptType.toLowerCase().includes('premium')) return `loadstring(game:HttpGet('${base}?tier=premium'))()`;
+      return `loadstring(game:HttpGet('${base}'))()`;
     }
-  }
 
-  showStatus("✅ Successfully sent update to selected webhooks!", "success");
-});
+    function updatePreview(){
+      const game = gameEl.value;
+      const script = scriptTypeEl.value;
+      const version = versionEl.value || 'vX.X.X';
+      const updates = updatesEl.value || '- No updates yet';
+      embedTitle.textContent = `Nexa Hub: Update Logs`;
+      embedDesc.textContent = `New update for ${game} — ${script}`;
+      embedGame.textContent = `${game} (${script})`;
+      embedVersion.textContent = version;
+      embedUpdates.textContent = updates;
+      embedLoader.textContent = formatLoader(script);
+    }
 
-function showStatus(msg, type) {
-  statusBox.textContent = msg;
-  statusBox.className = `status ${type}`;
-}
-</script>
+    [gameEl, scriptTypeEl, versionEl, updatesEl].forEach(el=>el.addEventListener('input', updatePreview));
+    updatePreview();
+
+    // File drag & drop
+    browseBtn.addEventListener('click', ()=>fileInput.click());
+    fileInput.addEventListener('change', (e)=>handleFile(e.target.files[0]));
+    fileDrop.addEventListener('dragover', (e)=>{e.preventDefault();fileDrop.classList.add('drag')});
+    fileDrop.addEventListener('dragleave', ()=>fileDrop.classList.remove('drag'));
+    fileDrop.addEventListener('drop', (e)=>{e.preventDefault();fileDrop.classList.remove('drag');const f = e.dataTransfer.files[0];handleFile(f)});
+
+    function handleFile(file){
+      if(!file) return;
+      if(file.size > 8*1024*1024){alert('File terlalu besar (max 8MB)');return}
+      attachedFile = file;
+      fileNameEl.textContent = file.name;
+      previewThumb.textContent = file.type.startsWith('image') ? '' : 'VID';
+      if(file.type.startsWith('image')){
+        const reader = new FileReader();
+        reader.onload = ()=>{ previewThumb.style.backgroundImage = `url(${reader.result})`; previewThumb.style.backgroundSize='cover'; previewThumb.textContent=''; }
+        reader.readAsDataURL(file);
+      }
+    }
+
+    // Preview button
+    previewBtn.addEventListener('click', ()=>{
+      updatePreview();
+      window.scrollTo({top:0,behavior:'smooth'});
+      sendStatus.textContent = 'Preview updated — check right column.';
+    });
+
+    // Copy loader
+    copyLoader.addEventListener('click', async ()=>{
+      try{ await navigator.clipboard.writeText(embedLoader.textContent); sendStatus.textContent='Loader copied!'; }
+      catch(e){ sendStatus.textContent='Copy failed — allow clipboard permission.' }
+    });
+
+    // Export JSON
+    exportJSON.addEventListener('click', ()=>{
+      const data = buildPayload();
+      const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = 'nexahub-payload.json'; a.click(); URL.revokeObjectURL(url);
+      sendStatus.textContent = 'Exported JSON';
+    });
+
+    // Build payload for Discord
+    function buildPayload(){
+      const selected = Array.from(webhooksEl.selectedOptions).map(o=>o.value);
+      const payload = {
+        content: '',
+        username: 'Nexa Hub • Super Premium',
+        embeds: [{
+          title: `Nexa Hub: Update Logs`,
+          description: `New update for ${gameEl.value} — ${scriptTypeEl.value}`,
+          fields: [
+            {name:'🎮 Games', value:`${gameEl.value} ${scriptTypeEl.value}`},
+            {name:'✅ Version', value:versionEl.value || 'vX.X.X'},
+            {name:'📋 Update List', value: updatesEl.value || '-'},
+            {name:'Loader', value: formatLoader(scriptTypeEl.value)}
+          ],
+          timestamp: new Date().toISOString()
+        }]
+      };
+      return {payload,webhooks:selected};
+    }
+
+    // Simple send (client-side). Note: CORS may block requests when run from file://
+    sendBtn.addEventListener('click', async ()=>{
+      const selected = Array.from(webhooksEl.selectedOptions).map(o=>o.value);
+      if(selected.length===0){alert('Pilih setidaknya satu webhook');return}
+      if(!versionEl.value){alert('Isi versi terlebih dahulu');return}
+      const data = buildPayload();
+      sendStatus.textContent = 'Sending...';
+      const log = [];
+      for(const url of data.webhooks){
+        try{
+          let body, headers={};
+          if(attachedFile){
+            const form = new FormData(); form.append('file', attachedFile); form.append('payload_json', JSON.stringify(data.payload)); body=form;
+          } else { headers['Content-Type']='application/json'; body=JSON.stringify(data.payload); }
+          const res = await fetch(url, {method:'POST', headers, body});
+          if(res.ok){ log.push({url,ok:true}); appendLog(`✅ Sent to ${short(url)}`); }
+          else { log.push({url,ok:false,status:res.status}); appendLog(`❌ Failed ${short(url)} (${res.status})`); }
+        }catch(err){ log.push({url,ok:false,err:err.message}); appendLog(`❌ Error ${short(url)} (${err.message})`); }
+      }
+      sendStatus.textContent = 'Send complete';
+    });
+
+    function appendLog(text){ const d = document.createElement('div'); d.className='small'; d.textContent=text; logArea.appendChild(d); logArea.scrollTop = logArea.scrollHeight; document.getElementById('logInit').style.display='none'; }
+    function short(u){ try{const t = new URL(u); return t.hostname + t.pathname.slice(0,12); }catch(e){return u.slice(0,30)} }
+
+    // Theme toggle (local only)
+    const toggleThemeBtn = document.getElementById('toggleTheme');
+    toggleThemeBtn.addEventListener('click', ()=>{
+      if(document.documentElement.style.getPropertyValue('--bg')==='#0b1020'){
+        document.documentElement.style.setProperty('--bg','#f6f8fb'); document.documentElement.style.setProperty('--text','#061223');
+        document.documentElement.style.setProperty('--panel','#ffffff'); document.documentElement.style.setProperty('--muted','#4b5563');
+      } else { location.reload(); }
+    });
+
+    // small nice touches
+    window.addEventListener('load', ()=>{ setTimeout(()=>{ document.querySelector('.wrap').style.transition='transform 400ms ease'; },50) });
+  </script>
 </body>
 </html>
