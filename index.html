@@ -3,21 +3,36 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Nexa Hub Update Sender v2.2</title>
+<title>Nexa Hub Super Premium Update Sender v3.0</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg-dark: #0d1117;
-    --panel: #161b22;
+    --bg-dark: linear-gradient(135deg, #0d1117 0%, #161b22 50%, #0d1117 100%);
+    --panel: rgba(22, 27, 34, 0.98);
+    --panel-hover: rgba(33, 38, 45, 0.98);
     --text: #e6edf3;
-    --accent: #ec4c4c;
+    --accent: #ff6b6b;
+    --accent-hover: #ff5252;
     --secondary: #9ba3b4;
-    --green: #238636;
-    --blue: #58a6ff;
-    --purple: #bc8cff;
+    --green: #4ecdc4;
+    --green-hover: #45b7aa;
+    --blue: #74b9ff;
+    --blue-hover: #0984e3;
+    --purple: #a29bfe;
+    --purple-hover: #6c5ce7;
+    --gold: #ffd700;
+    --shadow: 0 8px 32px rgba(0,0,0,0.5);
+    --glow: 0 0 20px rgba(255, 107, 107, 0.3);
+  }
+  * {
+    box-sizing: border-box;
   }
   body {
-    font-family: "Inter", "Segoe UI", sans-serif;
-    background: radial-gradient(circle at top, #111726 0%, #0d1117 100%);
+    font-family: 'Inter', sans-serif;
+    background: var(--bg-dark);
+    background-attachment: fixed;
     color: var(--text);
     display: flex;
     flex-direction: column;
@@ -25,166 +40,337 @@
     margin: 0;
     padding: 40px 20px;
     min-height: 100vh;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="0.5" fill="%23ffffff" opacity="0.03"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    pointer-events: none;
+    z-index: -1;
   }
   .container {
-    background: rgba(22, 27, 34, 0.95);
-    border: 1px solid #2f343f;
-    border-radius: 16px;
-    backdrop-filter: blur(6px);
-    padding: 25px 30px;
+    background: var(--panel);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    padding: 35px 40px;
     width: 100%;
-    max-width: 700px;
-    box-shadow: 0 0 25px rgba(0,0,0,0.4);
-    animation: fadeIn 0.5s ease;
+    max-width: 800px;
+    box-shadow: var(--shadow);
+    animation: fadeInUp 0.8s ease-out;
+    position: relative;
+    overflow: hidden;
   }
-  @keyframes fadeIn {
-    from {opacity: 0; transform: translateY(10px);}
-    to {opacity: 1; transform: translateY(0);}
+  .container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--accent), var(--green), var(--blue), var(--purple));
+    animation: shimmer 3s infinite linear;
+  }
+  @keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
   }
   h1 {
     text-align: center;
-    color: var(--accent);
-    font-weight: 600;
-    font-size: 28px;
+    background: linear-gradient(45deg, var(--accent), var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 700;
+    font-size: 36px;
     margin-bottom: 10px;
+    text-shadow: 0 0 20px rgba(255, 107, 107, 0.5);
   }
   h2 {
     text-align: center;
     color: var(--secondary);
-    font-size: 16px;
-    font-weight: normal;
-    margin-bottom: 25px;
+    font-size: 18px;
+    font-weight: 400;
+    margin-bottom: 30px;
+    opacity: 0.8;
   }
   .form-group {
-    margin-bottom: 20px;
+    margin-bottom: 25px;
+    position: relative;
   }
   label {
     display: block;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
     color: var(--secondary);
     font-weight: 500;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
   }
   select, input, textarea {
     width: 100%;
-    background: var(--panel);
+    background: rgba(13, 17, 23, 0.8);
     color: var(--text);
-    border: 1px solid #30363d;
-    border-radius: 8px;
-    padding: 12px;
-    font-size: 15px;
-    transition: 0.2s;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 15px 18px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
   }
   select:focus, input:focus, textarea:focus {
     border-color: var(--accent);
     outline: none;
-    box-shadow: 0 0 5px rgba(236, 76, 76, 0.5);
+    box-shadow: var(--glow);
+    transform: translateY(-2px);
   }
   select[multiple] {
-    height: 120px;
+    height: 140px;
   }
   textarea {
-    height: 150px;
+    height: 180px;
     resize: vertical;
-    line-height: 1.4;
+    line-height: 1.5;
   }
   input[type="file"] {
-    padding: 8px;
+    padding: 10px;
+    cursor: pointer;
+  }
+  input[type="file"]::file-selector-button {
+    background: var(--blue);
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  input[type="file"]::file-selector-button:hover {
+    background: var(--blue-hover);
+  }
+  .radio-group {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+  }
+  .radio-option {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding: 10px 15px;
+    border-radius: 10px;
+    transition: 0.3s;
+    background: rgba(13, 17, 23, 0.5);
+  }
+  .radio-option:hover {
+    background: rgba(13, 17, 23, 0.8);
+  }
+  .radio-option input[type="radio"] {
+    margin-right: 10px;
+    accent-color: var(--accent);
+  }
+  .radio-option label {
+    margin: 0;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
   }
   .button-group {
     display: flex;
-    gap: 10px;
-    margin-top: 25px;
+    gap: 15px;
+    margin-top: 35px;
+    flex-wrap: wrap;
   }
   button {
     flex: 1;
-    padding: 13px;
-    background: var(--green);
+    min-width: 200px;
+    padding: 16px 20px;
+    background: linear-gradient(45deg, var(--green), var(--green-hover));
     color: white;
     font-size: 16px;
     font-weight: 600;
     border: none;
-    border-radius: 8px;
+    border-radius: 12px;
     cursor: pointer;
-    transition: 0.2s;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(78, 205, 196, 0.3);
+  }
+  button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+  }
+  button:hover::before {
+    left: 100%;
   }
   button:hover {
-    background: #2ea043;
-    transform: translateY(-2px);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(78, 205, 196, 0.4);
   }
   button.secondary {
-    background: var(--blue);
+    background: linear-gradient(45deg, var(--blue), var(--blue-hover));
+    box-shadow: 0 4px 15px rgba(116, 185, 255, 0.3);
   }
   button.secondary:hover {
-    background: #79c0ff;
+    box-shadow: 0 8px 25px rgba(116, 185, 255, 0.4);
   }
   .preview {
-    margin-top: 30px;
-    background: var(--panel);
-    border: 1px solid #2f343f;
-    border-radius: 10px;
-    padding: 20px;
-    animation: slideIn 0.5s ease;
+    margin-top: 40px;
+    background: var(--panel-hover);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 25px;
+    animation: slideIn 0.6s ease;
+    box-shadow: var(--shadow);
   }
   @keyframes slideIn {
-    from {opacity: 0; transform: translateY(20px);}
-    to {opacity: 1; transform: translateY(0);}
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
   }
   .preview h3 {
     color: var(--accent);
     margin-top: 0;
-    font-size: 18px;
-    border-bottom: 1px solid #2f343f;
-    padding-bottom: 8px;
+    font-size: 22px;
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 10px;
+    font-weight: 600;
   }
   .embed-preview {
-    background: #2f3136;
-    border-radius: 8px;
-    padding: 15px;
-    margin-top: 10px;
-    border-left: 4px solid var(--accent);
+    background: linear-gradient(135deg, #2f3136 0%, #36393f 100%);
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 15px;
+    border-left: 5px solid var(--accent);
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+  }
+  .embed-preview.super-premium {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    border-left-color: var(--gold);
+    box-shadow: inset 0 0 30px rgba(255, 215, 0, 0.2);
   }
   .embed-title {
     font-weight: bold;
     color: #ffffff;
-    font-size: 16px;
+    font-size: 18px;
+    margin-bottom: 15px;
   }
   .embed-field {
-    margin: 10px 0;
+    margin: 15px 0;
   }
   .embed-field-name {
     font-weight: bold;
     color: var(--blue);
+    margin-bottom: 5px;
+    font-size: 14px;
   }
   .embed-field-value {
-    background: #36393f;
-    padding: 5px;
-    border-radius: 4px;
-    font-family: monospace;
+    background: rgba(54, 57, 63, 0.8);
+    padding: 10px;
+    border-radius: 8px;
+    font-family: 'Courier New', monospace;
     font-size: 14px;
     white-space: pre-wrap;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  .embed-field-value.super-premium {
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 107, 107, 0.1));
+    border: 1px solid var(--gold);
   }
   footer {
     text-align: center;
-    color: #666;
-    font-size: 13px;
-    margin-top: 25px;
+    color: var(--secondary);
+    font-size: 14px;
+    margin-top: 30px;
+    opacity: 0.7;
   }
   .status {
-    margin-top: 15px;
+    margin-top: 20px;
     text-align: center;
-    font-size: 14px;
+    font-size: 16px;
+    font-weight: 500;
+    padding: 10px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
   }
-  .success { color: var(--green); }
-  .error { color: var(--accent); }
+  .success {
+    color: var(--green);
+    background: rgba(78, 205, 196, 0.1);
+    border: 1px solid var(--green);
+  }
+  .error {
+    color: var(--accent);
+    background: rgba(255, 107, 107, 0.1);
+    border: 1px solid var(--accent);
+  }
+  .premium-badge {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: linear-gradient(45deg, var(--gold), #ffed4e);
+    color: #000;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 10px rgba(255, 215, 0, 0.3);
+  }
+  .icon {
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+  @media (max-width: 768px) {
+    .container {
+      padding: 25px 20px;
+      max-width: 95%;
+    }
+    h1 { font-size: 28px; }
+    .button-group { flex-direction: column; }
+    button { min-width: auto; }
+    .radio-group { flex-direction: column; gap: 10px; }
+  }
 </style>
 </head>
 <body>
   <div class="container">
-    <h1>Nexa Hub</h1>
-    <h2>Update Log Sender (Webhook System) v2.2</h2>
+    <div class="premium-badge">Super Premium v3.0</div>
+    <h1>🚀 Nexa Hub</h1>
+    <h2>Super Premium Update Log Sender (Webhook System) v3.0</h2>
 
     <div class="form-group">
-      <label for="webhookSelect">🔗 Select Webhook URLs (Multi-Select)</label>
+      <label for="embedTypeSelect"><span class="icon">🎨</span> Embed Type</label>
+      <div class="radio-group">
+        <div class="radio-option">
+          <input type="radio" id="normalEmbed" name="embedType" value="normal" checked>
+          <label for="normalEmbed">Normal Embed</label>
+        </div>
+        <div class="radio-option">
+          <input type="radio" id="superPremiumEmbed" name="embedType" value="super-premium">
+          <label for="superPremiumEmbed">Super Premium Embed</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="webhookSelect"><span class="icon">🔗</span> Select Webhook URLs (Multi-Select)</label>
       <select id="webhookSelect" multiple>
         <option value="https://discord.com/api/webhooks/1389650936779112680/n0_vYgnRtCnmX8v0d2buMpnQrXn6SDZYELeNvdI50pRx7HiTR78JN-XVPdr0PuLzS6V1">Discord Nexa</option>
         <option value="https://discord.com/api/webhooks/EXAMPLE_WEBHOOK_2">Discord ???</option>
@@ -194,7 +380,7 @@
     </div>
 
     <div class="form-group">
-      <label for="gameSelect">🎮 Select Game</label>
+      <label for="gameSelect"><span class="icon">🎮</span> Select Game</label>
       <select id="gameSelect">
         <option value="Fish It">Fish It</option>
         <option value="Plant Vs Brainrot">Plant Vs Brainrot</option>
@@ -202,7 +388,7 @@
     </div>
 
     <div class="form-group">
-      <label for="scriptSelect">📦 Script Type</label>
+      <label for="scriptSelect"><span class="icon">📦</span> Script Type</label>
       <select id="scriptSelect">
         <option value="Free">Free</option>
         <option value="Premium">Premium</option>
@@ -211,185 +397,43 @@
     </div>
 
     <div class="form-group">
-      <label for="versionInput">✅ Version</label>
+      <label for="versionInput"><span class="icon">✅</span> Version</label>
       <input type="text" id="versionInput" placeholder="Example: v1.2.3" />
     </div>
 
     <div class="form-group">
-      <label for="updateList">📋 Update List</label>
+      <label for="updateList"><span class="icon">📋</span> Update List</label>
       <textarea id="updateList" placeholder="[+] Tab Farm
  - Added Auto Collect Fruit
  - Fixed Bug in XYZ"></textarea>
     </div>
 
     <div class="form-group">
-      <label for="fileInput">📎 Upload Image/Video (Optional)</label>
+      <label for="imgurUrlInput"><span class="icon">🖼️</span> Imgur URL (Alternative to Upload)</label>
+      <input type="url" id="imgurUrlInput" placeholder="https://i.imgur.com/XXXXXXX.png or .gif or .mp4" />
+      <small style="color: var(--secondary); font-size: 12px;">Paste Imgur link for image/video. If provided, this will be used instead of file upload.</small>
+    </div>
+
+    <div class="form-group">
+      <label for="fileInput"><span class="icon">📎</span> Upload Image/Video (Optional)</label>
       <input type="file" id="fileInput" accept="image/*,video/*" />
-      <small style="color: var(--secondary); font-size: 12px;">Max 8MB. Will be attached to the message.</small>
+      <small style="color: var(--secondary); font-size: 12px;">Max 8MB. Will be attached to the message. Ignored if Imgur URL is provided.</small>
     </div>
 
     <div class="button-group">
-      <button id="previewBtn" class="secondary">👀 Preview Embed</button>
-      <button id="sendBtn">🚀 Send Update to Discord</button>
+      <button id="previewBtn" class="secondary"><span class="icon">👀</span> Preview Embed</button>
+      <button id="sendBtn"><span class="icon">🚀</span> Send Update to Discord</button>
     </div>
 
     <div id="status" class="status"></div>
 
     <div class="preview" id="previewSection" style="display: none;">
       <h3>Discord Embed Preview</h3>
-      <div class="embed-preview">
+      <div class="embed-preview" id="embedPreview">
         <div class="embed-title" id="embedTitle">Nexa Hub: Update Logs</div>
         <div class="embed-field">
           <div class="embed-field-name">🎮 Games</div>
           <div class="embed-field-value" id="embedGame">Fish It (Free)</div>
         </div>
         <div class="embed-field">
-          <div class="embed-field-name">✅ Version</div>
-          <div class="embed-field-value" id="embedVersion">v1.0.0</div>
-        </div>
-        <div class="embed-field">
-          <div class="embed-field-name">📋 Update List</div>
-          <div class="embed-field-value" id="embedUpdates">[No updates listed]</div>
-        </div>
-        <div class="embed-field">
-          <div class="embed-field-name">Loader</div>
-          <div class="embed-field-value" id="embedLoader">loadstring(game:HttpGet("https://nexahubb.netlify.app/loader"))()</div>
-        </div>
-      </div>
-    </div>
-
-    <footer>Nexa Hub Update Sender v2.2 • discord.gg/ECxQFc97F5</footer>
-  </div>
-
-  <script>
-    const webhookSelect = document.getElementById("webhookSelect");
-    const gameSelect = document.getElementById("gameSelect");
-    const scriptSelect = document.getElementById("scriptSelect");
-    const versionInput = document.getElementById("versionInput");
-    const updateList = document.getElementById("updateList");
-    const fileInput = document.getElementById("fileInput");
-    const previewBtn = document.getElementById("previewBtn");
-    const sendBtn = document.getElementById("sendBtn");
-    const previewSection = document.getElementById("previewSection");
-    const embedTitle = document.getElementById("embedTitle");
-    const embedGame = document.getElementById("embedGame");
-    const embedVersion = document.getElementById("embedVersion");
-    const embedUpdates = document.getElementById("embedUpdates");
-    const embedLoader = document.getElementById("embedLoader");
-    const status = document.getElementById("status");
-
-    function updatePreview() {
-      const game = gameSelect.value;
-      const script = scriptSelect.value;
-      const version = versionInput.value || "vX.X.X";
-      const updates = updateList.value || "[No updates listed]";
-      let loader = "loadstring(game:HttpGet(\"https://nexahubb.netlify.app/loader\"))()";
-      embedGame.textContent = `${game} (${script})`;
-      embedVersion.textContent = version;
-      embedUpdates.textContent = updates;
-      embedLoader.textContent = loader;
-    }
-
-    [gameSelect, scriptSelect, versionInput, updateList].forEach(el =>
-      el.addEventListener("input", updatePreview)
-    );
-
-    previewBtn.addEventListener("click", () => {
-      updatePreview();
-      previewSection.style.display = "block";
-      previewSection.scrollIntoView({ behavior: "smooth" });
-    });
-
-    sendBtn.addEventListener("click", async () => {
-      const selectedWebhooks = Array.from(webhookSelect.selectedOptions).map(option => option.value);
-      const game = gameSelect.value;
-      const script = scriptSelect.value;
-      const version = versionInput.value.trim();
-      const updates = updateList.value.trim();
-      const file = fileInput.files[0];
-
-      if (selectedWebhooks.length === 0) {
-        status.textContent = "⚠️ Pilih setidaknya satu Webhook URL!";
-        status.className = "status error";
-        return;
-      }
-      if (!version) {
-        status.textContent = "⚠️ Isi versi update terlebih dahulu!";
-        status.className = "status error";
-        return;
-      }
-      if (file && file.size > 8 * 1024 * 1024) {
-        status.textContent = "⚠️ File terlalu besar! Max 8MB.";
-        status.className = "status error";
-        return;
-      }
-
-      let scriptTitle;
-      if (script === "Free") scriptTitle = "`📦 Script Free` PC Copy";
-      else if (script === "Premium") scriptTitle = "`💎 Script Premium` PC Copy";
-      else if (script === "Fixed") scriptTitle = "`🛠 Script Fixed` PC Copy";
-
-      const payload = {
-        content: "<@&1390026095855796284>",
-        username: "Nexa Hub〢Update Log",
-        avatar_url: "https://i.imgur.com/B2NvjqW.png",
-        embeds: [
-          {
-            title: "```Nexa Hub: Update Logs```",
-            description: "🚀 New update available for Nexa Hub!",
-            color: 15527138,
-            thumbnail: { url: "https://i.imgur.com/B2NvjqW.png" },
-            fields: [
-              { name: "`🎮 Games`", value: `\`\`\`${game} ${script}\`\`\``, inline: true },
-              { name: "`✅ Version`", value: `\`\`\`lua\n${version}\n\`\`\``, inline: true },
-              { name: "`📋 Update List`", value: `\`\`\`yml\n${updates}\n\`\`\`` },
-              { name: "Buy Key Premium https://discord.com/channels/1337779481477382174/1392861188152627331",
-                value: "If u want get script, go to ⁠https://discord.com/channels/1337779481477382174/1389547349520416858\n\nIf u got bug , report on https://discord.com/channels/1337779481477382174/1405933599655723159" },
-              { name: scriptTitle, value: "```lua\nloadstring(game:HttpGet(\"https://nexahubb.netlify.app/loader\"))()\n```" },
-              { name: "Mobile Copy", value: "loadstring(game:HttpGet(\"https://nexahubb.netlify.app/loader\"))()" },
-              { name: "**Note**", value: "Rejoin to see new update" }
-            ],
-            timestamp: new Date().toISOString(),
-            footer: { text: "Nexa Hub Update | discord.gg/ECxQFc97F5", icon_url: "https://i.imgur.com/your-icon.png" }
-          }
-        ]
-      };
-
-      status.textContent = "⏳ Sending to selected webhooks...";
-      status.className = "status";
-
-      let successCount = 0;
-      let errorCount = 0;
-
-      for (const webhookURL of selectedWebhooks) {
-        try {
-          let body;
-          let headers = {};
-          if (file) {
-            const formData = new FormData();
-            formData.append('file', file);
-            formData.append('payload_json', JSON.stringify(payload));
-            body = formData;
-          } else {
-            headers['Content-Type'] = 'application/json';
-            body = JSON.stringify(payload);
-          }
-
-          const res = await fetch(webhookURL, { method: "POST", headers, body });
-          if (res.ok) successCount++; else errorCount++;
-        } catch (err) { errorCount++; }
-      }
-
-      if (errorCount === 0) {
-        status.textContent = `✅ Update berhasil dikirim ke semua ${successCount} webhook!`;
-        status.className = "status success";
-      } else {
-        status.textContent = `⚠️ Dikirim ke ${successCount} webhook, gagal ${errorCount}.`;
-        status.className = "status error";
-      }
-    });
-
-    updatePreview();
-  </script>
-</body>
-</html>
+          <
