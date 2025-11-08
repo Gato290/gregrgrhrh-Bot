@@ -1,90 +1,175 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Raw to GitHub Repo Converter</title>
-<style>
-    body {
-        background: #0d1117;
-        color: #c9d1d9;
-        font-family: "Segoe UI", sans-serif;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        height: 100vh;
-        gap: 10px;
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShinzuX github tools</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #FFFFFF;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }.container {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 600px;
     }
+
     h1 {
-        color: #58a6ff;
-        margin-bottom: 20px;
+        text-align: center;
     }
+
     input {
-        width: 80%;
-        max-width: 600px;
+        width: 100%;
         padding: 10px;
-        border-radius: 8px;
-        border: none;
-        outline: none;
-        background: #161b22;
-        color: white;
+        margin: 10px 0;
+        font-size: 16px;
+        border: 1px solid #CCCCCC;
+        border-radius: 4px;
     }
+
     button {
-        background: #238636;
+        padding: 10px 15px;
+        background-color: #007bff;
         color: white;
         border: none;
-        padding: 10px 20px;
-        border-radius: 8px;
+        border-radius: 4px;
         cursor: pointer;
-        transition: 0.2s;
+        font-size: 16px;
+        margin-right: 5px;
     }
+
     button:hover {
-        background: #2ea043;
+        background-color: #0056b3;
     }
-    .output {
-        width: 80%;
-        max-width: 600px;
-        background: #161b22;
+
+    .file-content {
+        white-space: pre-wrap;
+        margin-top: 20px;
+        background-color: #f9f9f9;
         padding: 10px;
-        border-radius: 8px;
-        word-wrap: break-word;
+        border-radius: 4px;
+        font-family: monospace;
+        max-height: 400px;
+        overflow-y: auto;
+    }
+
+    #copyStatus {
+        margin-top: 10px;
+        text-align: center;
+        font-style: italic;
+    }
+
+    #clearButton {
+        background-color: #dc3545;
+    }
+
+    #clearButton:hover {
+        background-color: #c82333;
     }
 </style>
+
 </head>
 <body>
+    <div class="container">
+        <h1>ShinzuX Github Tools</h1><!-- Input Raw URL -->
+    <label for="rawUrl">URL Raw GitHub:</label>
+    <input type="text" id="rawUrl" placeholder="https://raw.githubusercontent.com/username/repo/branch/path/file.ext">
 
-<h1>Raw ➜ GitHub Repo Converter</h1>
+    <!-- Convert to Repository URL -->
+    <button id="convertBtn">Convert to Repo URL</button>
+    <label for="repoUrl">URL Repository:</label>
+    <input type="text" id="repoUrl" placeholder="https://github.com/username/repo/blob/branch/path/file.ext" readonly>
+    <button id="copyRepoUrlBtn" style="display:none;">Copy Repo URL</button>
 
-<input type="text" id="rawInput" placeholder="Masukkan URL Raw GitHub...">
-<div>
-    <button onclick="convert()">Convert</button>
-    <button onclick="copyResult()">Copy Result</button>
+    <!-- View File Content -->
+    <button id="viewBtn">View Raw Content</button>
+    <div id="fileContent" class="file-content"></div>
+
+    <!-- Copy File & Clear -->
+    <button id="copyFileBtn" style="display:none;">Copy File Content</button>
+    <button id="clearButton">Clear All</button>
+
+    <!-- Status Message -->
+    <div id="copyStatus"></div>
 </div>
 
-<div class="output" id="result">Hasil akan muncul di sini...</div>
-
 <script>
-function convert() {
-    const rawUrl = document.getElementById("rawInput").value.trim();
-    if (!rawUrl.startsWith("https://raw.githubusercontent.com/")) {
-        document.getElementById("result").innerText = "URL tidak valid! Harus diawali dengan https://raw.githubusercontent.com/";
-        return;
-    }
+    const rawInput = document.getElementById('rawUrl');
+    const repoInput = document.getElementById('repoUrl');
+    const convertBtn = document.getElementById('convertBtn');
+    const viewBtn = document.getElementById('viewBtn');
+    const fileContentDiv = document.getElementById('fileContent');
+    const copyFileBtn = document.getElementById('copyFileBtn');
+    const copyRepoUrlBtn = document.getElementById('copyRepoUrlBtn');
+    const clearBtn = document.getElementById('clearButton');
+    const statusDiv = document.getElementById('copyStatus');
 
-    const repoUrl = rawUrl
-        .replace("https://raw.githubusercontent.com/", "https://github.com/")
-        .replace("/", "/blob/");
-
-    document.getElementById("result").innerHTML = `<a href="${repoUrl}" target="_blank">${repoUrl}</a>`;
-}
-
-function copyResult() {
-    const resultText = document.getElementById("result").innerText;
-    navigator.clipboard.writeText(resultText).then(() => {
-        alert("Berhasil disalin!");
+    // Convert raw URL to repo URL
+    convertBtn.addEventListener('click', () => {
+        const rawUrl = rawInput.value.trim();
+        const regex = /^https:\/\/raw\.githubusercontent\.com\/([^\/]+)\/([^\/]+)\/([^\/]+)\/(.+)$/;
+        const match = rawUrl.match(regex);
+        if (match) {
+            const repoUrl = `https://github.com/${match[1]}/${match[2]}/blob/${match[3]}/${match[4]}`;
+            repoInput.value = repoUrl;
+            copyRepoUrlBtn.style.display = 'inline-block';
+            statusDiv.textContent = '';
+        } else {
+            repoInput.value = '';
+            copyRepoUrlBtn.style.display = 'none';
+            statusDiv.textContent = 'Invalid raw URL format.';
+        }
     });
-}
+
+    // View raw content
+    viewBtn.addEventListener('click', async () => {
+        const rawUrl = rawInput.value.trim();
+        if (!rawUrl) return alert('Please enter a raw URL.');
+        statusDiv.textContent = 'Fetching content...';
+        try {
+            const res = await fetch(rawUrl);
+            if (!res.ok) throw new Error('Failed to fetch.');
+            const text = await res.text();
+            fileContentDiv.textContent = text;
+            copyFileBtn.style.display = 'inline-block';
+            statusDiv.textContent = 'Content loaded.';
+        } catch (e) {
+            statusDiv.textContent = 'Error: ' + e.message;
+        }
+    });
+
+    // Copy file content
+    copyFileBtn.addEventListener('click', () => {
+        const text = fileContentDiv.textContent;
+        navigator.clipboard.writeText(text)
+            .then(() => statusDiv.textContent = 'File content copied.')
+            .catch(err => statusDiv.textContent = 'Copy failed.');
+    });
+
+    // Copy repo URL
+    copyRepoUrlBtn.addEventListener('click', () => {
+        const url = repoInput.value;
+        navigator.clipboard.writeText(url)
+            .then(() => statusDiv.textContent = 'Repo URL copied.')
+            .catch(err => statusDiv.textContent = 'Copy failed.');
+    });
+
+    // Clear all
+    clearBtn.addEventListener('click', () => {
+        rawInput.value = '';
+        repoInput.value = '';
+        fileContentDiv.textContent = '';
+        copyFileBtn.style.display = 'none';
+        copyRepoUrlBtn.style.display = 'none';
+        statusDiv.textContent = '';
+    });
 </script>
 
 </body>
