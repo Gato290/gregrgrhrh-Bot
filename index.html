@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Nexa Hub Update Sender v2.2</title>
+<title>Nexa Hub Update Sender v2.3</title>
 <style>
   :root {
     --bg-dark: #0d1117;
@@ -55,9 +55,7 @@
     font-weight: normal;
     margin-bottom: 25px;
   }
-  .form-group {
-    margin-bottom: 20px;
-  }
+  .form-group { margin-bottom: 20px; }
   label {
     display: block;
     margin-bottom: 5px;
@@ -79,22 +77,10 @@
     outline: none;
     box-shadow: 0 0 5px rgba(236, 76, 76, 0.5);
   }
-  select[multiple] {
-    height: 120px;
-  }
-  textarea {
-    height: 150px;
-    resize: vertical;
-    line-height: 1.4;
-  }
-  input[type="file"] {
-    padding: 8px;
-  }
-  .button-group {
-    display: flex;
-    gap: 10px;
-    margin-top: 25px;
-  }
+  select[multiple] { height: 120px; }
+  textarea { height: 150px; resize: vertical; line-height: 1.4; }
+  input[type="file"] { padding: 8px; }
+  .button-group { display: flex; gap: 10px; margin-top: 25px; flex-wrap: wrap; }
   button {
     flex: 1;
     padding: 13px;
@@ -107,16 +93,9 @@
     cursor: pointer;
     transition: 0.2s;
   }
-  button:hover {
-    background: #2ea043;
-    transform: translateY(-2px);
-  }
-  button.secondary {
-    background: var(--blue);
-  }
-  button.secondary:hover {
-    background: #79c0ff;
-  }
+  button:hover { background: #2ea043; transform: translateY(-2px); }
+  button.secondary { background: var(--blue); }
+  button.secondary:hover { background: #79c0ff; }
   .preview {
     margin-top: 30px;
     background: var(--panel);
@@ -143,18 +122,6 @@
     margin-top: 10px;
     border-left: 4px solid var(--accent);
   }
-  .embed-title {
-    font-weight: bold;
-    color: #ffffff;
-    font-size: 16px;
-  }
-  .embed-field {
-    margin: 10px 0;
-  }
-  .embed-field-name {
-    font-weight: bold;
-    color: var(--blue);
-  }
   .embed-field-value {
     background: #36393f;
     padding: 5px;
@@ -163,17 +130,8 @@
     font-size: 14px;
     white-space: pre-wrap;
   }
-  footer {
-    text-align: center;
-    color: #666;
-    font-size: 13px;
-    margin-top: 25px;
-  }
-  .status {
-    margin-top: 15px;
-    text-align: center;
-    font-size: 14px;
-  }
+  footer { text-align: center; color: #666; font-size: 13px; margin-top: 25px; }
+  .status { margin-top: 15px; text-align: center; font-size: 14px; }
   .success { color: var(--green); }
   .error { color: var(--accent); }
 </style>
@@ -181,16 +139,13 @@
 <body>
   <div class="container">
     <h1>Nexa Hub</h1>
-    <h2>Update Log Sender (Webhook System) v2.2</h2>
+    <h2>Update Log Sender (Webhook System) v2.3</h2>
 
     <div class="form-group">
       <label for="webhookSelect">🔗 Select Webhook URLs (Multi-Select)</label>
       <select id="webhookSelect" multiple>
-        <option value="https://discord.com/api/webhooks/1389650936779112680/n0_vYgnRtCnmX8v0d2buMpnQrXn6SDZYELeNvdI50pRx7HiTR78JN-XVPdr0PuLzS6V1">Discord Nexa</option>
-        <option value="https://discord.com/api/webhooks/EXAMPLE_WEBHOOK_2">Discord ???</option>
-        <option value="https://discord.com/api/webhooks/EXAMPLE_WEBHOOK_3">Discord ???</option>
+        <option value="https://discord.com/api/webhooks/EXAMPLE_1">Discord Nexa</option>
       </select>
-      <small style="color: var(--secondary); font-size: 12px;">Hold Ctrl (or Cmd) to select multiple. Edit options in script if needed.</small>
     </div>
 
     <div class="form-group">
@@ -217,19 +172,23 @@
 
     <div class="form-group">
       <label for="updateList">📋 Update List</label>
-      <textarea id="updateList" placeholder="## [+] Tab Farm
- - Added Auto Collect Fruit
- - Fixed Bug in XYZ"></textarea>
+      <textarea id="updateList" placeholder="## [+] Added:"></textarea>
+      <button id="autoTemplateBtn" class="secondary" style="margin-top:10px;">🧩 Auto Template</button>
     </div>
 
     <div class="form-group">
       <label for="fileInput">📎 Upload Image/Video (Optional)</label>
       <input type="file" id="fileInput" accept="image/*,video/*" />
-      <small style="color: var(--secondary); font-size: 12px;">Max 8MB. Will be attached to the message.</small>
+    </div>
+
+    <div class="form-group">
+      <label><input type="checkbox" id="mentionRole" checked> 🔔 Mention Role (@Update)</label>
+      <label><input type="checkbox" id="embedToggle" checked> 🧩 Send as Discord Embed</label>
     </div>
 
     <div class="button-group">
       <button id="previewBtn" class="secondary">👀 Preview Embed</button>
+      <button id="copyJSONBtn" class="secondary">📋 Copy JSON Payload</button>
       <button id="sendBtn">🚀 Send Update to Discord</button>
     </div>
 
@@ -237,28 +196,15 @@
 
     <div class="preview" id="previewSection" style="display: none;">
       <h3>Discord Embed Preview</h3>
-      <div class="embed-preview">
-        <div class="embed-title" id="embedTitle">Nexa Hub: Update Logs</div>
-        <div class="embed-field">
-          <div class="embed-field-name">🎮 Games</div>
-          <div class="embed-field-value" id="embedGame">Fish It (Free)</div>
-        </div>
-        <div class="embed-field">
-          <div class="embed-field-name">✅ Version</div>
-          <div class="embed-field-value" id="embedVersion">v1.0.0</div>
-        </div>
-        <div class="embed-field">
-          <div class="embed-field-name">📋 Update List</div>
-          <div class="embed-field-value" id="embedUpdates">[No updates listed]</div>
-        </div>
-        <div class="embed-field">
-          <div class="embed-field-name">Loader</div>
-          <div class="embed-field-value" id="embedLoader">loadstring(game:HttpGet("https://nexahubb.netlify.app/loader"))()</div>
-        </div>
+      <div class="embed-preview" id="embedPreview">
+        <div><strong>🎮 Game:</strong> <span id="embedGame">Fish It (Free)</span></div>
+        <div><strong>✅ Version:</strong> <span id="embedVersion">v1.0.0</span></div>
+        <div><strong>📋 Updates:</strong></div>
+        <div class="embed-field-value" id="embedUpdates">[No updates listed]</div>
       </div>
     </div>
 
-    <footer>Nexa Hub Update Sender v2.2 • discord.gg/ECxQFc97F5</footer>
+    <footer>Nexa Hub Update Sender v2.3 • discord.gg/ECxQFc97F5</footer>
   </div>
 
   <script>
@@ -268,14 +214,16 @@
     const versionInput = document.getElementById("versionInput");
     const updateList = document.getElementById("updateList");
     const fileInput = document.getElementById("fileInput");
+    const mentionRole = document.getElementById("mentionRole");
+    const embedToggle = document.getElementById("embedToggle");
     const previewBtn = document.getElementById("previewBtn");
     const sendBtn = document.getElementById("sendBtn");
-    const previewSection = document.getElementById("previewSection");
-    const embedTitle = document.getElementById("embedTitle");
+    const copyJSONBtn = document.getElementById("copyJSONBtn");
+    const autoTemplateBtn = document.getElementById("autoTemplateBtn");
     const embedGame = document.getElementById("embedGame");
     const embedVersion = document.getElementById("embedVersion");
     const embedUpdates = document.getElementById("embedUpdates");
-    const embedLoader = document.getElementById("embedLoader");
+    const previewSection = document.getElementById("previewSection");
     const status = document.getElementById("status");
 
     function updatePreview() {
@@ -283,16 +231,19 @@
       const script = scriptSelect.value;
       const version = versionInput.value || "vX.X.X";
       const updates = updateList.value || "[No updates listed]";
-      let loader = "loadstring(game:HttpGet(\"https://nexahubb.netlify.app/loader\"))()";
       embedGame.textContent = `${game} (${script})`;
       embedVersion.textContent = version;
       embedUpdates.textContent = updates;
-      embedLoader.textContent = loader;
     }
 
     [gameSelect, scriptSelect, versionInput, updateList].forEach(el =>
       el.addEventListener("input", updatePreview)
     );
+
+    autoTemplateBtn.addEventListener("click", () => {
+      updateList.value = `## [+] Added:\n- Example feature here\n\n## [/] Improved:\n- Example improvement\n\n## [-] Removed:\n- Example removed item`;
+      updatePreview();
+    });
 
     previewBtn.addEventListener("click", () => {
       updatePreview();
@@ -300,37 +251,17 @@
       previewSection.scrollIntoView({ behavior: "smooth" });
     });
 
-    sendBtn.addEventListener("click", async () => {
-      const selectedWebhooks = Array.from(webhookSelect.selectedOptions).map(option => option.value);
+    function generatePayload() {
+      const selectedWebhooks = Array.from(webhookSelect.selectedOptions).map(o => o.value);
       const game = gameSelect.value;
       const script = scriptSelect.value;
       const version = versionInput.value.trim();
       const updates = updateList.value.trim();
       const file = fileInput.files[0];
+      const ping = mentionRole.checked ? "<@&1390026095855796284>" : "";
 
-      if (selectedWebhooks.length === 0) {
-        status.textContent = "⚠️ Pilih setidaknya satu Webhook URL!";
-        status.className = "status error";
-        return;
-      }
-      if (!version) {
-        status.textContent = "⚠️ Isi versi update terlebih dahulu!";
-        status.className = "status error";
-        return;
-      }
-      if (file && file.size > 8 * 1024 * 1024) {
-        status.textContent = "⚠️ File terlalu besar! Max 8MB.";
-        status.className = "status error";
-        return;
-      }
-
-      let scriptTitle;
-      if (script === "Free") scriptTitle = "`📦 Script Free` PC Copy";
-      else if (script === "Premium") scriptTitle = "`💎 Script Premium` PC Copy";
-      else if (script === "Fixed") scriptTitle = "`🛠 Script Fixed` PC Copy";
-
-      const payload = {
-        content: "<@&1390026095855796284>",
+      const embedObj = {
+        content: ping,
         username: "Nexa Hub〢Update Log",
         avatar_url: "https://i.imgur.com/B2NvjqW.png",
         embeds: [
@@ -340,51 +271,67 @@
             color: 15527138,
             thumbnail: { url: "https://i.imgur.com/B2NvjqW.png" },
             fields: [
-              { name: "`🎮 Games`", value: `\`\`\`${game} ${script}\`\`\``, inline: true },
+              { name: "`🎮 Game`", value: `\`\`\`${game} ${script}\`\`\``, inline: true },
               { name: "`✅ Version`", value: `\`\`\`lua\n${version}\n\`\`\``, inline: true },
               { name: "`📋 Update List`", value: `\`\`\`yml\n${updates}\n\`\`\`` },
-              { name: "Buy Key Premium https://discord.com/channels/1337779481477382174/1392861188152627331",
-                value: "If u want get script, go to ⁠https://discord.com/channels/1337779481477382174/1389547349520416858\n\nIf u got bug , report on https://discord.com/channels/1337779481477382174/1405933599655723159" },
-              { name: scriptTitle, value: "```lua\nloadstring(game:HttpGet(\"https://nexahubb.netlify.app/loader\"))()\n```" },
-              { name: "Mobile Copy", value: "loadstring(game:HttpGet(\"https://nexahubb.netlify.app/loader\"))()" },
-              { name: "**Note**", value: "Rejoin to see new update" }
+              { name: "`Loader`", value: "```lua\nloadstring(game:HttpGet('https://nexahubb.netlify.app/loader'))()\n```" }
             ],
             timestamp: new Date().toISOString(),
-            footer: { text: "Nexa Hub Update | discord.gg/ECxQFc97F5", icon_url: "https://i.imgur.com/your-icon.png" }
+            footer: { text: "Nexa Hub Update | discord.gg/ECxQFc97F5" }
           }
         ]
       };
 
-      status.textContent = "⏳ Sending to selected webhooks...";
-      status.className = "status";
-
-      let successCount = 0;
-      let errorCount = 0;
-
-      for (const webhookURL of selectedWebhooks) {
-        try {
-          let body;
-          let headers = {};
-          if (file) {
-            const formData = new FormData();
-            formData.append('file', file);
-            formData.append('payload_json', JSON.stringify(payload));
-            body = formData;
-          } else {
-            headers['Content-Type'] = 'application/json';
-            body = JSON.stringify(payload);
-          }
-
-          const res = await fetch(webhookURL, { method: "POST", headers, body });
-          if (res.ok) successCount++; else errorCount++;
-        } catch (err) { errorCount++; }
+      if (!embedToggle.checked) {
+        return { content: `${ping}\n\n**${game} (${script})**\nVersion: ${version}\n\n${updates}` };
       }
 
-      if (errorCount === 0) {
-        status.textContent = `✅ Update berhasil dikirim ke semua ${successCount} webhook!`;
+      return embedObj;
+    }
+
+    copyJSONBtn.addEventListener("click", () => {
+      const payload = generatePayload();
+      navigator.clipboard.writeText(JSON.stringify(payload, null, 2));
+      alert("✅ Copied payload JSON to clipboard!");
+    });
+
+    sendBtn.addEventListener("click", async () => {
+      const selectedWebhooks = Array.from(webhookSelect.selectedOptions).map(o => o.value);
+      const file = fileInput.files[0];
+      const payload = generatePayload();
+
+      if (selectedWebhooks.length === 0) {
+        status.textContent = "⚠️ Select at least one webhook!";
+        status.className = "status error";
+        return;
+      }
+
+      status.textContent = "⏳ Sending...";
+      status.className = "status";
+
+      let success = 0, fail = 0;
+      for (const url of selectedWebhooks) {
+        try {
+          let body, headers = {};
+          if (file) {
+            const formData = new FormData();
+            formData.append("file", file);
+            formData.append("payload_json", JSON.stringify(payload));
+            body = formData;
+          } else {
+            headers["Content-Type"] = "application/json";
+            body = JSON.stringify(payload);
+          }
+          const res = await fetch(url, { method: "POST", headers, body });
+          if (res.ok) success++; else fail++;
+        } catch { fail++; }
+      }
+
+      if (fail === 0) {
+        status.textContent = `✅ Sent to ${success} webhook(s)!`;
         status.className = "status success";
       } else {
-        status.textContent = `⚠️ Dikirim ke ${successCount} webhook, gagal ${errorCount}.`;
+        status.textContent = `⚠️ Sent ${success}, failed ${fail}.`;
         status.className = "status error";
       }
     });
