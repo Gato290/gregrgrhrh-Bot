@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Atomicals Update Sender v3.0</title>
+<title>Nexa Hub Update Sender v2.4</title>
 <style>
   :root {
     --bg-dark: #0d1117;
@@ -36,73 +36,102 @@
     box-shadow: 0 0 25px rgba(0,0,0,0.4);
     animation: fadeIn 0.5s ease;
   }
-  @keyframes fadeIn { from {opacity:0;transform:translateY(10px);} to {opacity:1;transform:translateY(0);} }
-  h1, h2 { text-align:center;margin:0 0 15px; }
-  h1 { color:var(--accent);font-size:28px; }
-  h2 { color:var(--secondary);font-size:16px;font-weight:normal;margin-bottom:25px; }
-  label { display:block;margin-bottom:5px;color:var(--secondary);font-weight:500; }
-  input,textarea,select {
-    width:100%;background:var(--panel);color:var(--text);border:1px solid #30363d;
-    border-radius:8px;padding:12px;font-size:15px;transition:0.2s;
+  @keyframes fadeIn { from {opacity:0; transform:translateY(10px);} to {opacity:1; transform:translateY(0);} }
+  h1,h2 { text-align:center; margin:0 0 15px; }
+  h1 { color:var(--accent); font-size:28px; }
+  h2 { color:var(--secondary); font-size:16px; font-weight:normal; margin-bottom:25px; }
+  label { display:block; margin-bottom:5px; color:var(--secondary); font-weight:500; }
+  select,input,textarea {
+    width:100%; background:var(--panel); color:var(--text);
+    border:1px solid #30363d; border-radius:8px; padding:12px; font-size:15px; transition:0.2s;
   }
-  input:focus,textarea:focus,select:focus {
-    border-color:var(--accent);outline:none;box-shadow:0 0 5px rgba(236,76,76,0.5);
+  select:focus,input:focus,textarea:focus {
+    border-color:var(--accent); outline:none; box-shadow:0 0 5px rgba(236,76,76,0.5);
   }
-  textarea { height:150px;resize:vertical;line-height:1.4; }
+  textarea { height:150px; resize:vertical; line-height:1.4; }
   .form-group { margin-bottom:20px; }
+  .button-group { display:flex; gap:10px; margin-top:25px; }
   button {
-    width:100%;padding:13px;margin-top:10px;
-    background:var(--green);color:white;font-size:16px;font-weight:600;
-    border:none;border-radius:8px;cursor:pointer;transition:0.2s;
+    flex:1; padding:13px; background:var(--green); color:white;
+    font-size:16px; font-weight:600; border:none; border-radius:8px; cursor:pointer; transition:0.2s;
   }
-  button:hover { background:#2ea043;transform:translateY(-2px); }
+  button:hover { background:#2ea043; transform:translateY(-2px); }
   button.secondary { background:var(--blue); }
   button.secondary:hover { background:#79c0ff; }
+  .toggle-group { display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; }
+  .toggle-group label { display:flex; align-items:center; gap:5px; font-size:14px; }
   .preview {
-    margin-top:30px;background:var(--panel);border:1px solid #2f343f;
-    border-radius:10px;padding:20px;animation:slideIn 0.5s ease;white-space:pre-wrap;
+    margin-top:30px; background:var(--panel); border:1px solid #2f343f;
+    border-radius:10px; padding:20px; animation:slideIn 0.5s ease;
   }
-  @keyframes slideIn { from {opacity:0;transform:translateY(20px);} to {opacity:1;transform:translateY(0);} }
-  .status { margin-top:15px;text-align:center;font-size:14px; }
+  @keyframes slideIn { from {opacity:0; transform:translateY(20px);} to {opacity:1; transform:translateY(0);} }
+  footer { text-align:center; color:#666; font-size:13px; margin-top:25px; }
+  .status { margin-top:15px; text-align:center; font-size:14px; }
   .success { color:var(--green); }
   .error { color:var(--accent); }
+  .embed-preview {
+    background:#2f3136; border-radius:8px; padding:15px;
+    margin-top:10px; border-left:4px solid var(--accent);
+  }
+  .embed-field { margin:10px 0; }
+  .embed-field-name { font-weight:bold; color:var(--blue); }
+  .embed-field-value {
+    background:#36393f; padding:5px; border-radius:4px;
+    font-family:monospace; font-size:14px; white-space:pre-wrap;
+  }
 </style>
 </head>
 <body>
   <div class="container">
-    <h1>Atomicals Hub</h1>
-    <h2>Update Log Sender v3.0 (Markdown Embed)</h2>
+    <h1>Nexa Hub</h1>
+    <h2>Update Log Sender (Webhook System) v2.4</h2>
 
     <div class="form-group">
-      <label for="webhookSelect">🔗 Discord Webhook</label>
+      <label for="webhookSelect">🔗 Select Webhook URLs (Multi-Select)</label>
       <select id="webhookSelect" multiple>
-        <option value="https://discord.com/api/webhooks/1389650936779112680/n0_vYgnRtCnmX8v0d2buMpnQrXn6SDZYELeNvdI50pRx7HiTR78JN-XVPdr0PuLzS6V1">Atomicals Discord</option>
+        <option value="https://discord.com/api/webhooks/1389650936779112680/n0_vYgnRtCnmX8v0d2buMpnQrXn6SDZYELeNvdI50pRx7HiTR78JN-XVPdr0PuLzS6V1">Discord Nexa</option>
       </select>
     </div>
 
     <div class="form-group">
-      <label for="gameInput">🎮 Game Name</label>
-      <input type="text" id="gameInput" placeholder="Fish It!" />
+      <label for="gameSelect">🎮 Select Game</label>
+      <select id="gameSelect">
+        <option value="Fish It">Fish It</option>
+        <option value="Plant Vs Brainrot">Plant Vs Brainrot</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="scriptSelect">📦 Script Type</label>
+      <select id="scriptSelect">
+        <option value="Free">Free</option>
+        <option value="Premium">Premium</option>
+        <option value="Fixed">Fixed</option>
+      </select>
     </div>
 
     <div class="form-group">
       <label for="versionInput">✅ Version</label>
-      <input type="text" id="versionInput" placeholder="v0.2.0.0 Beta (Service Provider)" />
+      <input type="text" id="versionInput" placeholder="Example: v1.2.3" />
     </div>
 
     <div class="form-group">
-      <label for="addedInput">🟢 Added</label>
-      <textarea id="addedInput" placeholder="[ + ] Feature 1&#10;[ + ] Feature 2"></textarea>
+      <label for="updateList">📋 Update List</label>
+      <textarea id="updateList" placeholder="[+] Added new feature"></textarea>
     </div>
 
     <div class="form-group">
-      <label for="improvedInput">🟡 Improved</label>
-      <textarea id="improvedInput" placeholder="[ / ] Performance&#10;[ / ] UI Layout"></textarea>
-    </div>
+      <label for="changelogs">📝 Changelogs</label>
+      <textarea id="changelogs" placeholder="## Changelogs
 
-    <div class="form-group">
-      <label for="deletedInput">🔴 Delete</label>
-      <textarea id="deletedInput" placeholder="[-] Old Feature"></textarea>
+### - Added:
+[ + ] Example feature
+
+### - Improved:
+[ / ] Optimization
+
+### - Delete:
+[ - ] Old function"></textarea>
     </div>
 
     <div class="form-group">
@@ -110,83 +139,107 @@
       <input type="url" id="imageLink" placeholder="https://i.imgur.com/example.png" />
     </div>
 
-    <button id="previewBtn" class="secondary">👀 Preview Embed</button>
-    <button id="sendBtn">🚀 Send to Discord</button>
+    <div class="form-group">
+      <label>⚙️ Toggle Fields</label>
+      <div class="toggle-group">
+        <label><input type="checkbox" id="toggleGame" checked /> Show Games</label>
+        <label><input type="checkbox" id="toggleVersion" checked /> Show Version</label>
+        <label><input type="checkbox" id="toggleUpdates" checked /> Show Update List</label>
+        <label><input type="checkbox" id="toggleChangelogs" checked /> Show Changelogs</label>
+      </div>
+    </div>
+
+    <div class="button-group">
+      <button id="previewBtn" class="secondary">👀 Preview Embed</button>
+      <button id="sendBtn">🚀 Send Update</button>
+    </div>
 
     <div id="status" class="status"></div>
 
-    <div class="preview" id="previewSection" style="display:none;"></div>
+    <div class="preview" id="previewSection" style="display:none;">
+      <h3 style="color:var(--accent)">Discord Embed Preview</h3>
+      <div class="embed-preview" id="embedPreview"></div>
+    </div>
+
+    <footer>Nexa Hub Update Sender v2.4 • discord.gg/ECxQFc97F5</footer>
   </div>
 
   <script>
     const webhookSelect = document.getElementById("webhookSelect");
-    const gameInput = document.getElementById("gameInput");
+    const gameSelect = document.getElementById("gameSelect");
+    const scriptSelect = document.getElementById("scriptSelect");
     const versionInput = document.getElementById("versionInput");
-    const addedInput = document.getElementById("addedInput");
-    const improvedInput = document.getElementById("improvedInput");
-    const deletedInput = document.getElementById("deletedInput");
+    const updateList = document.getElementById("updateList");
+    const changelogs = document.getElementById("changelogs");
     const imageLink = document.getElementById("imageLink");
+    const toggleGame = document.getElementById("toggleGame");
+    const toggleVersion = document.getElementById("toggleVersion");
+    const toggleUpdates = document.getElementById("toggleUpdates");
+    const toggleChangelogs = document.getElementById("toggleChangelogs");
     const previewBtn = document.getElementById("previewBtn");
     const sendBtn = document.getElementById("sendBtn");
     const previewSection = document.getElementById("previewSection");
+    const embedPreview = document.getElementById("embedPreview");
     const status = document.getElementById("status");
 
-    function buildMarkdown() {
-      const game = gameInput.value || "Unknown Game";
-      const version = versionInput.value || "vX.X.X";
-      const added = addedInput.value.trim() || "-";
-      const improved = improvedInput.value.trim() || "-";
-      const deleted = deletedInput.value.trim() || "-";
-      const mention = "<@&1398313779380617459>";
-
-      return `## Atomicals - Update Logs
-- **${game}**
-- **Version:** ${version}
-- **Developer Notes:**
-> Found any bugs or issues? Feel free to report them to the developers! 💙
-> Got ideas or suggestions for new scripts? We’d love to hear them! 🚀
-## Changelogs
-
-### - Added:
-${added}
-
-### - Improved:
-${improved}
-
-### - Delete:
-${deleted}
-${mention}`;
+    function buildFields(game, script, version, updates, changelogText) {
+      const fields = [];
+      if (toggleGame.checked)
+        fields.push({ name: "`🎮 Games`", value: `\`\`\`${game} (${script})\`\`\``, inline: true });
+      if (toggleVersion.checked)
+        fields.push({ name: "`✅ Version`", value: `\`\`\`lua\n${version}\n\`\`\``, inline: true });
+      if (toggleUpdates.checked)
+        fields.push({ name: "`📋 Update List`", value: `\`\`\`yml\n${updates}\n\`\`\`` });
+      if (toggleChangelogs.checked)
+        fields.push({ name: "`📝 Changelogs`", value: `\`\`\`md\n${changelogText}\n\`\`\`` });
+      fields.push({ name: "`💎 Loader`", value: "```lua\nloadstring(game:HttpGet(\"https://nexahubb.netlify.app/loader\"))()\n```" });
+      return fields;
     }
 
     function updatePreview() {
-      const markdown = buildMarkdown();
-      previewSection.textContent = markdown;
-      previewSection.style.display = "block";
-      previewSection.scrollIntoView({ behavior: "smooth" });
+      const game = gameSelect.value;
+      const script = scriptSelect.value;
+      const version = versionInput.value || "vX.X.X";
+      const updates = updateList.value || "[No updates listed]";
+      const changelogText = changelogs.value || "## Changelogs\n[No changelog provided]";
+      const img = imageLink.value || "https://i.imgur.com/B2NvjqW.png";
+
+      const fields = buildFields(game, script, version, updates, changelogText);
+      embedPreview.innerHTML = `
+        <div><b>Title:</b> Nexa Hub Update Logs</div>
+        <div><b>Image:</b> <a href="${img}" target="_blank">${img}</a></div>
+        ${fields.map(f => `<div class="embed-field"><div class="embed-field-name">${f.name}</div><div class="embed-field-value">${f.value}</div></div>`).join("")}
+      `;
     }
 
-    previewBtn.addEventListener("click", updatePreview);
+    previewBtn.addEventListener("click", () => {
+      updatePreview();
+      previewSection.style.display = "block";
+      previewSection.scrollIntoView({ behavior: "smooth" });
+    });
 
     sendBtn.addEventListener("click", async () => {
       const webhooks = Array.from(webhookSelect.selectedOptions).map(o => o.value);
-      if (webhooks.length === 0) {
-        status.textContent = "⚠️ Please select at least one webhook!";
-        status.className = "status error";
-        return;
-      }
+      if (webhooks.length === 0) return (status.textContent = "⚠️ Pilih minimal 1 webhook.", status.className="status error");
 
+      const game = gameSelect.value;
+      const script = scriptSelect.value;
+      const version = versionInput.value || "vX.X.X";
+      const updates = updateList.value || "[No updates listed]";
+      const changelogText = changelogs.value || "## Changelogs\n[No changelog provided]";
       const img = imageLink.value || "https://i.imgur.com/B2NvjqW.png";
-      const markdown = buildMarkdown();
+      const fields = buildFields(game, script, version, updates, changelogText);
 
       const payload = {
-        username: "Atomicals〢Update Logs",
+        username: "Nexa Hub〢Update Log",
         avatar_url: "https://i.imgur.com/B2NvjqW.png",
         embeds: [{
-          title: "Atomicals Update Logs",
-          description: markdown,
+          title: "```Nexa Hub: Update Logs```",
+          description: "🚀 New update available!",
           color: 15527138,
           thumbnail: { url: img },
-          footer: { text: "Atomicals Hub | discord.gg/ECxQFc97F5" },
+          fields,
+          footer: { text: "Nexa Hub Update | discord.gg/ECxQFc97F5" },
           timestamp: new Date().toISOString()
         }]
       };
@@ -197,11 +250,7 @@ ${mention}`;
       let ok = 0, fail = 0;
       for (const url of webhooks) {
         try {
-          const res = await fetch(url, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
-          });
+          const res = await fetch(url, { method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify(payload)});
           if (res.ok) ok++; else fail++;
         } catch { fail++; }
       }
