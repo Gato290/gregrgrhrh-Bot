@@ -3,341 +3,312 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Nexa Hub Update Sender v2.3</title>
+<title>Nexa Hub Update Sender v2.4</title>
 <style>
-  :root {
-    --bg-dark: #0d1117;
-    --panel: #161b22;
-    --text: #e6edf3;
-    --accent: #ec4c4c;
-    --secondary: #9ba3b4;
-    --green: #238636;
-    --blue: #58a6ff;
-    --purple: #bc8cff;
-  }
-  body {
-    font-family: "Inter", "Segoe UI", sans-serif;
-    background: radial-gradient(circle at top, #111726 0%, #0d1117 100%);
-    color: var(--text);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 0;
-    padding: 40px 20px;
-    min-height: 100vh;
-  }
-  .container {
-    background: rgba(22, 27, 34, 0.95);
-    border: 1px solid #2f343f;
-    border-radius: 16px;
-    backdrop-filter: blur(6px);
-    padding: 25px 30px;
-    width: 100%;
-    max-width: 700px;
-    box-shadow: 0 0 25px rgba(0,0,0,0.4);
-    animation: fadeIn 0.5s ease;
-  }
-  @keyframes fadeIn {
-    from {opacity: 0; transform: translateY(10px);}
-    to {opacity: 1; transform: translateY(0);}
-  }
-  h1 {
-    text-align: center;
-    color: var(--accent);
-    font-weight: 600;
-    font-size: 28px;
-    margin-bottom: 10px;
-  }
-  h2 {
-    text-align: center;
-    color: var(--secondary);
-    font-size: 16px;
-    font-weight: normal;
-    margin-bottom: 25px;
-  }
-  .form-group { margin-bottom: 20px; }
-  label {
-    display: block;
-    margin-bottom: 5px;
-    color: var(--secondary);
-    font-weight: 500;
-  }
-  select, input, textarea {
-    width: 100%;
-    background: var(--panel);
-    color: var(--text);
-    border: 1px solid #30363d;
-    border-radius: 8px;
-    padding: 12px;
-    font-size: 15px;
-    transition: 0.2s;
-  }
-  select:focus, input:focus, textarea:focus {
-    border-color: var(--accent);
-    outline: none;
-    box-shadow: 0 0 5px rgba(236, 76, 76, 0.5);
-  }
-  select[multiple] { height: 120px; }
-  textarea { height: 150px; resize: vertical; line-height: 1.4; }
-  input[type="file"] { padding: 8px; }
-  .button-group { display: flex; gap: 10px; margin-top: 25px; flex-wrap: wrap; }
-  button {
-    flex: 1;
-    padding: 13px;
-    background: var(--green);
-    color: white;
-    font-size: 16px;
-    font-weight: 600;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: 0.2s;
-  }
-  button:hover { background: #2ea043; transform: translateY(-2px); }
-  button.secondary { background: var(--blue); }
-  button.secondary:hover { background: #79c0ff; }
-  .preview {
-    margin-top: 30px;
-    background: var(--panel);
-    border: 1px solid #2f343f;
-    border-radius: 10px;
-    padding: 20px;
-    animation: slideIn 0.5s ease;
-  }
-  @keyframes slideIn {
-    from {opacity: 0; transform: translateY(20px);}
-    to {opacity: 1; transform: translateY(0);}
-  }
-  .preview h3 {
-    color: var(--accent);
-    margin-top: 0;
-    font-size: 18px;
-    border-bottom: 1px solid #2f343f;
-    padding-bottom: 8px;
-  }
-  .embed-preview {
-    background: #2f3136;
-    border-radius: 8px;
-    padding: 15px;
-    margin-top: 10px;
-    border-left: 4px solid var(--accent);
-  }
-  .embed-field-value {
-    background: #36393f;
-    padding: 5px;
-    border-radius: 4px;
-    font-family: monospace;
-    font-size: 14px;
-    white-space: pre-wrap;
-  }
-  footer { text-align: center; color: #666; font-size: 13px; margin-top: 25px; }
-  .status { margin-top: 15px; text-align: center; font-size: 14px; }
-  .success { color: var(--green); }
-  .error { color: var(--accent); }
+:root {
+  --bg-dark: #0d1117;
+  --panel: #161b22;
+  --text: #e6edf3;
+  --accent: #ec4c4c;
+  --secondary: #9ba3b4;
+  --green: #238636;
+  --blue: #58a6ff;
+}
+body {
+  font-family: "Inter", "Segoe UI", sans-serif;
+  background: radial-gradient(circle at top, #111726 0%, #0d1117 100%);
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0;
+  padding: 40px 20px;
+  min-height: 100vh;
+}
+.container {
+  background: rgba(22, 27, 34, 0.95);
+  border: 1px solid #2f343f;
+  border-radius: 16px;
+  backdrop-filter: blur(6px);
+  padding: 25px 30px;
+  width: 100%;
+  max-width: 700px;
+  box-shadow: 0 0 25px rgba(0,0,0,0.4);
+  animation: fadeIn 0.5s ease;
+}
+@keyframes fadeIn {
+  from {opacity: 0; transform: translateY(10px);}
+  to {opacity: 1; transform: translateY(0);}
+}
+h1 { text-align:center; color:var(--accent); font-weight:600; font-size:28px; margin-bottom:10px;}
+h2 { text-align:center; color:var(--secondary); font-size:16px; font-weight:normal; margin-bottom:25px;}
+.form-group { margin-bottom:20px; }
+label { display:block; margin-bottom:5px; color:var(--secondary); font-weight:500;}
+select, input, textarea { width:100%; background:var(--panel); color:var(--text); border:1px solid #30363d; border-radius:8px; padding:12px; font-size:15px; transition:0.2s;}
+select:focus, input:focus, textarea:focus { border-color:var(--accent); outline:none; box-shadow:0 0 5px rgba(236,76,76,0.5);}
+select[multiple]{height:120px;}
+textarea {height:150px; resize:vertical; line-height:1.4;}
+input[type="file"] {padding:8px;}
+.button-group {display:flex; gap:10px; margin-top:25px; flex-wrap:wrap;}
+button {flex:1; padding:13px; background:var(--green); color:white; font-size:16px; font-weight:600; border:none; border-radius:8px; cursor:pointer; transition:0.2s;}
+button:hover {background:#2ea043; transform:translateY(-2px);}
+button.secondary {background:var(--blue);}
+button.secondary:hover {background:#79c0ff;}
+.preview {margin-top:30px; background:var(--panel); border:1px solid #2f343f; border-radius:10px; padding:20px; animation:slideIn 0.5s ease;}
+@keyframes slideIn {from{opacity:0; transform:translateY(20px);} to{opacity:1; transform:translateY(0);}}
+.preview h3 {color:var(--accent); margin-top:0; font-size:18px; border-bottom:1px solid #2f343f; padding-bottom:8px;}
+.embed-preview {background:#2f3136; border-radius:8px; padding:15px; margin-top:10px; border-left:4px solid var(--accent);}
+.embed-field-value {background:#36393f; padding:5px; border-radius:4px; font-family:monospace; font-size:14px; white-space:pre-wrap;}
+#filePreview {margin-top:10px; max-width:100%; border-radius:8px; display:none;}
+#filePreview video {max-width:100%; border-radius:8px;}
+footer {text-align:center; color:#666; font-size:13px; margin-top:25px;}
+.status {margin-top:15px; text-align:center; font-size:14px;}
+.success {color:var(--green);}
+.error {color:var(--accent);}
 </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Nexa Hub</h1>
-    <h2>Update Log Sender (Webhook System) v2.3</h2>
+<div class="container">
+  <h1>Nexa Hub</h1>
+  <h2>Update Log Sender (Webhook System) v2.4</h2>
 
-    <div class="form-group">
-      <label for="webhookSelect">🔗 Select Webhook URLs (Multi-Select)</label>
-      <select id="webhookSelect" multiple>
-        <option value="https://discord.com/api/webhooks/1389650936779112680/n0_vYgnRtCnmX8v0d2buMpnQrXn6SDZYELeNvdI50pRx7HiTR78JN-XVPdr0PuLzS6V1">Update Nexa</option>
-        <option value="https://discord.com/api/webhooks/1433439548582395974/q3lkrm68z9n3Ta3GNwsgl1Fd_mBG6LTjQ-oRwgxapyxHk4a__RlPh3U2gLUxadyvjYWp">Discord Test</option>
-      </select>
-    </div>
-
-    <div class="form-group">
-      <label for="gameSelect">🎮 Select Game</label>
-      <select id="gameSelect">
-        <option value="Fish It">Fish It</option>
-        <option value="Plant Vs Brainrot">Plant Vs Brainrot</option>
-      </select>
-    </div>
-
-    <div class="form-group">
-      <label for="scriptSelect">📦 Script Type</label>
-      <select id="scriptSelect">
-        <option value="Free">Free</option>
-        <option value="Premium">Premium</option>
-        <option value="Fixed">Fixed</option>
-      </select>
-    </div>
-
-    <div class="form-group">
-      <label for="versionInput">✅ Version</label>
-      <input type="text" id="versionInput" placeholder="Example: v1.2.3" />
-    </div>
-
-    <div class="form-group">
-      <label for="updateList">📋 Update List</label>
-      <textarea id="updateList" placeholder="## [+] Added:"></textarea>
-      <button id="autoTemplateBtn" class="secondary" style="margin-top:10px;">🧩 Auto Template</button>
-    </div>
-
-    <div class="form-group">
-      <label for="fileInput">📎 Upload Image/Video (Optional)</label>
-      <input type="file" id="fileInput" accept="image/*,video/*" />
-    </div>
-
-    <div class="form-group">
-      <label><input type="checkbox" id="mentionRole" checked> 🔔 Mention Role (@Update)</label>
-      <label><input type="checkbox" id="embedToggle" checked> 🧩 Send as Discord Embed</label>
-    </div>
-
-    <div class="button-group">
-      <button id="previewBtn" class="secondary">👀 Preview Embed</button>
-      <button id="copyJSONBtn" class="secondary">📋 Copy JSON Payload</button>
-      <button id="sendBtn">🚀 Send Update to Discord</button>
-    </div>
-
-    <div id="status" class="status"></div>
-
-    <div class="preview" id="previewSection" style="display: none;">
-      <h3>Discord Embed Preview</h3>
-      <div class="embed-preview" id="embedPreview">
-        <div><strong>🎮 Game:</strong> <span id="embedGame">Fish It (Free)</span></div>
-        <div><strong>✅ Version:</strong> <span id="embedVersion">v1.0.0</span></div>
-        <div><strong>📋 Updates:</strong></div>
-        <div class="embed-field-value" id="embedUpdates">[No updates listed]</div>
-      </div>
-    </div>
-
-    <footer>Nexa Hub Update Sender v2.3 • discord.gg/ECxQFc97F5</footer>
+  <div class="form-group">
+    <label for="webhookSelect">🔗 Select Webhook URLs (Multi-Select)</label>
+    <select id="webhookSelect" multiple>
+      <option value="https://discord.com/api/webhooks/1389650936779112680/n0_vYgnRtCnmX8v0d2buMpnQrXn6SDZYELeNvdI50pRx7HiTR78JN-XVPdr0PuLzS6V1">Update Nexa</option>
+      <option value="https://discord.com/api/webhooks/1433439548582395974/q3lkrm68z9n3Ta3GNwsgl1Fd_mBG6LTjQ-oRwgxapyxHk4a__RlPh3U2gLUxadyvjYWp">Discord Test</option>
+    </select>
   </div>
 
-  <script>
-    const webhookSelect = document.getElementById("webhookSelect");
-    const gameSelect = document.getElementById("gameSelect");
-    const scriptSelect = document.getElementById("scriptSelect");
-    const versionInput = document.getElementById("versionInput");
-    const updateList = document.getElementById("updateList");
-    const fileInput = document.getElementById("fileInput");
-    const mentionRole = document.getElementById("mentionRole");
-    const embedToggle = document.getElementById("embedToggle");
-    const previewBtn = document.getElementById("previewBtn");
-    const sendBtn = document.getElementById("sendBtn");
-    const copyJSONBtn = document.getElementById("copyJSONBtn");
-    const autoTemplateBtn = document.getElementById("autoTemplateBtn");
-    const embedGame = document.getElementById("embedGame");
-    const embedVersion = document.getElementById("embedVersion");
-    const embedUpdates = document.getElementById("embedUpdates");
-    const previewSection = document.getElementById("previewSection");
-    const status = document.getElementById("status");
+  <div class="form-group">
+    <label for="gameSelect">🎮 Select Game</label>
+    <select id="gameSelect">
+      <option value="Fish It">Fish It</option>
+      <option value="Plant Vs Brainrot">Plant Vs Brainrot</option>
+    </select>
+  </div>
 
-    function updatePreview() {
-      const game = gameSelect.value;
-      const script = scriptSelect.value;
-      const version = versionInput.value || "vX.X.X";
-      const updates = updateList.value || "[No updates listed]";
-      embedGame.textContent = `${game} (${script})`;
-      embedVersion.textContent = version;
-      embedUpdates.textContent = updates;
+  <div class="form-group">
+    <label for="scriptSelect">📦 Script Type</label>
+    <select id="scriptSelect">
+      <option value="Free">Free</option>
+      <option value="Premium">Premium</option>
+      <option value="Fixed">Fixed</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label for="versionInput">✅ Version</label>
+    <input type="text" id="versionInput" placeholder="Example: v1.2.3" />
+  </div>
+
+  <div class="form-group">
+    <label for="updateList">📋 Update List</label>
+    <textarea id="updateList" placeholder="## [+] Added:"></textarea>
+    <button id="autoTemplateBtn" class="secondary" style="margin-top:10px;">🧩 Auto Template</button>
+  </div>
+
+  <div class="form-group" id="fileDropArea" style="border:2px dashed #30363d; border-radius:8px; padding:15px; text-align:center;">
+    <label>📎 Upload Image/Video (Optional)</label>
+    <input type="file" id="fileInput" accept="image/*,video/*" style="width:auto; display:block; margin:auto;" />
+    <div id="filePreview"></div>
+    <small style="color:#888;">Drag & drop file here</small>
+  </div>
+
+  <div class="form-group">
+    <label><input type="checkbox" id="mentionRole" checked> 🔔 Mention Role (@Update)</label>
+    <label><input type="checkbox" id="embedToggle" checked> 🧩 Send as Discord Embed</label>
+  </div>
+
+  <div class="button-group">
+    <button id="previewBtn" class="secondary">👀 Preview Embed</button>
+    <button id="copyJSONBtn" class="secondary">📋 Copy JSON Payload</button>
+    <button id="sendBtn">🚀 Send Update to Discord</button>
+  </div>
+
+  <div id="status" class="status"></div>
+
+  <div class="preview" id="previewSection" style="display: none;">
+    <h3>Discord Embed Preview</h3>
+    <div class="embed-preview" id="embedPreview">
+      <div><strong>🎮 Game:</strong> <span id="embedGame">Fish It (Free)</span></div>
+      <div><strong>✅ Version:</strong> <span id="embedVersion">v1.0.0</span></div>
+      <div><strong>📋 Updates:</strong></div>
+      <div class="embed-field-value" id="embedUpdates">[No updates listed]</div>
+      <div id="previewFileContainer"></div>
+    </div>
+  </div>
+
+  <footer>Nexa Hub Update Sender v2.4 • discord.gg/ECxQFc97F5</footer>
+</div>
+
+<script>
+const webhookSelect = document.getElementById("webhookSelect");
+const gameSelect = document.getElementById("gameSelect");
+const scriptSelect = document.getElementById("scriptSelect");
+const versionInput = document.getElementById("versionInput");
+const updateList = document.getElementById("updateList");
+const fileInput = document.getElementById("fileInput");
+const mentionRole = document.getElementById("mentionRole");
+const embedToggle = document.getElementById("embedToggle");
+const previewBtn = document.getElementById("previewBtn");
+const sendBtn = document.getElementById("sendBtn");
+const copyJSONBtn = document.getElementById("copyJSONBtn");
+const autoTemplateBtn = document.getElementById("autoTemplateBtn");
+const embedGame = document.getElementById("embedGame");
+const embedVersion = document.getElementById("embedVersion");
+const embedUpdates = document.getElementById("embedUpdates");
+const previewSection = document.getElementById("previewSection");
+const status = document.getElementById("status");
+const filePreview = document.getElementById("filePreview");
+
+function updatePreview() {
+  const game = gameSelect.value;
+  const script = scriptSelect.value;
+  const version = versionInput.value || "vX.X.X";
+  const updates = updateList.value || "[No updates listed]";
+  embedGame.textContent = `${game} (${script})`;
+  embedVersion.textContent = version;
+  embedUpdates.textContent = updates;
+
+  // Show file preview if exists
+  const file = fileInput.files[0];
+  filePreview.innerHTML = "";
+  if(file){
+    if(file.type.startsWith("image/")){
+      const img = document.createElement("img");
+      img.src = URL.createObjectURL(file);
+      img.style.maxWidth = "100%";
+      filePreview.appendChild(img);
+    } else if(file.type.startsWith("video/")){
+      const vid = document.createElement("video");
+      vid.src = URL.createObjectURL(file);
+      vid.controls = true;
+      vid.style.maxWidth = "100%";
+      filePreview.appendChild(vid);
     }
+    filePreview.style.display = "block";
+  } else filePreview.style.display = "none";
+}
 
-    [gameSelect, scriptSelect, versionInput, updateList].forEach(el =>
-      el.addEventListener("input", updatePreview)
-    );
+[gameSelect, scriptSelect, versionInput, updateList, fileInput].forEach(el =>
+  el.addEventListener("input", updatePreview)
+);
 
-    autoTemplateBtn.addEventListener("click", () => {
-      updateList.value = `## [+] Added:\n- Example feature here\n\n## [/] Improved:\n- Example improvement\n\n## [-] Removed:\n- Example removed item`;
-      updatePreview();
-    });
+autoTemplateBtn.addEventListener("click", () => {
+  updateList.value = `## [+] Added:\n- Example feature here\n\n## [/] Improved:\n- Example improvement\n\n## [-] Removed:\n- Example removed item`;
+  updatePreview();
+});
 
-    previewBtn.addEventListener("click", () => {
-      updatePreview();
-      previewSection.style.display = "block";
-      previewSection.scrollIntoView({ behavior: "smooth" });
-    });
+previewBtn.addEventListener("click", () => {
+  if(!versionInput.value.trim() || !updateList.value.trim()){
+    status.textContent = "⚠️ Version and update list cannot be empty!";
+    status.className = "status error";
+    return;
+  }
+  updatePreview();
+  previewSection.style.display = "block";
+  previewSection.scrollIntoView({behavior:"smooth"});
+});
 
-    function generatePayload() {
-      const selectedWebhooks = Array.from(webhookSelect.selectedOptions).map(o => o.value);
-      const game = gameSelect.value;
-      const script = scriptSelect.value;
-      const version = versionInput.value.trim();
-      const updates = updateList.value.trim();
-      const file = fileInput.files[0];
-      const ping = mentionRole.checked ? "<@&1390026095855796284>" : "";
+copyJSONBtn.addEventListener("click", () => {
+  const payload = generatePayload();
+  navigator.clipboard.writeText(JSON.stringify(payload, null, 2));
+  alert("✅ Copied payload JSON to clipboard!");
+});
 
-      const embedObj = {
-        content: ping,
-        username: "Nexa Hub〢Update Log",
-        avatar_url: "https://i.imgur.com/B2NvjqW.png",
-        embeds: [
-          {
-            title: "```Nexa Hub: Update Logs```",
-            description: "🚀 New update available for Nexa Hub!",
-            color: 15527138,
-            thumbnail: { url: "https://i.imgur.com/B2NvjqW.png" },
-            fields: [
-              { name: "`🎮 Game`", value: `\`\`\`${game} ${script}\`\`\``, inline: true },
-              { name: "`✅ Version`", value: `\`\`\`lua\n${version}\n\`\`\``, inline: true },
-              { name: "`📋 Update List`", value: `\`\`\`yml\n${updates}\n\`\`\`` },
-              { name: "`Loader`", value: "```lua\nloadstring(game:HttpGet('https://nexahubb.netlify.app/loader'))()\n```" }
-            ],
-            timestamp: new Date().toISOString(),
-            footer: { text: "Nexa Hub Update | discord.gg/ECxQFc97F5" }
-          }
-        ]
-      };
+fileInput.addEventListener("change", updatePreview);
 
-      if (!embedToggle.checked) {
-        return { content: `${ping}\n\n**${game} (${script})**\nVersion: ${version}\n\n${updates}` };
+// Drag & drop support
+const dropArea = document.getElementById("fileDropArea");
+dropArea.addEventListener("dragover", e=>{e.preventDefault(); dropArea.style.borderColor="#58a6ff";});
+dropArea.addEventListener("dragleave", e=>{dropArea.style.borderColor="#30363d";});
+dropArea.addEventListener("drop", e=>{
+  e.preventDefault(); dropArea.style.borderColor="#30363d";
+  fileInput.files = e.dataTransfer.files;
+  updatePreview();
+});
+
+function generatePayload(){
+  const selectedWebhooks = Array.from(webhookSelect.selectedOptions).map(o=>o.value);
+  const game = gameSelect.value;
+  const script = scriptSelect.value;
+  const version = versionInput.value.trim();
+  const updates = updateList.value.trim();
+  const file = fileInput.files[0];
+  const ping = mentionRole.checked ? "<@&1390026095855796284>" : "";
+
+  const embedObj = {
+    content: ping,
+    username: "Nexa Hub〢Update Log",
+    avatar_url: "https://i.imgur.com/B2NvjqW.png",
+    embeds:[{
+      title:"```Nexa Hub: Update Logs```",
+      description:"🚀 New update available for Nexa Hub!",
+      color:15527138,
+      thumbnail:{url:"https://i.imgur.com/B2NvjqW.png"},
+      fields:[
+        {name:"`🎮 Game`", value:`\`\`\`${game} ${script}\`\`\``, inline:true},
+        {name:"`✅ Version`", value:`\`\`\`lua\n${version}\n\`\`\``, inline:true},
+        {name:"`📋 Update List`", value:`\`\`\`yml\n${updates}\n\`\`\``},
+        {name:"`Loader`", value:"```lua\nloadstring(game:HttpGet('https://nexahubb.netlify.app/loader'))()\n```"}
+      ],
+      timestamp: new Date().toISOString(),
+      footer:{text:"Nexa Hub Update | discord.gg/ECxQFc97F5"}
+    }]
+  };
+
+  if(!embedToggle.checked) return {content:`${ping}\n\n**${game} (${script})**\nVersion: ${version}\n\n${updates}`};
+  return embedObj;
+}
+
+sendBtn.addEventListener("click", async () => {
+  const selectedWebhooks = Array.from(webhookSelect.selectedOptions).map(o=>o.value);
+  const file = fileInput.files[0];
+  const payload = generatePayload();
+
+  if(selectedWebhooks.length===0){
+    status.textContent="⚠️ Select at least one webhook!";
+    status.className="status error";
+    return;
+  }
+  if(!versionInput.value.trim() || !updateList.value.trim()){
+    status.textContent="⚠️ Version and update list cannot be empty!";
+    status.className="status error";
+    return;
+  }
+
+  status.textContent="⏳ Sending...";
+  status.className="status";
+
+  let success=0, fail=0;
+  for(const url of selectedWebhooks){
+    try{
+      let body, headers={};
+      if(file){
+        const formData=new FormData();
+        formData.append("file", file);
+        formData.append("payload_json", JSON.stringify(payload));
+        body=formData;
+      }else{
+        headers["Content-Type"]="application/json";
+        body=JSON.stringify(payload);
       }
+      const res=await fetch(url,{method:"POST", headers, body});
+      if(res.ok) success++; else fail++;
+    }catch{fail++;}
+  }
 
-      return embedObj;
-    }
+  if(fail===0){
+    status.textContent=`✅ Sent to ${success} webhook(s)!`;
+    status.className="status success";
+  } else{
+    status.textContent=`⚠️ Sent ${success}, failed ${fail}.`;
+    status.className="status error";
+  }
+});
 
-    copyJSONBtn.addEventListener("click", () => {
-      const payload = generatePayload();
-      navigator.clipboard.writeText(JSON.stringify(payload, null, 2));
-      alert("✅ Copied payload JSON to clipboard!");
-    });
-
-    sendBtn.addEventListener("click", async () => {
-      const selectedWebhooks = Array.from(webhookSelect.selectedOptions).map(o => o.value);
-      const file = fileInput.files[0];
-      const payload = generatePayload();
-
-      if (selectedWebhooks.length === 0) {
-        status.textContent = "⚠️ Select at least one webhook!";
-        status.className = "status error";
-        return;
-      }
-
-      status.textContent = "⏳ Sending...";
-      status.className = "status";
-
-      let success = 0, fail = 0;
-      for (const url of selectedWebhooks) {
-        try {
-          let body, headers = {};
-          if (file) {
-            const formData = new FormData();
-            formData.append("file", file);
-            formData.append("payload_json", JSON.stringify(payload));
-            body = formData;
-          } else {
-            headers["Content-Type"] = "application/json";
-            body = JSON.stringify(payload);
-          }
-          const res = await fetch(url, { method: "POST", headers, body });
-          if (res.ok) success++; else fail++;
-        } catch { fail++; }
-      }
-
-      if (fail === 0) {
-        status.textContent = `✅ Sent to ${success} webhook(s)!`;
-        status.className = "status success";
-      } else {
-        status.textContent = `⚠️ Sent ${success}, failed ${fail}.`;
-        status.className = "status error";
-      }
-    });
-
-    updatePreview();
-  </script>
+updatePreview();
+</script>
 </body>
 </html>
