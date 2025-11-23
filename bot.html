@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Nexa Hub Update Sender v2.2</title>
+
+<style>
+  :root {
+    --bg-dark: #0d1117;
+    --panel: #161b22;
+    --text: #e6edf3;
+    --accent: #ec4c4c;
+    --secondary: #9ba3b4;
+    --green: #238636;
+    --blue: #58a6ff;
+    --purple: #bc8cff;
+  }
+  body {
+    font-family: "Inter", "Segoe UI", sans-serif;
+    background: radial-gradient(circle at top, #111726 0%, #0d1117 100%);
+    color: var(--text);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0;
+    padding: 40px 20px;
+    min-height: 100vh;
+  }
+  .container {
+    background: rgba(22, 27, 34, 0.95);
+    border: 1px solid #2f343f;
+    border-radius: 16px;
+    backdrop-filter: blur(6px);
+    padding: 25px 30px;
+    width: 100%;
+    max-width: 700px;
+    box-shadow: 0 0 25px rgba(0,0,0,0.4);
+  }
+  h1 { text-align: center; color: var(--accent); font-size: 28px; }
+  h2 { text-align: center; color: var(--secondary); margin-bottom: 25px; }
+  label { display: block; color: var(--secondary); margin-bottom: 5px; }
+  select, input, textarea {
+    width: 100%; background: var(--panel); color: var(--text);
+    border-radius: 8px; padding: 12px; border: 1px solid #30363d;
+  }
+  select[multiple] { height: 120px; }
+  textarea { height: 150px; resize: vertical; }
+  button { flex: 1; padding: 13px; background: var(--green); color: white;
+    border: none; border-radius: 8px; font-weight: 600; }
+  button.secondary { background: var(--blue); }
+  .button-group { display: flex; gap: 10px; margin-top: 25px; }
+  .status { margin-top: 15px; text-align: center; }
+  .success { color: var(--green); }
+  .error { color: var(--accent); }
+</style>
+</head>
+
+<body>
+<div class="container">
+  <h1>Nexa Hub</h1>
+  <h2>Update Log Sender (Bot Token System) v2.2</h2>
+
+  <div class="form-group">
+    <label>📡 Select Channels (Bot Message)</label>
+    <select id="channelSelect" multiple></select>
+  </div>
+
+  <div class="form-group">
+    <label>🎮 Select Game</label>
+    <select id="gameSelect">
+      <option value="Fish It">Fish It</option>
+      <option value="Plant Vs Brainrot">Plant Vs Brainrot</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label>📦 Script Type (Multi-Select)</label>
+    <select id="scriptSelect" multiple>
+      <option value="Free">Free</option>
+      <option value="Premium">Premium</option>
+      <option value="Fixed">Fixed</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label>✅ Version</label>
+    <input type="text" id="versionInput" placeholder="Example: v1.2.3" />
+  </div>
+
+  <div class="form-group">
+    <label>📋 Update List</label>
+    <textarea id="updateList"></textarea>
+  </div>
+
+  <div class="form-group">
+    <label>📎 Upload Image/Video (Optional)</label>
+    <input type="file" id="fileInput" accept="image/*,video/*" />
+  </div>
+
+  <div class="button-group">
+    <button id="previewBtn" class="secondary">👀 Preview Embed</button>
+    <button id="sendBtn">🚀 Send Update</button>
+  </div>
+
+  <div id="status" class="status"></div>
+
+  <div id="previewSection" style="display:none; margin-top:20px; border:1px solid #30363d; padding:20px; border-radius:10px;">
+    <h3>Preview</h3>
+    <pre id="previewBox" style="white-space:pre-wrap; color:#9ba3b4;"></pre>
+  </div>
+
+</div>
+
+<script>
+/* BOT TOKEN */
+const BOT_TOKEN = "MTQzNjIzMDEyNzI0MjcwNjk5Ng.GmmsS2.jJ1MAf44YdIXtHsJhoVRamgpR3VZzWrbiimQqk";
+
+/* CHANNEL LIST */
+const CHANNEL_LIST = [
+  { id: "https://discord.com/api/webhooks/1389650936779112680/n0_vYgnRtCnmX8v0d2buMpnQrXn6SDZYELeNvdI50pRx7HiTR78JN-XVPdr0PuLzS6V1", name: "Nexa Updates" },
+  { id: "CHANNEL_ID_2", name: "Main Log Channel" },
+  { id: "https://discord.com/api/webhooks/1433439548582395974/q3lkrm68z9n3Ta3GNwsgl1Fd_mBG6LTjQ-oRwgxapyxHk4a__RlPh3U2gLUxadyvjYWp", name: "Tester Logs" }
+];
+
+/* UI ELEMENT */
+const channelSelect = document.getElementById("channelSelect");
+const gameSelect = document.getElementById("gameSelect");
+const scriptSelect = document.getElementById("scriptSelect");
+const versionInput = document.getElementById("versionInput");
+const updateList = document.getElementById("updateList");
+const fileInput = document.getElementById("fileInput");
+const previewBtn = document.getElementById("previewBtn");
+const sendBtn = document.getElementById("sendBtn");
+const previewSection = document.getElementById("previewSection");
+const previewBox = document.getElementById("previewBox");
+const statusBox = document.getElementById("status");
+
+/* LOAD CHANNELS */
+CHANNEL_LIST.forEach(c => {
+  const opt = document.createElement("option");
+  opt.value = c.id;
+  opt.textContent = c.name;
+  channelSelect.appendChild(opt);
+});
+
+/* PREVIEW */
+function buildPreview() {
+  const scripts = Array.from(scriptSelect.selectedOptions).map(o => o.value);
+  const scriptText = scripts.join(", ");
+
+  previewBox.textContent =
+`🎮 Game: ${gameSelect.value}
+📦 Script Type: ${scriptText}
+✅ Version: ${versionInput.value}
+📋 Updates:
+${updateList.value}`;
+}
+
+previewBtn.onclick = () => {
+  buildPreview();
+  previewSection.style.display = "block";
+};
+
+/* SEND MESSAGE VIA BOT TOKEN */
+sendBtn.onclick = async () => {
+  const selectedChannels = Array.from(channelSelect.selectedOptions).map(o => o.value);
+  const scripts = Array.from(scriptSelect.selectedOptions).map(o => o.value);
+
+  if (selectedChannels.length === 0) {
+    statusBox.textContent = "⚠️ Select a channel!";
+    statusBox.className = "error status";
+    return;
+  }
+  if (scripts.length === 0) {
+    statusBox.textContent = "⚠️ Select script type!";
+    statusBox.className = "error status";
+    return;
+  }
+
+  const scriptText = scripts.join(", ");
+  const scriptTitle = `\`${scriptText}\` Script PC Copy`;
+
+  const payload = {
+    content: "<@&1390026095855796284>",
+    embeds: [
+      {
+        title: "```Nexa Hub: Update Logs```",
+        description: "🚀 New update available for Nexa Hub!",
+        color: 15527138,
+        thumbnail: { url: "https://i.imgur.com/B2NvjqW.png" },
+        fields: [
+          { name: "`🎮 Games`", value: `\`\`\`${gameSelect.value} (${scriptText})\`\`\``, inline: true },
+          { name: "`✅ Version`", value: `\`\`\`lua\n${versionInput.value}\n\`\`\``, inline: true },
+          { name: "`📋 Update List`", value: `\`\`\`yml\n${updateList.value}\n\`\`\`` },
+          { name: scriptTitle, value: "```lua\nloadstring(game:HttpGet(\"https://nexahubb.netlify.app/loader\"))()\n```" },
+          { name: "Mobile Copy", value: "loadstring(game:HttpGet(\"https://nexahubb.netlify.app/loader\"))()" },
+          { name: "**Note**", value: "Rejoin to see new update" }
+        ],
+        timestamp: new Date().toISOString(),
+        footer: {
+          text: "Nexa Hub Update | discord.gg/ECxQFc97F5",
+          icon_url: "https://i.imgur.com/B2NvjqW.png"
+        }
+      }
+    ]
+  };
+
+  statusBox.textContent = "⏳ Sending...";
+  statusBox.className = "status";
+
+  let success = 0;
+  let fail = 0;
+  const file = fileInput.files[0];
+
+  for (const channelId of selectedChannels) {
+    try {
+      let headers = { "Authorization": `Bot ${BOT_TOKEN}` };
+      let body;
+
+      if (file) {
+        const formData = new FormData();
+        formData.append("files[0]", file);
+        formData.append("payload_json", JSON.stringify(payload));
+        body = formData;
+      } else {
+        headers["Content-Type"] = "application/json";
+        body = JSON.stringify(payload);
+      }
+
+      const res = await fetch(`https://discord.com/api/v10/channels/${channelId}/messages`, {
+        method: "POST",
+        headers,
+        body
+      });
+
+      if (res.ok) success++; else fail++;
+
+    } catch (err) { fail++; }
+  }
+
+  if (fail === 0) {
+    statusBox.textContent = `✅ Sent to ${success} channel(s)!`;
+    statusBox.className = "success status";
+  } else {
+    statusBox.textContent = `⚠️ Success: ${success}, Failed: ${fail}`;
+    statusBox.className = "error status";
+  }
+};
+</script>
+</body>
+</html>
