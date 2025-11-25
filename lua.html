@@ -2,40 +2,92 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <title>Cek Kode Lua Roblox</title>
+  <title>Cek Kode Lua Roblox - Dua Kolom</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    textarea { width: 100%; height: 250px; font-family: monospace; font-size: 14px; }
-    button { margin-top: 10px; padding: 10px 20px; font-size: 16px; }
-    #result { margin-top: 20px; white-space: pre-wrap; }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+    h1 {
+      text-align: center;
+    }
+    #container {
+      display: flex;
+      flex: 1;
+      gap: 20px;
+      margin-top: 10px;
+    }
+    textarea {
+      width: 50%;
+      height: 100%;
+      font-family: monospace;
+      font-size: 14px;
+      padding: 10px;
+      box-sizing: border-box;
+      resize: none;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    #output {
+      width: 50%;
+      height: 100%;
+      background-color: #f4f4f4;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      padding: 10px;
+      white-space: pre-wrap;
+      font-family: monospace;
+      font-size: 14px;
+      overflow-y: auto;
+      color: green;
+    }
+    #checkBtn {
+      margin-top: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      align-self: center;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
-  <h1>Cek Kode Lua Roblox (LocalScript)</h1>
-  <textarea id="luaCode" placeholder="Tempel kode LocalScript Roblox di sini..."></textarea>
-  <br />
-  <button onclick="checkLuaCode()">Cek Sintaks</button>
-
-  <div id="result"></div>
+  <h1>Cek Kode Lua Roblox</h1>
+  <div id="container">
+    <textarea id="luaCode" placeholder="Tempel kode Lua Roblox di sini..."></textarea>
+    <pre id="output">Silakan tempel kode dan klik 'Cek Sintaks' untuk lihat hasil.</pre>
+  </div>
+  <button id="checkBtn">Cek Sintaks</button>
 
   <!-- Load Fengari Lua interpreter -->
   <script src="https://unpkg.com/fengari-web/dist/fengari-web.js"></script>
 
   <script>
-    function checkLuaCode() {
-      const code = document.getElementById('luaCode').value;
-      const resultDiv = document.getElementById('result');
+    const luaCodeEl = document.getElementById('luaCode');
+    const outputEl = document.getElementById('output');
+    const checkBtn = document.getElementById('checkBtn');
 
+    function checkLua() {
+      const code = luaCodeEl.value;
       try {
-        // Coba load code ke Fengari untuk cek sintaks
         fengari.load(code);
-        resultDiv.textContent = "✅ Kode Lua valid, tidak ada error sintaks.";
-        resultDiv.style.color = "green";
+        outputEl.textContent = "✅ Kode Lua valid, tidak ada error sintaks.";
+        outputEl.style.color = "green";
       } catch (err) {
-        resultDiv.textContent = "❌ Ada error sintaks:\n" + err.message;
-        resultDiv.style.color = "red";
+        outputEl.textContent = "❌ Ada error sintaks:\n" + err.message;
+        outputEl.style.color = "red";
       }
     }
+
+    checkBtn.addEventListener('click', checkLua);
+
+    // Optional: cek otomatis saat ketik, hapus jika tidak diinginkan
+    luaCodeEl.addEventListener('input', () => {
+      outputEl.textContent = "Ketuk tombol 'Cek Sintaks' untuk memeriksa kode.";
+      outputEl.style.color = "black";
+    });
   </script>
 </body>
 </html>
