@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cek Kode Lua Roblox</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    textarea { width: 100%; height: 250px; font-family: monospace; font-size: 14px; }
+    button { margin-top: 10px; padding: 10px 20px; font-size: 16px; }
+    #result { margin-top: 20px; white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+  <h1>Cek Kode Lua Roblox (LocalScript)</h1>
+  <textarea id="luaCode" placeholder="Tempel kode LocalScript Roblox di sini..."></textarea>
+  <br />
+  <button onclick="checkLuaCode()">Cek Sintaks</button>
+
+  <div id="result"></div>
+
+  <!-- Load Fengari Lua interpreter -->
+  <script src="https://unpkg.com/fengari-web/dist/fengari-web.js"></script>
+
+  <script>
+    function checkLuaCode() {
+      const code = document.getElementById('luaCode').value;
+      const resultDiv = document.getElementById('result');
+
+      try {
+        // Coba load code ke Fengari untuk cek sintaks
+        fengari.load(code);
+        resultDiv.textContent = "✅ Kode Lua valid, tidak ada error sintaks.";
+        resultDiv.style.color = "green";
+      } catch (err) {
+        resultDiv.textContent = "❌ Ada error sintaks:\n" + err.message;
+        resultDiv.style.color = "red";
+      }
+    }
+  </script>
+</body>
+</html>
