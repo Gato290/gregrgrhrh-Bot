@@ -51,6 +51,17 @@
       align-self: center;
       cursor: pointer;
     }
+    #saran {
+      width: 100%;
+      margin-top: 10px;
+      background: #fffbe6;
+      border-left: 4px solid orange;
+      padding: 10px;
+      font-family: monospace;
+      white-space: pre-wrap;
+      font-size: 14px;
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -61,32 +72,87 @@
   </div>
   <button id="checkBtn">Cek Sintaks</button>
 
+  <div id="saran"></div>
+
   <!-- Load Fengari Lua interpreter -->
   <script src="https://unpkg.com/fengari-web/dist/fengari-web.js"></script>
 
   <script>
     const luaCodeEl = document.getElementById('luaCode');
     const outputEl = document.getElementById('output');
+    const saranEl = document.getElementById('saran');
     const checkBtn = document.getElementById('checkBtn');
+
+    function beriSaran(errorMsg, code) {
+      errorMsg = errorMsg.toLowerCase();
+
+      let suggestions = [];
+
+      if (errorMsg.includes("expected identifier") && errorMsg.includes("when parsing expression")) {
+        suggestions.push("• Ada karakter tidak dikenal, mungkin ada simbol, operator, atau typo yang tidak valid.");
+        suggestions.push("  Coba hapus simbol aneh atau periksa penulisan variabel.");
+      }
+
+      if (errorMsg.includes("syntax error near")) {
+        suggestions.push("• Ada error di dekat kode tersebut.");
+        suggestions.push("  Periksa apakah ada tanda `)`, `end`, `]`, `}` yang belum tertutup.");
+      }
+
+      let stackDiff = (code.match(/end/g) || []).length - (code.match(/function/g) || []).length;
+      if (stackDiff < 0) {
+        suggestions.push("• Sepertinya kamu kurang `end` untuk menutup `function` atau `if`.");
+      }
+
+      if (errorMsg.includes("unfinished string") || (code.match(/"/g) || []).length % 2 !== 0) {
+        suggestions.push("• Ada string `\"...` yang belum tertutup.");
+        suggestions.push("  Pastikan semua tanda `\"` punya pasangan.");
+      }
+
+      if ((code.match(/\(/g) || []).length !== (code.match(/\)/g) || []).length) {
+        suggestions.push("• Jumlah `(` dan `)` tidak seimbang.");
+      }
+
+      if ((code.match(/\[/g) || []).length !== (code.match(/\]/g) || []).length) {
+        suggestions.push("• Jumlah `[` dan `]` tidak seimbang.");
+      }
+
+      if (suggestions.length === 0) {
+        suggestions.push("• Tidak bisa mendeteksi secara spesifik.");
+        suggestions.push("  Coba tempel kode ke Editor Lua lain, atau perhatikan baris error yang tampil.");
+      }
+
+      return suggestions.join("\n");
+    }
 
     function checkLua() {
       const code = luaCodeEl.value;
+      saranEl.style.display = "none";
+      saranEl.textContent = "";
+      saranEl.style.color = "black";
+      saranEl.style.display = "block";
+      saranEl.style.display = "none";
+
       try {
         fengari.load(code);
         outputEl.textContent = "✅ Kode Lua valid, tidak ada error sintaks.";
         outputEl.style.color = "green";
+        saranEl.style.display = "none";
       } catch (err) {
         outputEl.textContent = "❌ Ada error sintaks:\n" + err.message;
         outputEl.style.color = "red";
+
+        const hasilSaran = beriSaran(err.message, code);
+        saranEl.textContent = "💡 SARAN PERBAIKAN:\n" + hasilSaran;
+        saranEl.style.display = "block";
       }
     }
 
     checkBtn.addEventListener('click', checkLua);
 
-    // Optional: cek otomatis saat ketik, hapus jika tidak diinginkan
     luaCodeEl.addEventListener('input', () => {
       outputEl.textContent = "Ketuk tombol 'Cek Sintaks' untuk memeriksa kode.";
       outputEl.style.color = "black";
+      saranEl.style.display = "none";
     });
   </script>
 </body>
