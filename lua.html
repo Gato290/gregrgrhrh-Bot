@@ -2,75 +2,136 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <title>Cek Kode Lua Roblox - Dua Kolom</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Premium Lua Roblox Syntax Checker</title>
+
+  <!-- Google Font Premium Look -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
+      font-family: 'Inter', sans-serif;
+      background: #0a0f18;
+      color: #e6edf3;
+      height: 100vh;
       display: flex;
       flex-direction: column;
-      height: 100vh;
+      padding: 24px;
     }
+
     h1 {
+      font-size: 32px;
+      font-weight: 700;
       text-align: center;
+      background: linear-gradient(90deg, #ff1e1e, #ff6b6b);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 16px;
+      letter-spacing: 1px;
     }
+
     #container {
-      display: flex;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
       flex: 1;
       gap: 20px;
-      margin-top: 10px;
     }
+
     textarea {
-      width: 50%;
+      width: 100%;
       height: 100%;
-      font-family: monospace;
+      font-family: 'Fira Code', monospace;
       font-size: 14px;
-      padding: 10px;
-      box-sizing: border-box;
-      resize: none;
-      border: 1px solid #ccc;
-      border-radius: 4px;
+      font-weight: 500;
+      background: #111822;
+      color: #e6edf3;
+      border: 1px solid #1f2d3d;
+      border-radius: 12px;
+      padding: 16px;
+      outline: none;
+      transition: 0.3s;
     }
+
+    textarea:focus {
+      border-color: #ff1e1e;
+      box-shadow: 0 0 12px rgba(255, 30, 30, 0.5);
+    }
+
     #output {
-      width: 50%;
+      width: 100%;
       height: 100%;
-      background-color: #f4f4f4;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      padding: 10px;
-      white-space: pre-wrap;
-      font-family: monospace;
+      background: #111822;
+      border: 1px solid #1f2d3d;
+      border-radius: 12px;
+      padding: 16px;
+      font-family: 'Fira Code', monospace;
       font-size: 14px;
       overflow-y: auto;
-      color: green;
+      transition: 0.3s;
     }
+
     #checkBtn {
-      margin-top: 10px;
-      padding: 10px 20px;
+      margin-top: 16px;
+      padding: 12px 32px;
       font-size: 16px;
-      align-self: center;
+      font-weight: 600;
+      background: #ff1e1e;
+      border: none;
+      color: white;
+      border-radius: 50px;
       cursor: pointer;
+      transition: 0.3s;
+      align-self: center;
+      box-shadow: 0 4px 18px rgba(255, 30, 30, 0.4);
     }
+
+    #checkBtn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 22px rgba(255, 30, 30, 0.6);
+    }
+
     #saran {
+      margin-top: 16px;
       width: 100%;
-      margin-top: 10px;
-      background: #fffbe6;
-      border-left: 4px solid orange;
-      padding: 10px;
-      font-family: monospace;
+      background: #111822;
+      border-left: 4px solid #ff1e1e;
+      border-radius: 8px;
+      padding: 16px;
+      font-family: 'Fira Code', monospace;
+      font-size: 13px;
       white-space: pre-wrap;
-      font-size: 14px;
       display: none;
+      color: #f7c948;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    /* Custom Scrollbar Premium */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #ff1e1e;
+      border-radius: 10px;
     }
   </style>
 </head>
+
 <body>
-  <h1>Cek Kode Lua Roblox</h1>
+
+  <h1>Lua Roblox Syntax Checker PRO</h1>
+
   <div id="container">
-    <textarea id="luaCode" placeholder="Tempel kode Lua Roblox di sini..."></textarea>
-    <pre id="output">Silakan tempel kode dan klik 'Cek Sintaks' untuk lihat hasil.</pre>
+    <textarea id="luaCode" placeholder="Paste Lua Roblox script here..."></textarea>
+    <pre id="output">Waiting for code check...</pre>
   </div>
-  <button id="checkBtn">Cek Sintaks</button>
+
+  <button id="checkBtn">Check Syntax</button>
 
   <div id="saran"></div>
 
@@ -85,40 +146,26 @@
 
     function beriSaran(errorMsg, code) {
       errorMsg = errorMsg.toLowerCase();
-
       let suggestions = [];
 
-      if (errorMsg.includes("expected identifier") && errorMsg.includes("when parsing expression")) {
-        suggestions.push("• Ada karakter tidak dikenal, mungkin ada simbol, operator, atau typo yang tidak valid.");
-        suggestions.push("  Coba hapus simbol aneh atau periksa penulisan variabel.");
+      if (errorMsg.includes("expected identifier")) {
+        suggestions.push("• Potential invalid character or variable name typo.");
       }
-
       if (errorMsg.includes("syntax error near")) {
-        suggestions.push("• Ada error di dekat kode tersebut.");
-        suggestions.push("  Periksa apakah ada tanda `)`, `end`, `]`, `}` yang belum tertutup.");
+        suggestions.push("• Check for unclosed brackets or missing `end`.");
       }
-
-      let stackDiff = (code.match(/end/g) || []).length - (code.match(/function/g) || []).length;
-      if (stackDiff < 0) {
-        suggestions.push("• Sepertinya kamu kurang `end` untuk menutup `function` atau `if`.");
+      if ((code.match(/"/g) || []).length % 2 !== 0) {
+        suggestions.push("• Unfinished string detected. Close all quotes.");
       }
-
-      if (errorMsg.includes("unfinished string") || (code.match(/"/g) || []).length % 2 !== 0) {
-        suggestions.push("• Ada string `\"...` yang belum tertutup.");
-        suggestions.push("  Pastikan semua tanda `\"` punya pasangan.");
-      }
-
       if ((code.match(/\(/g) || []).length !== (code.match(/\)/g) || []).length) {
-        suggestions.push("• Jumlah `(` dan `)` tidak seimbang.");
+        suggestions.push("• Parentheses mismatch.");
       }
-
       if ((code.match(/\[/g) || []).length !== (code.match(/\]/g) || []).length) {
-        suggestions.push("• Jumlah `[` dan `]` tidak seimbang.");
+        suggestions.push("• Square bracket mismatch.");
       }
 
       if (suggestions.length === 0) {
-        suggestions.push("• Tidak bisa mendeteksi secara spesifik.");
-        suggestions.push("  Coba tempel kode ke Editor Lua lain, atau perhatikan baris error yang tampil.");
+        suggestions.push("• Review the error line carefully.");
       }
 
       return suggestions.join("\n");
@@ -126,34 +173,24 @@
 
     function checkLua() {
       const code = luaCodeEl.value;
-      saranEl.style.display = "none";
-      saranEl.textContent = "";
-      saranEl.style.color = "black";
-      saranEl.style.display = "block";
-      saranEl.style.display = "none";
 
       try {
         fengari.load(code);
-        outputEl.textContent = "✅ Kode Lua valid, tidak ada error sintaks.";
-        outputEl.style.color = "green";
+        outputEl.textContent = "✅ Valid Lua script. No syntax error detected.";
+        outputEl.style.color = "#4ade80";
         saranEl.style.display = "none";
       } catch (err) {
-        outputEl.textContent = "❌ Ada error sintaks:\n" + err.message;
-        outputEl.style.color = "red";
+        outputEl.textContent = "❌ Syntax error detected:\n" + err.message;
+        outputEl.style.color = "#ff4444";
 
         const hasilSaran = beriSaran(err.message, code);
-        saranEl.textContent = "💡 SARAN PERBAIKAN:\n" + hasilSaran;
+        saranEl.textContent = "💡 Debug Insight:\n" + hasilSaran;
         saranEl.style.display = "block";
       }
     }
 
     checkBtn.addEventListener('click', checkLua);
-
-    luaCodeEl.addEventListener('input', () => {
-      outputEl.textContent = "Ketuk tombol 'Cek Sintaks' untuk memeriksa kode.";
-      outputEl.style.color = "black";
-      saranEl.style.display = "none";
-    });
   </script>
+
 </body>
 </html>
