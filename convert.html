@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Lua → GameData Refactorer (Smart)</title>
+  <title>Lua → GameData Refactorer v1</title>
   <style>
     body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;margin:0;padding:18px;background:#0f1724;color:#e6eef8}
     header{display:flex;align-items:center;gap:12px}
@@ -20,196 +20,156 @@
 </head>
 <body>
   <header>
-    <h1>Lua → GameData Refactorer (Smart)</h1>
-    <div class="small">Tempel script kamu lalu klik <strong>Refactor</strong></div>
+    <h1>Lua → GameData Refactorer</h1>
+    <div class="small">Tempel script Roblox-mu lalu klik <strong>Refactor</strong></div>
   </header>
 
   <div class="wrap">
     <div>
-      <div class="small">Input Script Lua</div>
-      <textarea id="input" placeholder="Paste script di sini">-- contoh
-local LocalPlayer = game.Players.LocalPlayer
-local char, hrp = LocalPlayer.Character, LocalPlayer.Character:WaitForChild("HumanoidRootPart")
-local function Jump()
-    print("Jumped")
-end
-      </textarea>
+      <div class="small">Input (copy-paste script di sini)</div>
+      <textarea id="input" placeholder="Paste Lua script...">-- Contoh\nlocal LocalPlayer = game.Players.LocalPlayer\nlocal char = LocalPlayer.Character\nlocal hrp = char:WaitForChild('HumanoidRootPart')\nlocal TweenService = game:GetService('TweenService')\n</textarea>
     </div>
 
     <div>
-      <div class="small">Output Refactor</div>
-      <textarea id="output" readonly placeholder="Hasil refactor muncul di sini"></textarea>
+      <div class="small">Output (hasil refactor)</div>
+      <textarea id="output" readonly placeholder="Hasil akan muncul di sini"></textarea>
     </div>
   </div>
 
   <div style="margin-top:10px;display:flex;gap:8px;align-items:center">
     <div class="controls">
       <button id="refactor">Refactor</button>
-      <button id="copy">Copy</button>
-      <button id="download">Download</button>
+      <button id="copy">Copy hasil</button>
+      <button id="download">Download .lua</button>
     </div>
-
-    <label class="small"><input type="checkbox" id="replaceUses" checked /> Replace penggunaan variabel</label>
-    <label class="small"><input type="checkbox" id="includeTemplate" checked /> Tambahkan GameData template</label>
+    <label class="small"><input type="checkbox" id="replaceUses" checked /> Ganti penggunaan variabel (mis. `char` → `GameData.char`)</label>
+    <label class="small"><input type="checkbox" id="includeTemplate" checked /> Sisipkan template GameData di atas</label>
   </div>
 
   <footer>
-    Smart local detector: mendeteksi `local x`, `local a,b`, `local function`.
+    Tip: tool ini dasar — cek kembali hasilnya. Kalau script kompleks (metatable, scopes, fungsi lokal dalam block) periksa manual.
   </footer>
 
   <script>
     const input = document.getElementById('input')
     const output = document.getElementById('output')
-
     const refactorBtn = document.getElementById('refactor')
     const copyBtn = document.getElementById('copy')
     const downloadBtn = document.getElementById('download')
 
     function detectService(expr){
-      return /game\s*:\s*GetService\s*\(/i.test(expr)
+      // deteksi kalau RHS memanggil game:GetService
+      if(/game\s*:\s*GetService\s*\(/i.test(expr)) return true
+      return false
     }
 
     function makeGameDataTemplate(vars){
-      const lines = ["local GameData = {"]
-
-      vars.forEach(v=>{
-        if(v.isFunction){
-          lines.push(`    ${v.name} = nil, -- function placeholder`)
-        } else if(v.isService){
-          lines.push(`    ${v.name} = game:GetService("${v.serviceName || v.name}"),`)
+      const lines = ["local GameData = {", "    -- Services & placeholders"]
+      for(const v of vars){
+        if(v.isService){
+          lines.push(`    ${v.name} = game:GetService("${v.serviceName || v.serviceGuess || v.name}")`)
         } else {
-          lines.push(`    ${v.name} = nil,`)
+          lines.push(`    ${v.name} = nil`)
         }
-      })
-
+      }
       lines.push("}")
-      return lines.join("\n") + "\n\n"
+      return lines.join('\n') + '\n\n'
     }
 
-    function refactorLua(src, opts){
-      const lines = src.split(/\r?\n/)
-      const locals = []
-      let outLines = [...lines]
+    function refactorLua(source, opts={replaceUses:true, includeTemplate:true}){
+      const lines = source.split(/\r?\n/)
+      const locals = [] // {name, rhs, isService}
+      const outLines = [...lines]
 
-      const localSingle = /^\s*local\s+([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.+)$/
-      const localMulti = /^\s*local\s+([A-Za-z_][A-Za-z0-9_,\s]+)\s*=\s*(.+)$/
-      const localFunc = /^\s*local\s+function\s+([A-Za-z_][A-Za-z0-9_]*)\s*\((.*)\)/
-
+      // 1) cari deklarasi `local <name> = <expr>` (sederhana)
+      const localDeclRe = /^\s*local\s+([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.+)$/
       for(let i=0;i<lines.length;i++){
-        const ln = lines[i].trim()
-
-        // 1) local function x(a,b)
-        const mFunc = ln.match(localFunc)
-        if(mFunc){
-          locals.push({
-            name: mFunc[1],
-            isFunction: true,
-            args: mFunc[2],
-            rhs: null
-          })
-          outLines[i] = lines[i].replace("local ", "")
-          continue
-        }
-
-        // 2) local a,b,c = ...
-        const mMulti = lines[i].match(localMulti)
-        if(mMulti && mMulti[1].includes(",")){
-          const names = mMulti[1].split(",").map(x=>x.trim())
-          const rhsParts = mMulti[2].split(",").map(x=>x.trim())
-
-          names.forEach((n,k)=>{
-            locals.push({
-              name: n,
-              rhs: rhsParts[k] || "nil",
-              isFunction:false,
-              isService:false
-            })
-          })
-
-          outLines[i] = null
-          continue
-        }
-
-        // 3) local x = expr
-        const mSingle = lines[i].match(localSingle)
-        if(mSingle){
-          const name = mSingle[1]
-          const rhs = mSingle[2].trim()
+        const ln = lines[i]
+        const m = ln.match(localDeclRe)
+        if(m){
+          const name = m[1]
+          const rhs = m[2].trim()
           const isService = detectService(rhs)
-
           let serviceName = null
           if(isService){
-            const mm = rhs.match(/GetService\s*\(\s*['"](.+?)['"]\s*\)/)
-            if(mm) serviceName = mm[1]
+            // coba ekstrak nama service: game:GetService('Name') atau "Name"
+            const sm = rhs.match(/GetService\s*\(\s*['\"]([A-Za-z0-9_ ]+)['\"]\s*\)/)
+            if(sm) serviceName = sm[1]
           }
-
           locals.push({name, rhs, isService, serviceName})
+          // tandai baris ini akan dihapus (diganti)
           outLines[i] = null
         }
       }
 
-      const unique = []
-      const seen = new Set()
-      for(const l of locals){
-        if(!seen.has(l.name)){
-          seen.add(l.name)
-          unique.push(l)
-        }
-      }
-
-      let result = ""
-
+      // 2) bangun template jika diminta
+      let prefix = ''
       if(opts.includeTemplate){
-        result += makeGameDataTemplate(unique)
+        // dedupe locals by name
+        const namesSeen = new Set()
+        const uniq = []
+        for(const l of locals){ if(!namesSeen.has(l.name)){ namesSeen.add(l.name); uniq.push(l)} }
+        prefix = makeGameDataTemplate(uniq)
       }
 
-      unique.forEach(l=>{
-        if(l.isFunction){
-          result += `function GameData.${l.name}(${l.args})\n`
-        } else {
-          result += `GameData.${l.name} = ${l.rhs}\n`
-        }
+      // 3) sisipkan assignment GameData.<name> = <rhs> untuk setiap local
+      const assignLines = locals.map(l => {
+        // gunakan rhs as-is; kalau rhs mengandung LocalPlayer, kita biarkan
+        return `GameData.${l.name} = ${l.rhs}`
       })
 
-      result += "\n" + outLines.filter(Boolean).join("\n")
+      // 4) gabungkan outLines tanpa null
+      const body = outLines.filter(Boolean).join('\n')
 
+      let result = prefix + assignLines.join('\n') + '\n\n' + body
+
+      // 5) opsional: ganti semua penggunaan variabel (word boundary) ke GameData.name
       if(opts.replaceUses){
-        unique.forEach(l=>{
-          const re = new RegExp("\\b" + l.name + "\\b","g")
-          result = result.replace(re, (m, offset, str)=>{
-            const before = str.slice(Math.max(0, offset-9), offset)
+        // untuk menghindari mengganti deklarasi/assignment yang sudah kita ubah,
+        // lakukan penggantian pada seluruh teks tapi pastikan tidak mengganti 'GameData.<name>' jadi double.
+        // buat pattern yang mengganti \bname\b but not when preceded by 'GameData.'
+        for(const l of locals){
+          const name = l.name
+          const re = new RegExp('\\\b' + name + '\\b','g')
+          // do replacement with function to avoid replacing GameData.name
+          result = result.replace(re, (m, offset, s) => {
+            // check if preceding characters form 'GameData.'
+            const before = s.slice(Math.max(0, offset-9), offset)
             if(/GameData\.$/.test(before)) return m
-            return "GameData." + m
+            return 'GameData.' + m
           })
-        })
+        }
+        // small fix: don't change 'GameData.GameData.<x>' accidentally
+        result = result.replace(/GameData\.GameData\./g, 'GameData.')
       }
-
-      result = result.replace(/GameData\.GameData\./g, "GameData.")
 
       return result
     }
 
     refactorBtn.addEventListener('click', ()=>{
-      output.value = refactorLua(input.value, {
-        replaceUses: document.getElementById('replaceUses').checked,
-        includeTemplate: document.getElementById('includeTemplate').checked,
-      })
+      const src = input.value
+      const res = refactorLua(src, {replaceUses:document.getElementById('replaceUses').checked, includeTemplate:document.getElementById('includeTemplate').checked})
+      output.value = res
     })
 
     copyBtn.addEventListener('click', async ()=>{
-      await navigator.clipboard.writeText(output.value)
-      alert("Copied!")
+      try{
+        await navigator.clipboard.writeText(output.value)
+        alert('Teks berhasil disalin ke clipboard')
+      }catch(e){
+        alert('Gagal copy: ' + e)
+      }
     })
 
     downloadBtn.addEventListener('click', ()=>{
-      const blob = new Blob([output.value], {type:"text/plain"})
+      const blob = new Blob([output.value], {type:'text/plain'})
       const url = URL.createObjectURL(blob)
-
-      const a = document.createElement("a")
+      const a = document.createElement('a')
       a.href = url
-      a.download = "refactored.lua"
+      a.download = 'refactored.lua'
+      document.body.appendChild(a)
       a.click()
-
+      a.remove()
       URL.revokeObjectURL(url)
     })
   </script>
