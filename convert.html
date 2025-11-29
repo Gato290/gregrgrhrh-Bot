@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Local → GameData Converter</title>
+  <title>ALL Local → GameData Converter</title>
 
   <style>
     body {
@@ -65,10 +65,10 @@
 
 <body>
   <div class="container">
-    <h2>Local → GameData Converter</h2>
+    <h2>ALL Local → GameData Converter</h2>
     <p>
-      Masukkan script yang memakai <b>local variable</b>. Script ini akan mengubah semua variabel lokal
-      menjadi <code>GameData.namaVar</code> dengan aman.
+      Semua <b>local variable</b> akan diubah menjadi <code>GameData.var</code>, kecuali
+      deklarasi utama <code>local GameData = {}</code>.
     </p>
 
     <textarea id="input" placeholder="Tempel script di sini..."></textarea>
@@ -82,34 +82,50 @@
     function convert() {
       let text = document.getElementById("input").value;
 
-      // Simpan string literal supaya tidak ikut terganti
+      // 1. Simpan string literal agar tidak ikut terganti
       const stringLiterals = [];
-      text = text.replace(/(["'`])((?:\\.|(?!\1).)*)\1/g, (m, q, content) => {
+      text = text.replace(/(["'`])((?:\\.|(?!\1).)*)\1/g, (m) => {
         const id = "__STR" + stringLiterals.length + "__";
         stringLiterals.push(m);
         return id;
       });
 
-      // Tangkap semua lokal
-      const localVars = [];
-      const declRegex = /local\s+([A-Za-z_]\w*)\s*=/g;
+      // 2. Cari SEMUA local variabel
+      const locals = [];
+      const localRegex = /local\s+([A-Za-z_]\w*)(\s*=?)/g;
       let match;
 
-      while ((match = declRegex.exec(text)) !== null) {
-        localVars.push(match[1]);
+      while ((match = localRegex.exec(text)) !== null) {
+        const varName = match[1];
+
+        // Jangan ubah deklarasi GameData
+        if (varName !== "GameData") {
+          locals.push(varName);
+        }
       }
 
-      // Replace aman, hanya untuk variabel yang bukan method atau key table
-      localVars.forEach(v => {
-        const varRegex = new RegExp(`\\b${v}\\b(?!\\s*[:=])`, "g");
-        text = text.replace(varRegex, "GameData." + v);
-
-        // Ubah deklarasinya juga
-        const decl = new RegExp(`local\\s+${v}\\s*=`, "g");
-        text = text.replace(decl, `GameData.${v} =`);
+      // 3. Replace semua deklarasi `local x =` → `GameData.x =`
+      text = text.replace(/local\s+([A-Za-z_]\w*)\s*=\s*/g, (m, v) => {
+        if (v === "GameData") return m;
+        return `GameData.${v} = `;
       });
 
-      // Kembalikan string literal
+      // 4. Replace `local x` tanpa nilai → `GameData.x = nil`
+      text = text.replace(/local\s+([A-Za-z_]\w*)\b(?!\s*=)/g, (m, v) => {
+        if (v === "GameData") return m;
+        return `GameData.${v} = nil`;
+      });
+
+      // 5. Replace pemanggilan variabel
+      locals.forEach(v => {
+        const varUse = new RegExp("\\b" + v + "\\b", "g");
+        text = text.replace(varUse, "GameData." + v);
+      });
+
+      // Jangan double prefix
+      text = text.replace(/GameData\.GameData\./g, "GameData.");
+
+      // 6. Restore string literal
       text = text.replace(/__STR(\d+)__/g, (_, i) => stringLiterals[i]);
 
       document.getElementById("output").textContent = text;
