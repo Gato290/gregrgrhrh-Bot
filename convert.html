@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Local → GameData Converter</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f3f3f3;
+      padding: 20px;
+    }
+    .container {
+      max-width: 900px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    textarea {
+      width: 100%;
+      height: 200px;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+    button {
+      padding: 10px 20px;
+      margin-top: 10px;
+      background: #4a7cff;
+      border: none;
+      color: white;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #325fff;
+    }
+    pre {
+      background: #1a1a1a;
+      color: #00ff9d;
+      padding: 15px;
+      border-radius: 8px;
+      white-space: pre-wrap;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Local → GameData Converter</h2>
+    <p>Masukkan script yang berisi <b>local variable</b> di bawah, website ini akan otomatis mengubah semua menjadi <code>GameData.namaVar</code>.</p>
+
+    <textarea id="input" placeholder="Tempel script kamu di sini..."></textarea>
+    <button onclick="convert()">Convert</button>
+
+    <h3>Output:</h3>
+    <pre id="output"></pre>
+  </div>
+
+  <script>
+    function convert() {
+      let text = document.getElementById("input").value;
+
+      // Cari semua pola local variable
+      let pattern = /local\s+(\w+)\s*=/g;
+      let match;
+
+      let vars = [];
+      while ((match = pattern.exec(text)) !== null) {
+        vars.push(match[1]);
+      }
+
+      // Convert semua local jadi GameData.var
+      vars.forEach(v => {
+        let regex = new RegExp("\\blocal "+v+"\\b", "g");
+        text = text.replace(regex, "GameData."+v);
+
+        let useRegex = new RegExp("\\b"+v+"\\b", "g");
+        text = text.replace(useRegex, "GameData."+v);
+      });
+
+      document.getElementById("output").textContent = text;
+    }
+  </script>
+</body>
+</html>
