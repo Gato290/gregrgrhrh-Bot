@@ -1,60 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Local → GameData Converter</title>
+
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f3f3f3;
-      padding: 20px;
+      background: #eef1f5;
+      padding: 25px;
     }
+
     .container {
       max-width: 900px;
       margin: auto;
-      background: white;
-      padding: 20px;
+      background: #fff;
+      padding: 25px;
       border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
     }
+
     textarea {
       width: 100%;
-      height: 200px;
-      padding: 10px;
+      height: 220px;
+      padding: 12px;
       border-radius: 8px;
-      border: 1px solid #ccc;
+      border: 1px solid #bbb;
       font-size: 14px;
+      font-family: Consolas, monospace;
+      resize: vertical;
     }
+
     button {
-      padding: 10px 20px;
-      margin-top: 10px;
+      padding: 10px 24px;
+      margin-top: 12px;
       background: #4a7cff;
       border: none;
       color: white;
       border-radius: 8px;
       font-size: 16px;
       cursor: pointer;
+      transition: 0.2s;
     }
+
     button:hover {
-      background: #325fff;
+      background: #345ef9;
     }
+
     pre {
-      background: #1a1a1a;
-      color: #00ff9d;
-      padding: 15px;
+      background: #1e1e1e;
+      color: #8affc1;
+      padding: 18px;
       border-radius: 8px;
-      white-space: pre-wrap;
       font-size: 14px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      line-height: 1.4;
+      font-family: Consolas, monospace;
     }
   </style>
 </head>
+
 <body>
   <div class="container">
     <h2>Local → GameData Converter</h2>
-    <p>Masukkan script yang berisi <b>local variable</b> di bawah, website ini akan otomatis mengubah semua menjadi <code>GameData.namaVar</code>.</p>
+    <p>
+      Masukkan script yang memakai <b>local variable</b>. Script ini akan mengubah semua variabel lokal
+      menjadi <code>GameData.namaVar</code> dengan aman.
+    </p>
 
-    <textarea id="input" placeholder="Tempel script kamu di sini..."></textarea>
+    <textarea id="input" placeholder="Tempel script di sini..."></textarea>
     <button onclick="convert()">Convert</button>
 
     <h3>Output:</h3>
@@ -65,26 +82,39 @@
     function convert() {
       let text = document.getElementById("input").value;
 
-      // Cari semua pola local variable
-      let pattern = /local\s+(\w+)\s*=/g;
+      // Simpan string literal supaya tidak ikut terganti
+      const stringLiterals = [];
+      text = text.replace(/(["'`])((?:\\.|(?!\1).)*)\1/g, (m, q, content) => {
+        const id = "__STR" + stringLiterals.length + "__";
+        stringLiterals.push(m);
+        return id;
+      });
+
+      // Tangkap semua lokal
+      const localVars = [];
+      const declRegex = /local\s+([A-Za-z_]\w*)\s*=/g;
       let match;
 
-      let vars = [];
-      while ((match = pattern.exec(text)) !== null) {
-        vars.push(match[1]);
+      while ((match = declRegex.exec(text)) !== null) {
+        localVars.push(match[1]);
       }
 
-      // Convert semua local jadi GameData.var
-      vars.forEach(v => {
-        let regex = new RegExp("\\blocal "+v+"\\b", "g");
-        text = text.replace(regex, "GameData."+v);
+      // Replace aman, hanya untuk variabel yang bukan method atau key table
+      localVars.forEach(v => {
+        const varRegex = new RegExp(`\\b${v}\\b(?!\\s*[:=])`, "g");
+        text = text.replace(varRegex, "GameData." + v);
 
-        let useRegex = new RegExp("\\b"+v+"\\b", "g");
-        text = text.replace(useRegex, "GameData."+v);
+        // Ubah deklarasinya juga
+        const decl = new RegExp(`local\\s+${v}\\s*=`, "g");
+        text = text.replace(decl, `GameData.${v} =`);
       });
+
+      // Kembalikan string literal
+      text = text.replace(/__STR(\d+)__/g, (_, i) => stringLiterals[i]);
 
       document.getElementById("output").textContent = text;
     }
   </script>
 </body>
+
 </html>
