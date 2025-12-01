@@ -3,21 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lua Code Storage (GitHub Model)</title>
+<title>Lua Code Storage Premium</title>
 <style>
-    body { font-family: Arial; background: #1e1e1e; color: #f0f0f0; padding: 20px; }
-    h1, h2 { text-align: center; color: #ffcc00; }
-    textarea { width:100%; height:150px; background:#2e2e2e; color:#f0f0f0; border:1px solid #444; padding:10px; font-family: monospace; resize:vertical; }
-    button { background:#ffcc00; border:none; padding:8px 16px; cursor:pointer; font-weight:bold; margin-top:5px; }
+    body { font-family: Arial; background: #121212; color: #f0f0f0; padding: 20px; }
+    h1, h2 { text-align: center; color: #ffcc00; margin-bottom: 20px; }
+    input, textarea { width:100%; background:#1e1e1e; color:#f0f0f0; border:1px solid #333; padding:10px; font-family: monospace; margin-bottom:10px; }
+    textarea { resize:vertical; height:120px; }
+    button { background:#ffcc00; border:none; padding:8px 16px; cursor:pointer; font-weight:bold; margin-top:5px; transition: 0.2s; }
     button:hover { background:#e6b800; }
     #codesList { margin-top:20px; }
-    .codeItem { background:#2e2e2e; padding:10px; margin-bottom:10px; border-left:5px solid #ffcc00; white-space: pre-wrap; font-family: monospace; position: relative; }
-    .copyBtn { position:absolute; top:10px; right:10px; background:#444; border:none; color:#fff; padding:5px 10px; cursor:pointer; }
-    .copyBtn:hover { background:#666; }
+    .codeItem { background:#1e1e1e; padding:15px; margin-bottom:15px; border-left:5px solid #ffcc00; white-space: pre-wrap; font-family: monospace; position: relative; border-radius: 6px; }
+    .codeTitle { font-weight:bold; color:#ffcc00; margin-bottom:5px; font-size: 16px; }
+    .codeDate { font-size:12px; color:#aaa; margin-bottom:5px; }
+    .copyBtn { position:absolute; top:15px; right:15px; background:#333; border:none; color:#fff; padding:5px 10px; cursor:pointer; border-radius:4px; }
+    .copyBtn:hover { background:#555; }
 </style>
 </head>
 <body>
-<h1>Lua Code Storage</h1>
+<h1>Lua Code Storage Premium</h1>
 
 <div id="authSection">
     <input type="password" id="ownerPassword" placeholder="Masukkan password owner">
@@ -25,6 +28,7 @@
 </div>
 
 <div id="uploadSection" style="display:none;">
+    <input type="text" id="luaTitle" placeholder="Judul kode Lua...">
     <textarea id="luaCode" placeholder="Masukkan kode Lua di sini..."></textarea>
     <button onclick="saveCode()">Upload Kode</button>
 </div>
@@ -57,27 +61,43 @@
     function saveCode() {
         if(!isOwner) return alert("Hanya owner yang bisa upload!");
         const code = document.getElementById('luaCode').value.trim();
-        if(code === "") return alert("Masukkan kode Lua!");
-        storedCodes.push(code);
+        const title = document.getElementById('luaTitle').value.trim();
+        if(code === "" || title === "") return alert("Masukkan judul dan kode Lua!");
+        const date = new Date().toLocaleString("id-ID", { dateStyle: "short", timeStyle: "short" });
+        storedCodes.push({ title, code, date });
         localStorage.setItem("luaCodes", JSON.stringify(storedCodes));
         document.getElementById('luaCode').value = "";
+        document.getElementById('luaTitle').value = "";
         renderCodes();
     }
 
     function renderCodes() {
         codesList.innerHTML = "";
-        storedCodes.forEach((code, idx) => {
+        storedCodes.forEach((item, idx) => {
             const codeDiv = document.createElement('div');
             codeDiv.className = 'codeItem';
-            codeDiv.textContent = code;
+
+            const titleDiv = document.createElement('div');
+            titleDiv.className = 'codeTitle';
+            titleDiv.textContent = item.title;
+
+            const dateDiv = document.createElement('div');
+            dateDiv.className = 'codeDate';
+            dateDiv.textContent = "Uploaded: " + item.date;
+
+            const codeContent = document.createElement('div');
+            codeContent.textContent = item.code;
 
             const copyBtn = document.createElement('button');
             copyBtn.className = 'copyBtn';
             copyBtn.textContent = "Salin";
             copyBtn.onclick = () => {
-                navigator.clipboard.writeText(code).then(()=> alert("Kode disalin!"));
+                navigator.clipboard.writeText(item.code).then(()=> alert("Kode disalin!"));
             };
 
+            codeDiv.appendChild(titleDiv);
+            codeDiv.appendChild(dateDiv);
+            codeDiv.appendChild(codeContent);
             codeDiv.appendChild(copyBtn);
             codesList.appendChild(codeDiv);
         });
