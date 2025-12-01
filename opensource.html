@@ -3,67 +3,184 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lua Code Storage Premium</title>
+<title>Lua Code Storage — Premium Panel</title>
+
+<!-- Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700&display=swap" rel="stylesheet">
+
 <style>
-    body { font-family: Arial; background: #121212; color: #f0f0f0; padding: 20px; }
-    h1, h2 { text-align: center; color: #ffcc00; margin-bottom: 20px; }
-    input, textarea { width:100%; background:#1e1e1e; color:#f0f0f0; border:1px solid #333; padding:10px; font-family: monospace; margin-bottom:10px; }
-    textarea { resize:vertical; height:120px; }
-    button { background:#ffcc00; border:none; padding:8px 16px; cursor:pointer; font-weight:bold; margin-top:5px; transition: 0.2s; }
-    button:hover { background:#e6b800; }
-    #codesList { margin-top:20px; }
-    .codeItem { background:#1e1e1e; padding:15px; margin-bottom:15px; border-left:5px solid #ffcc00; white-space: pre-wrap; font-family: monospace; position: relative; border-radius: 6px; }
-    .codeTitle { font-weight:bold; color:#ffcc00; margin-bottom:5px; font-size: 16px; }
-    .codeDate { font-size:12px; color:#aaa; margin-bottom:5px; }
-    .copyBtn { position:absolute; top:15px; right:15px; background:#333; border:none; color:#fff; padding:5px 10px; cursor:pointer; border-radius:4px; }
-    .copyBtn:hover { background:#555; }
+    :root {
+        --bg: #0a0a0a;
+        --panel: rgba(255, 255, 255, 0.03);
+        --border: rgba(255, 255, 255, 0.08);
+        --gold: #d4af37;
+        --gold-hover: #f1c232;
+        --text: #e4e4e4;
+    }
+
+    body {
+        font-family: 'Poppins', sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        padding: 30px;
+        margin: 0;
+    }
+
+    h1, h2 {
+        text-align: center;
+        font-weight: 700;
+        background: linear-gradient(90deg, var(--gold), var(--gold-hover));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    input, textarea {
+        width: 100%;
+        background: var(--panel);
+        color: var(--text);
+        border: 1px solid var(--border);
+        padding: 12px;
+        border-radius: 8px;
+        font-family: monospace;
+        outline: none;
+        transition: 0.2s;
+    }
+
+    textarea { resize: vertical; height: 130px; }
+
+    input:focus, textarea:focus {
+        border-color: var(--gold);
+        box-shadow: 0 0 10px var(--gold);
+    }
+
+    /* Premium button */
+    button {
+        background: rgba(255,255,255,0.05);
+        border: 1px solid var(--border);
+        padding: 10px 18px;
+        cursor: pointer;
+        font-weight: 600;
+        border-radius: 8px;
+        color: var(--gold);
+        transition: 0.25s;
+    }
+
+    button:hover {
+        background: var(--gold-hover);
+        border-color: var(--gold-hover);
+        color: black;
+        box-shadow: 0 0 15px var(--gold-hover);
+        transform: translateY(-2px);
+    }
+
+    #codesList {
+        margin-top: 25px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 18px;
+        padding-bottom: 40px;
+    }
+
+    /* Premium card item */
+    .codeItem {
+        backdrop-filter: blur(6px);
+        background: var(--panel);
+        border: 1px solid var(--border);
+        padding: 18px;
+        border-radius: 12px;
+        border-left: 5px solid var(--gold);
+        position: relative;
+        white-space: pre-wrap;
+        font-family: monospace;
+        animation: fadeIn 0.5s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+        from {opacity: 0; transform: translateY(10px);}
+        to {opacity: 1; transform: translateY(0);}
+    }
+
+    .codeTitle {
+        font-size: 17px;
+        font-weight: 600;
+        color: var(--gold-hover);
+        margin-bottom: 6px;
+    }
+
+    .codeDate { font-size: 13px; opacity: 0.6; margin-bottom: 10px; }
+
+    /* Premium copy button */
+    .copyBtn {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: rgba(212,175,55,0.12);
+        border: 1px solid rgba(212,175,55,0.4);
+        color: var(--gold-hover);
+        padding: 6px 12px;
+    }
+
+    .copyBtn:hover {
+        background: var(--gold-hover);
+        color: black;
+    }
+
+    /* custom scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 20px; }
+    ::-webkit-scrollbar-track { background: #111; }
 </style>
 </head>
 <body>
-<h1>Lua Code Storage Premium</h1>
 
-<div id="authSection">
-    <input type="password" id="ownerPassword" placeholder="Masukkan password owner">
-    <button onclick="loginOwner()">Login Owner</button>
+<h1>⭐ Lua Script Premium Storage ⭐</h1>
+
+<div id="authSection" style="max-width:400px;margin:auto;padding:25px;background:var(--panel);border:1px solid var(--border);border-radius:12px;backdrop-filter:blur(12px)">
+    <h2>OWNER LOGIN</h2>
+    <input type="password" id="ownerPassword" placeholder="••••••••••">
+    <button onclick="loginOwner()" style="width:100%;margin-top:12px">ACCESS PANEL</button>
 </div>
 
-<div id="uploadSection" style="display:none;">
-    <input type="text" id="luaTitle" placeholder="Judul kode Lua...">
-    <textarea id="luaCode" placeholder="Masukkan kode Lua di sini..."></textarea>
-    <button onclick="saveCode()">Upload Kode</button>
+<div id="uploadSection" style="display:none;max-width:800px;margin:auto;margin-top:30px;padding:25px;background:var(--panel);border:1px solid var(--border);border-radius:12px;backdrop-filter:blur(12px)">
+    <h2>UPLOAD LUA SCRIPT</h2>
+    <input type="text" id="luaTitle" placeholder="Nama Script Lua">
+    <textarea id="luaCode" placeholder="Paste Lua code here..."></textarea>
+    <button onclick="saveCode()" style="width:100%">🚀 Upload Script</button>
 </div>
 
 <div id="savedCodes">
-    <h2>Kode yang Disimpan:</h2>
+    <h2>📜 SAVED SCRIPTS</h2>
     <div id="codesList"></div>
 </div>
 
 <script>
     const codesList = document.getElementById('codesList');
-    const ownerPasswordCorrect = "12345"; // ganti password owner
+    const ownerPasswordCorrect = "12345"; // silakan ganti password owner
     let isOwner = false;
 
-    // load kode dari localStorage
     let storedCodes = JSON.parse(localStorage.getItem("luaCodes") || "[]");
     renderCodes();
 
     function loginOwner() {
         const pass = document.getElementById('ownerPassword').value;
         if(pass === ownerPasswordCorrect) {
-            isOwner = true;
+            document.getElementById('authSection').style.display = 'none';
             document.getElementById('uploadSection').style.display = 'block';
-            alert("Login owner berhasil!");
+            isOwner = true;
+            alert("🔥 Premium Panel Unlocked!");
         } else {
-            alert("Password salah!");
+            alert("❌ Access Denied!");
         }
     }
 
     function saveCode() {
-        if(!isOwner) return alert("Hanya owner yang bisa upload!");
+        if(!isOwner) return alert("❌ Only owner can upload!");
         const code = document.getElementById('luaCode').value.trim();
         const title = document.getElementById('luaTitle').value.trim();
-        if(code === "" || title === "") return alert("Masukkan judul dan kode Lua!");
-        const date = new Date().toLocaleString("id-ID", { dateStyle: "short", timeStyle: "short" });
+        if(!code || !title) return alert("❗ Title & code required!");
+
+        const date = new Date().toLocaleString("id-ID", { dateStyle: "medium", timeStyle: "short" });
+
         storedCodes.push({ title, code, date });
         localStorage.setItem("luaCodes", JSON.stringify(storedCodes));
         document.getElementById('luaCode').value = "";
@@ -73,35 +190,21 @@
 
     function renderCodes() {
         codesList.innerHTML = "";
-        storedCodes.forEach((item, idx) => {
-            const codeDiv = document.createElement('div');
-            codeDiv.className = 'codeItem';
+        storedCodes.reverse().forEach(item => {
+            const card = document.createElement('div');
+            card.className = "codeItem";
 
-            const titleDiv = document.createElement('div');
-            titleDiv.className = 'codeTitle';
-            titleDiv.textContent = item.title;
+            card.innerHTML = `
+                <div class="codeTitle">✨ ${item.title}</div>
+                <div class="codeDate">🕒 ${item.date}</div>
+                <pre>${item.code}</pre>
+                <button class="copyBtn" onclick="navigator.clipboard.writeText(\`${item.code}\`); alert('✅ Script copied!')">COPY</button>
+            `;
 
-            const dateDiv = document.createElement('div');
-            dateDiv.className = 'codeDate';
-            dateDiv.textContent = "Uploaded: " + item.date;
-
-            const codeContent = document.createElement('div');
-            codeContent.textContent = item.code;
-
-            const copyBtn = document.createElement('button');
-            copyBtn.className = 'copyBtn';
-            copyBtn.textContent = "Salin";
-            copyBtn.onclick = () => {
-                navigator.clipboard.writeText(item.code).then(()=> alert("Kode disalin!"));
-            };
-
-            codeDiv.appendChild(titleDiv);
-            codeDiv.appendChild(dateDiv);
-            codeDiv.appendChild(codeContent);
-            codeDiv.appendChild(copyBtn);
-            codesList.appendChild(codeDiv);
+            codesList.appendChild(card);
         });
     }
 </script>
+
 </body>
 </html>
