@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lua Code Storage — Premium Panel</title>
 
-<!-- Google Font -->
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700&display=swap" rel="stylesheet">
 
 <style>
@@ -16,6 +15,7 @@
         --gold: #d4af37;
         --gold-hover: #f1c232;
         --text: #e4e4e4;
+        --red: #c0392b;
     }
 
     body {
@@ -53,7 +53,6 @@
         box-shadow: 0 0 10px var(--gold);
     }
 
-    /* Premium button */
     button {
         background: rgba(255,255,255,0.05);
         border: 1px solid var(--border);
@@ -61,16 +60,36 @@
         cursor: pointer;
         font-weight: 600;
         border-radius: 8px;
-        color: var(--gold);
         transition: 0.25s;
     }
 
-    button:hover {
-        background: var(--gold-hover);
-        border-color: var(--gold-hover);
+    button.primary {
         color: black;
+        background: var(--gold);
+        border-color: var(--gold);
+        width: 100%;
+    }
+
+    button.primary:hover {
+        background: var(--gold-hover);
         box-shadow: 0 0 15px var(--gold-hover);
         transform: translateY(-2px);
+    }
+
+    button.delete {
+        color: white;
+        background: var(--red);
+        border-color: var(--red);
+        position: absolute;
+        bottom: 12px;
+        right: 12px;
+        padding: 5px 10px;
+    }
+
+    button.delete:hover {
+        background: #e74c3c;
+        border-color: #e74c3c;
+        box-shadow: 0 0 10px #e74c3c;
     }
 
     #codesList {
@@ -81,12 +100,11 @@
         padding-bottom: 40px;
     }
 
-    /* Premium card item */
     .codeItem {
         backdrop-filter: blur(6px);
         background: var(--panel);
         border: 1px solid var(--border);
-        padding: 18px;
+        padding: 20px;
         border-radius: 12px;
         border-left: 5px solid var(--gold);
         position: relative;
@@ -109,7 +127,6 @@
 
     .codeDate { font-size: 13px; opacity: 0.6; margin-bottom: 10px; }
 
-    /* Premium copy button */
     .copyBtn {
         position: absolute;
         top: 15px;
@@ -125,7 +142,6 @@
         color: black;
     }
 
-    /* custom scrollbar */
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 20px; }
     ::-webkit-scrollbar-track { background: #111; }
@@ -135,17 +151,23 @@
 
 <h1>⭐ Lua Script Premium Storage ⭐</h1>
 
-<div id="authSection" style="max-width:400px;margin:auto;padding:25px;background:var(--panel);border:1px solid var(--border);border-radius:12px;backdrop-filter:blur(12px)">
+<div id="keyCreationSection" style="max-width:400px;margin:auto;padding:25px;background:var(--panel);border:1px solid var(--border);border-radius:12px;backdrop-filter:blur(12px)">
+    <h2>CREATE ACCESS KEY</h2>
+    <button class="primary" onclick="createOwnerKey()">🔑 Generate Key</button>
+    <input type="text" id="generatedKey" placeholder="Key akan muncul di sini..." readonly style="margin-top:12px">
+</div>
+
+<div id="authSection" style="max-width:400px;margin:auto;margin-top:30px;padding:25px;background:var(--panel);border:1px solid var(--border);border-radius:12px;backdrop-filter:blur(12px)">
     <h2>OWNER LOGIN</h2>
-    <input type="password" id="ownerPassword" placeholder="••••••••••">
-    <button onclick="loginOwner()" style="width:100%;margin-top:12px">ACCESS PANEL</button>
+    <input type="password" id="ownerKeyInput" placeholder="Masukkan Premium Key">
+    <button class="primary" onclick="loginOwner()" style="margin-top:12px">ACCESS PANEL</button>
 </div>
 
 <div id="uploadSection" style="display:none;max-width:800px;margin:auto;margin-top:30px;padding:25px;background:var(--panel);border:1px solid var(--border);border-radius:12px;backdrop-filter:blur(12px)">
     <h2>UPLOAD LUA SCRIPT</h2>
     <input type="text" id="luaTitle" placeholder="Nama Script Lua">
     <textarea id="luaCode" placeholder="Paste Lua code here..."></textarea>
-    <button onclick="saveCode()" style="width:100%">🚀 Upload Script</button>
+    <button class="primary" onclick="saveCode()">🚀 Upload Script</button>
 </div>
 
 <div id="savedCodes">
@@ -155,32 +177,41 @@
 
 <script>
     const codesList = document.getElementById('codesList');
-    const ownerPasswordCorrect = "12345"; // silakan ganti password owner
     let isOwner = false;
 
     let storedCodes = JSON.parse(localStorage.getItem("luaCodes") || "[]");
     renderCodes();
 
+    function createOwnerKey() {
+        const newKey = "KEY-" + Math.random().toString(36).substr(2, 10).toUpperCase();
+        localStorage.setItem("ownerKey", newKey);
+        document.getElementById("generatedKey").value = newKey;
+        alert("✅ Key berhasil dibuat dan tersimpan di device!");
+    }
+
     function loginOwner() {
-        const pass = document.getElementById('ownerPassword').value;
-        if(pass === ownerPasswordCorrect) {
+        const savedKey = localStorage.getItem("ownerKey");
+        const inputKey = document.getElementById("ownerKeyInput").value.trim();
+
+        if(!savedKey) return alert("❌ Key belum dibuat! Generate dulu.");
+        if(inputKey === savedKey) {
             document.getElementById('authSection').style.display = 'none';
+            document.getElementById('keyCreationSection').style.display = 'none';
             document.getElementById('uploadSection').style.display = 'block';
             isOwner = true;
             alert("🔥 Premium Panel Unlocked!");
         } else {
-            alert("❌ Access Denied!");
+            alert("❌ Key salah!");
         }
     }
 
     function saveCode() {
         if(!isOwner) return alert("❌ Only owner can upload!");
-        const code = document.getElementById('luaCode').value.trim();
+        const code = document.getElementByById('luaCode').value.trim();
         const title = document.getElementById('luaTitle').value.trim();
         if(!code || !title) return alert("❗ Title & code required!");
 
         const date = new Date().toLocaleString("id-ID", { dateStyle: "medium", timeStyle: "short" });
-
         storedCodes.push({ title, code, date });
         localStorage.setItem("luaCodes", JSON.stringify(storedCodes));
         document.getElementById('luaCode').value = "";
@@ -188,9 +219,17 @@
         renderCodes();
     }
 
+    function deleteCode(index) {
+        storedCodes.splice(index, 1);
+        localStorage.setItem("luaCodes", JSON.stringify(storedCodes));
+        alert("🗑️ Script berhasil dihapus!");
+        renderCodes();
+    }
+
     function renderCodes() {
         codesList.innerHTML = "";
-        storedCodes.reverse().forEach(item => {
+        storedCodes.slice().reverse().forEach((item, i) => {
+            const originalIndex = storedCodes.length - 1 - i;
             const card = document.createElement('div');
             card.className = "codeItem";
 
@@ -199,6 +238,7 @@
                 <div class="codeDate">🕒 ${item.date}</div>
                 <pre>${item.code}</pre>
                 <button class="copyBtn" onclick="navigator.clipboard.writeText(\`${item.code}\`); alert('✅ Script copied!')">COPY</button>
+                <button class="delete" onclick="deleteCode(${originalIndex})">DELETE</button>
             `;
 
             codesList.appendChild(card);
