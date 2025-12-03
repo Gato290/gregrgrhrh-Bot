@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Nexa Hub Update Sender v2.3</title>
+<title>Nexa Hub Update Sender v2.4</title>
 <style>
   :root {
     --bg-dark: #0d1117;
@@ -46,13 +47,14 @@
   }
   select[multiple] { height: 120px; }
 
+  /* ✅ UPDATE LIST TEXTAREA FIX (besar + auto resize) */
   textarea {
     width: 100%;
     min-height: 180px;
-    font-size: 18px;
-    line-height: 1.6;
-    resize: none;
-    overflow-y: hidden;
+    font-size: 18px;          /* teks besar */
+    line-height: 1.6;         /* spasi antar baris */
+    resize: none;             /* matikan resize manual, biar auto */
+    overflow-y: hidden;       /* scroll dihilangkan */
     transition: height 0.2s ease;
   }
 
@@ -63,7 +65,7 @@
   button.secondary { background: var(--blue); }
   .button-group { display: flex; gap: 10px; margin-top: 25px; }
   .status { margin-top: 15px; text-align: center; font-size: 16px; }
-  .success { color: #2ea043; }
+  .success { color: #2ea043; }  /* hijau terang biar lebih jelas */
   .error { color: var(--accent); }
   small { color: var(--secondary); }
 </style>
@@ -108,7 +110,7 @@
 
   <div class="form-group">
     <label>📋 Update List</label>
-    <textarea id="updateList" placeholder="Gunakan [+] untuk hijau dan [-] untuk merah\nContoh:\n[+] Update sukses\n[-] Update gagal"></textarea>
+    <textarea id="updateList" placeholder="Tulis list update di sini..."></textarea>
   </div>
 
   <div class="form-group">
@@ -130,7 +132,6 @@
 </div>
 
 <script>
-
 /* ELEMENT */
 const webhookSelect = document.getElementById("webhookSelect");
 const gameSelect = document.getElementById("gameSelect");
@@ -148,17 +149,17 @@ const statusBox = document.getElementById("status");
 Array.from(scriptSelect.options).forEach(opt => {
   opt.addEventListener("mousedown", (e) => {
     e.preventDefault();
-    opt.selected = !opt.selected;
+    opt.selected = !opt.selected;  
   });
 });
 
-/* TEXTAREA AUTO RESIZE */
+/* ✅ AUTO RESIZE TEXTAREA BIAR SEMUA TEXT KELIATAN */
 updateList.addEventListener("input", function () {
-  this.style.height = "auto";
+  this.style.height = "auto";  
   this.style.height = this.scrollHeight + "px";
 });
 
-/* PREVIEW BUILD */
+/* PREVIEW SYSTEM */
 function buildPreview() {
   const scripts = Array.from(scriptSelect.selectedOptions).map(o => o.value);
   const scriptText = scripts.join(", ");
@@ -168,17 +169,17 @@ function buildPreview() {
 `🎮 Game: ${game}
 📦 Script Type: ${scriptText}
 ✅ Version: ${versionInput.value}
-📋 Update List:
+📋 Updates:
 ${updateList.value}`;
 }
 
 /* PREVIEW BUTTON */
 previewBtn.onclick = () => {
   buildPreview();
-  document.getElementById("previewSection").style.display = "block";
+  previewSection.style.display = "block";
 };
 
-/* SEND UPDATE TO DISCORD WEBHOOK */
+/* SEND BUTTON */
 sendBtn.onclick = async () => {
   const selectedWebhooks = Array.from(webhookSelect.selectedOptions).map(o => o.value);
   const scripts = Array.from(scriptSelect.selectedOptions).map(o => o.value);
@@ -200,27 +201,20 @@ sendBtn.onclick = async () => {
   const updates = updateList.value.trim();
   const file = fileInput.files[0];
 
-  /* Convert [+] and [-] to Discord diff */
-  const updateFormatted = updates.split("\n").map(line => {
-      if (line.startsWith("[+]")) return "+ " + line.replace("[+]", "");
-      if (line.startsWith("[-]")) return "- " + line.replace("[-]", "");
-      return "  " + line;
-  }).join("\n");
-
   const payload = {
     content: "<@&1390026095855796284>",
     username: "Nexa Hub〢Update Log",
     avatar_url: "https://i.imgur.com/B2NvjqW.png",
     embeds: [
       {
-        title: "Nexa Hub — Update Logs",
-        description: "```diff\n" + updateFormatted + "\n```",
-        color: 65280,
+        title: "```Nexa Hub: Update Logs```",
+        description: "🚀 New update available for Nexa Hub!",
+        color: 15527138,
         thumbnail: { url: "https://i.imgur.com/B2NvjqW.png" },
         fields: [
           { name: "`🎮 Games`", value: `\`\`\`${game} (${scriptText})\`\`\``, inline: true },
           { name: "`✅ Version`", value: `\`\`\`lua\n${version}\n\`\`\``, inline: true },
-          { name: "`📋 Update Status`", value: "```yml\n" + updateFormatted + "\n```" }
+          { name: "`📋 Update List`", value: `\`\`\`yml\n${updates}\n\`\`\`` }
         ],
         timestamp: new Date().toISOString(),
         footer: { text: "Nexa Hub Update" }
@@ -266,7 +260,6 @@ sendBtn.onclick = async () => {
     statusBox.className = "status error";
   }
 };
-
 </script>
 
 </body>
