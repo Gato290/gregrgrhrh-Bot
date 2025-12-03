@@ -46,14 +46,13 @@
   }
   select[multiple] { height: 120px; }
 
-  /* ✅ UPDATE LIST TEXTAREA FIX (besar + auto resize) */
   textarea {
     width: 100%;
     min-height: 180px;
-    font-size: 18px;          /* teks besar */
-    line-height: 1.6;         /* spasi antar baris */
-    resize: none;             /* matikan resize manual, biar auto */
-    overflow-y: hidden;       /* scroll dihilangkan */
+    font-size: 18px;
+    line-height: 1.6;
+    resize: none;
+    overflow-y: hidden;
     transition: height 0.2s ease;
   }
 
@@ -64,7 +63,7 @@
   button.secondary { background: var(--blue); }
   .button-group { display: flex; gap: 10px; margin-top: 25px; }
   .status { margin-top: 15px; text-align: center; font-size: 16px; }
-  .success { color: #2ea043; }  /* hijau terang biar lebih jelas */
+  .success { color: #2ea043; }
   .error { color: var(--accent); }
   small { color: var(--secondary); }
 </style>
@@ -78,7 +77,7 @@
   <div class="form-group">
     <label>🔗 Select Webhook URLs (Multi-Select)</label>
     <select id="webhookSelect" multiple>
-      <option value="https://discord.com/api/webhooks/1389650936779112680/n0_vYgnRtCnmX8v0d2buMpnQrXn6SDZYELeNvdI50pRx7HiTR78JN-XVPdr0PuLzS6V1">Discord Nexa</option>
+      <option value="https://discord.com/api/webhooks/YOUR_WEBHOOK_1">Discord Nexa</option>
       <option value="https://discord.com/api/webhooks/EXAMPLE_WEBHOOK_2">Discord ???</option>
       <option value="https://discord.com/api/webhooks/EXAMPLE_WEBHOOK_3">Discord ???</option>
     </select>
@@ -109,7 +108,7 @@
 
   <div class="form-group">
     <label>📋 Update List</label>
-    <textarea id="updateList" placeholder="Tulis list update di sini..."></textarea>
+    <textarea id="updateList" placeholder="Gunakan [+] untuk hijau dan [-] untuk merah\nContoh:\n[+] Update sukses\n[-] Update gagal"></textarea>
   </div>
 
   <div class="form-group">
@@ -131,6 +130,7 @@
 </div>
 
 <script>
+
 /* ELEMENT */
 const webhookSelect = document.getElementById("webhookSelect");
 const gameSelect = document.getElementById("gameSelect");
@@ -148,17 +148,17 @@ const statusBox = document.getElementById("status");
 Array.from(scriptSelect.options).forEach(opt => {
   opt.addEventListener("mousedown", (e) => {
     e.preventDefault();
-    opt.selected = !opt.selected;  
+    opt.selected = !opt.selected;
   });
 });
 
-/* ✅ AUTO RESIZE TEXTAREA BIAR SEMUA TEXT KELIATAN */
+/* TEXTAREA AUTO RESIZE */
 updateList.addEventListener("input", function () {
-  this.style.height = "auto";  
+  this.style.height = "auto";
   this.style.height = this.scrollHeight + "px";
 });
 
-/* PREVIEW SYSTEM */
+/* PREVIEW BUILD */
 function buildPreview() {
   const scripts = Array.from(scriptSelect.selectedOptions).map(o => o.value);
   const scriptText = scripts.join(", ");
@@ -168,17 +168,17 @@ function buildPreview() {
 `🎮 Game: ${game}
 📦 Script Type: ${scriptText}
 ✅ Version: ${versionInput.value}
-📋 Updates:
+📋 Update List:
 ${updateList.value}`;
 }
 
 /* PREVIEW BUTTON */
 previewBtn.onclick = () => {
   buildPreview();
-  previewSection.style.display = "block";
+  document.getElementById("previewSection").style.display = "block";
 };
 
-/* SEND BUTTON */
+/* SEND UPDATE TO DISCORD WEBHOOK */
 sendBtn.onclick = async () => {
   const selectedWebhooks = Array.from(webhookSelect.selectedOptions).map(o => o.value);
   const scripts = Array.from(scriptSelect.selectedOptions).map(o => o.value);
@@ -200,20 +200,27 @@ sendBtn.onclick = async () => {
   const updates = updateList.value.trim();
   const file = fileInput.files[0];
 
+  /* Convert [+] and [-] to Discord diff */
+  const updateFormatted = updates.split("\n").map(line => {
+      if (line.startsWith("[+]")) return "+ " + line.replace("[+]", "");
+      if (line.startsWith("[-]")) return "- " + line.replace("[-]", "");
+      return "  " + line;
+  }).join("\n");
+
   const payload = {
     content: "<@&1390026095855796284>",
     username: "Nexa Hub〢Update Log",
     avatar_url: "https://i.imgur.com/B2NvjqW.png",
     embeds: [
       {
-        title: "```Nexa Hub: Update Logs```",
-        description: "🚀 New update available for Nexa Hub!",
-        color: 15527138,
+        title: "Nexa Hub — Update Logs",
+        description: "```diff\n" + updateFormatted + "\n```",
+        color: 65280,
         thumbnail: { url: "https://i.imgur.com/B2NvjqW.png" },
         fields: [
           { name: "`🎮 Games`", value: `\`\`\`${game} (${scriptText})\`\`\``, inline: true },
           { name: "`✅ Version`", value: `\`\`\`lua\n${version}\n\`\`\``, inline: true },
-          { name: "`📋 Update List`", value: `\`\`\`yml\n${updates}\n\`\`\`` }
+          { name: "`📋 Update Status`", value: "```yml\n" + updateFormatted + "\n```" }
         ],
         timestamp: new Date().toISOString(),
         footer: { text: "Nexa Hub Update" }
@@ -259,6 +266,7 @@ sendBtn.onclick = async () => {
     statusBox.className = "status error";
   }
 };
+
 </script>
 
 </body>
