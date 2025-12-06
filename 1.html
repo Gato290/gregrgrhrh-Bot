@@ -42,7 +42,14 @@
       }
 
       document.getElementById("result").innerHTML = output;
+
+      const merged = newLines.concat(deleted);
+      document.getElementById("mergedCode").value = merged.join("
+");
     }
   </script>
+  <h3>Code Baru + Baris Terhapus:</h3>
+  <textarea id="mergedCode" readonly></textarea>
+
 </body>
 </html>
