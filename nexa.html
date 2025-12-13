@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nexa Premium Purchase</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+    :root {
+        --bg: #0d1117;
+        --card: #161b22;
+        --border: #30363d;
+        --text: #e6edf3;
+        --muted: #8b949e;
+        --accent: #2f81f7;
+        --success: #3fb950;
+    }
+
+    * {
+        box-sizing: border-box;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+    }
+
+    .card {
+        width: 100%;
+        max-width: 520px;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 24px;
+        box-shadow: 0 20px 40px rgba(0,0,0,.4);
+    }
+
+    .header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 8px;
+    }
+
+    .badge {
+        background: rgba(63,185,80,.15);
+        color: var(--success);
+        padding: 6px 10px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    h1 {
+        font-size: 20px;
+        margin: 0;
+    }
+
+    .subtitle {
+        color: var(--muted);
+        font-size: 14px;
+        margin-bottom: 20px;
+    }
+
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+        margin-bottom: 14px;
+    }
+
+    .field {
+        background: #0b0f14;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 12px;
+    }
+
+    .field.full {
+        grid-column: span 2;
+    }
+
+    .label {
+        font-size: 12px;
+        color: var(--muted);
+        margin-bottom: 6px;
+    }
+
+    .value {
+        font-size: 14px;
+        font-weight: 500;
+        white-space: pre-line;
+    }
+
+    code {
+        display: block;
+        background: #010409;
+        border: 1px solid var(--border);
+        padding: 10px;
+        border-radius: 8px;
+        font-size: 13px;
+        color: #c9d1d9;
+    }
+
+    .footer {
+        margin-top: 18px;
+        border-top: 1px solid var(--border);
+        padding-top: 12px;
+        font-size: 12px;
+        color: var(--muted);
+        text-align: center;
+    }
+</style>
+</head>
+<body>
+
+<div class="card">
+    <div class="header">
+        <span class="badge">✔ VERIFIED</span>
+        <h1>Nexa Premium Purchase</h1>
+    </div>
+    <div class="subtitle">Thank you for your purchase</div>
+
+    <div class="grid">
+        <div class="field">
+            <div class="label">Buyer</div>
+            <div class="value">(Nama Pembeli)</div>
+        </div>
+
+        <div class="field">
+            <div class="label">Price</div>
+            <code>Rp XX.XXX (30,00)</code>
+        </div>
+
+        <div class="field">
+            <div class="label">Keys</div>
+            <code>XX1 × Nexa Premium (XX Days) / Permanent</code>
+        </div>
+
+        <div class="field">
+            <div class="label">Payment Method</div>
+            <code>SociaBuzz</code>
+        </div>
+
+        <div class="field full">
+            <div class="label">📦 Script</div>
+            <code>Nexa Premium — XX Days / Permanent</code>
+        </div>
+
+        <div class="field full">
+            <div class="label">Item Info</div>
+            <code>Seller: (Nama Admin)
+Tanggal Pembelian: DD/MM/YYYY</code>
+        </div>
+    </div>
+
+    <div class="footer">
+        © Nexa Premium — All rights reserved
+    </div>
+</div>
+
+</body>
+</html>
