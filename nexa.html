@@ -11,7 +11,7 @@
 body {
     background:#0d1117;
     color:#e6edf3;
-    font-family:Poppins, sans-serif;
+    font-family:Poppins,sans-serif;
     display:flex;
     justify-content:center;
     align-items:center;
@@ -23,7 +23,7 @@ body {
     border-radius:14px;
     padding:24px;
     width:100%;
-    max-width:480px;
+    max-width:500px;
 }
 h1 { font-size:20px; margin-bottom:14px; }
 input, select, button {
@@ -52,9 +52,31 @@ small { color:#8b949e; }
 
     <input id="buyer" placeholder="Nama Pembeli">
     <input id="price" placeholder="Harga (Rp)">
-    <input id="duration" placeholder="Durasi (XX Days / Permanent)">
-    <input id="key" placeholder="Key / Jumlah">
     <input id="seller" placeholder="Nama Admin / Seller">
+
+    <!-- JUMLAH KEY -->
+    <select id="keyCount">
+        <option value="1">1 Key</option>
+        <option value="2">2 Keys</option>
+        <option value="3">3 Keys</option>
+        <option value="4">4 Keys</option>
+        <option value="5">5 Keys</option>
+        <option value="6">6 Keys</option>
+        <option value="7">7 Keys</option>
+        <option value="8">8 Keys</option>
+        <option value="9">9 Keys</option>
+        <option value="10">10 Keys</option>
+    </select>
+
+    <!-- DURATION -->
+    <select id="duration">
+        <option value="30 Days">30 Days</option>
+        <option value="40 Days">40 Days</option>
+        <option value="50 Days">50 Days</option>
+        <option value="60 Days">60 Days</option>
+        <option value="70 Days">70 Days</option>
+        <option value="Permanent">Permanent</option>
+    </select>
 
     <select id="payment">
         <option>SociaBuzz</option>
@@ -64,18 +86,18 @@ small { color:#8b949e; }
     </select>
 
     <button onclick="sendWebhook()">Kirim ke Discord</button>
-    <small>Status akan muncul di console browser</small>
+    <small>Auto sync key & duration</small>
 </div>
 
 <script>
-const WEBHOOK_URL = "https://discord.com/api/webhooks/1419630439148032020/rR3AFZ7CljWE4bu1ocO4rwH3X-p5fBQ-HCXvnW1INb7KSuB0UhjgbnGbYt7P4lyLZq3L";
+const WEBHOOK_URL = "ISI_WEBHOOK_DISCORD_KAMU_DI_SINI";
 
 function sendWebhook() {
-    const buyer = document.getElementById("buyer").value;
-    const price = document.getElementById("price").value;
+    const buyer = buyerValue();
+    const price = document.getElementById("price").value || "-";
+    const seller = document.getElementById("seller").value || "-";
+    const keyCount = document.getElementById("keyCount").value;
     const duration = document.getElementById("duration").value;
-    const key = document.getElementById("key").value;
-    const seller = document.getElementById("seller").value;
     const payment = document.getElementById("payment").value;
 
     const payload = {
@@ -87,30 +109,30 @@ function sendWebhook() {
                 fields: [
                     {
                         name: "👤 Buyer",
-                        value: buyer || "-",
+                        value: buyer,
                         inline: true
                     },
                     {
                         name: "💰 Price",
-                        value: "```lua\nRp " + price + "\n```",
+                        value: `\`\`\`lua\nRp ${price}\n\`\`\``,
                         inline: true
                     },
                     {
                         name: "🔑 Keys",
-                        value: "```lua\n" + key + " × Nexa Premium (" + duration + ")\n```"
+                        value: `\`\`\`lua\n${keyCount} × Nexa Premium (${duration})\n\`\`\``
                     },
                     {
                         name: "📦 Script",
-                        value: "```lua\nNexa Premium — " + duration + "\n```"
+                        value: `\`\`\`lua\nNexa Premium — ${duration}\n\`\`\``
                     },
                     {
                         name: "💳 Payment Method",
-                        value: "```" + payment + "```",
+                        value: `\`\`\`${payment}\`\`\``,
                         inline: true
                     },
                     {
                         name: "🔍 Item",
-                        value: "```css\nSeller: " + seller + "\nTanggal: " + new Date().toLocaleDateString() + "\n```"
+                        value: `\`\`\`css\nSeller: ${seller}\nTanggal: ${new Date().toLocaleDateString()}\n\`\`\``
                     }
                 ],
                 footer: {
@@ -126,11 +148,13 @@ function sendWebhook() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
     })
-    .then(() => alert("✅ Berhasil dikirim ke Discord"))
-    .catch(err => {
-        console.error(err);
-        alert("❌ Gagal kirim webhook");
-    });
+    .then(() => alert("✅ Webhook berhasil dikirim"))
+    .catch(() => alert("❌ Gagal kirim webhook"));
+}
+
+function buyerValue() {
+    const v = document.getElementById("buyer").value;
+    return v ? v : "-";
 }
 </script>
 
