@@ -23,7 +23,7 @@ body {
     border-radius:14px;
     padding:24px;
     width:100%;
-    max-width:500px;
+    max-width:520px;
 }
 h1 { font-size:20px; margin-bottom:14px; }
 input, select, button {
@@ -53,6 +53,9 @@ small { color:#8b949e; }
     <input id="buyer" placeholder="Nama Pembeli">
     <input id="price" placeholder="Harga (Rp)">
     <input id="seller" placeholder="Nama Admin / Seller">
+
+    <!-- IMAGE URL -->
+    <input id="imageUrl" placeholder="📸 Screenshot Bukti Pembayaran (Image URL)">
 
     <!-- JUMLAH KEY -->
     <select id="keyCount">
@@ -86,75 +89,72 @@ small { color:#8b949e; }
     </select>
 
     <button onclick="sendWebhook()">Kirim ke Discord</button>
-    <small>Auto sync key & duration</small>
+    <small>Screenshot akan muncul langsung di embed</small>
 </div>
 
 <script>
-const WEBHOOK_URL = "ISI_WEBHOOK_DISCORD_KAMU_DI_SINI";
+const WEBHOOK_URL = "https://discord.com/api/webhooks/1419630439148032020/rR3AFZ7CljWE4bu1ocO4rwH3X-p5fBQ-HCXvnW1INb7KSuB0UhjgbnGbYt7P4lyLZq3L";
 
 function sendWebhook() {
-    const buyer = buyerValue();
+    const buyer = document.getElementById("buyer").value || "-";
     const price = document.getElementById("price").value || "-";
     const seller = document.getElementById("seller").value || "-";
     const keyCount = document.getElementById("keyCount").value;
     const duration = document.getElementById("duration").value;
     const payment = document.getElementById("payment").value;
+    const imageUrl = document.getElementById("imageUrl").value;
 
-    const payload = {
-        embeds: [
+    const embed = {
+        title: "✨ Nexa Premium Purchase",
+        description: "Thank you for your purchase",
+        color: 7506394,
+        fields: [
             {
-                title: "✨ Nexa Premium Purchase",
-                description: "Thank you for your purchase",
-                color: 7506394,
-                fields: [
-                    {
-                        name: "👤 Buyer",
-                        value: buyer,
-                        inline: true
-                    },
-                    {
-                        name: "💰 Price",
-                        value: `\`\`\`lua\nRp ${price}\n\`\`\``,
-                        inline: true
-                    },
-                    {
-                        name: "🔑 Keys",
-                        value: `\`\`\`lua\n${keyCount} × Nexa Premium (${duration})\n\`\`\``
-                    },
-                    {
-                        name: "📦 Script",
-                        value: `\`\`\`lua\nNexa Premium — ${duration}\n\`\`\``
-                    },
-                    {
-                        name: "💳 Payment Method",
-                        value: `\`\`\`${payment}\`\`\``,
-                        inline: true
-                    },
-                    {
-                        name: "🔍 Item",
-                        value: `\`\`\`css\nSeller: ${seller}\nTanggal: ${new Date().toLocaleDateString()}\n\`\`\``
-                    }
-                ],
-                footer: {
-                    text: "Nexa Premium • Auto Webhook"
-                },
-                timestamp: new Date()
+                name: "👤 Buyer",
+                value: buyer,
+                inline: true
+            },
+            {
+                name: "💰 Price",
+                value: `\`\`\`lua\nRp ${price}\n\`\`\``,
+                inline: true
+            },
+            {
+                name: "🔑 Keys",
+                value: `\`\`\`lua\n${keyCount} × Nexa Premium (${duration})\n\`\`\``
+            },
+            {
+                name: "📦 Script",
+                value: `\`\`\`lua\nNexa Premium — ${duration}\n\`\`\``
+            },
+            {
+                name: "💳 Payment Method",
+                value: `\`\`\`${payment}\`\`\``,
+                inline: true
+            },
+            {
+                name: "🔍 Item",
+                value: `\`\`\`css\nSeller: ${seller}\nTanggal: ${new Date().toLocaleDateString()}\n\`\`\``
             }
-        ]
+        ],
+        footer: {
+            text: "Nexa Premium • Auto Webhook"
+        },
+        timestamp: new Date()
     };
+
+    // Tambah image kalau ada URL
+    if (imageUrl) {
+        embed.image = { url: imageUrl };
+    }
 
     fetch(WEBHOOK_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
+        body: JSON.stringify({ embeds: [embed] })
     })
     .then(() => alert("✅ Webhook berhasil dikirim"))
     .catch(() => alert("❌ Gagal kirim webhook"));
-}
-
-function buyerValue() {
-    const v = document.getElementById("buyer").value;
-    return v ? v : "-";
 }
 </script>
 
