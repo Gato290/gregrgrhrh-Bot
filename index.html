@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Nexa Hub Update Sender v2.4</title>
+<title>Nexa Hub Update Sender v2.5</title>
 
 <style>
 :root {
@@ -25,7 +25,6 @@ body {
   padding:40px 20px;
 }
 
-/* ✅ LAYOUT SPLIT KIRI FORM – KANAN PREVIEW */
 .wrapper {
   display:flex;
   gap:20px;
@@ -37,7 +36,6 @@ body {
   background:rgba(22,27,34,0.95);
   border:1px solid #2f343f;
   border-radius:16px;
-  backdrop-filter:blur(6px);
   padding:25px 30px;
   flex:1;
 }
@@ -65,7 +63,6 @@ select,input,textarea{
 
 textarea{
   min-height:160px;
-  font-size:16px;
   resize:none;
 }
 
@@ -90,7 +87,6 @@ button.secondary{background:var(--blue)}
   background:#161b22;
   border-radius:10px;
   padding:15px;
-  font-size:14px;
 }
 
 .preview-embed img{
@@ -105,13 +101,12 @@ button.secondary{background:var(--blue)}
 
 <div class="wrapper">
 
-<!-- ================= FORM ================= -->
 <div class="container">
 <h1>Nexa Hub</h1>
-<h2>Update Log Sender v2.2</h2>
+<h2>Update Log Sender v2.5</h2>
 
 <label>🔗 Select Webhook</label>
-<select id="webhookSelect" multiple>
+<select id="webhookSelect">
 <option value="https://discord.com/api/webhooks/XXXX">Discord Nexa</option>
 </select>
 
@@ -142,11 +137,6 @@ button.secondary{background:var(--blue)}
 <label>📋 Update List</label>
 <textarea id="updateList"></textarea>
 
-<br><br>
-
-<label>📎 Upload Image / Video</label>
-<input type="file" id="fileInput">
-
 <div class="button-group">
 <button class="secondary" id="previewBtn">👀 Preview</button>
 <button id="sendBtn">🚀 Send</button>
@@ -155,24 +145,18 @@ button.secondary{background:var(--blue)}
 <div id="status" class="status"></div>
 </div>
 
-<!-- ================= PREVIEW ================= -->
 <div class="preview-box">
 <h3 style="color:var(--purple)">Discord Embed Preview</h3>
 
-<div class="preview-embed" id="previewEmbed">
-<b>🎮 Game:</b><br>
-<span id="pGame">-</span><br><br>
+<div class="preview-embed">
+<img src="https://i.imgur.com/kJdhR4a.gif">
 
-<b>📦 Script:</b><br>
-<span id="pScript">-</span><br><br>
-
-<b>✅ Version:</b><br>
-<span id="pVersion">-</span><br><br>
-
+<b>🎮 Game:</b><br><span id="pGame">-</span><br><br>
+<b>📦 Script:</b><br><span id="pScript">-</span><br><br>
+<b>✅ Version:</b><br><span id="pVersion">-</span><br><br>
 <b>📋 Update:</b>
 <pre id="pUpdate"></pre>
 
-<!-- ✅ IMAGE PREVIEW -->
 <img src="https://i.imgur.com/SnVNao1.gif">
 </div>
 </div>
@@ -188,12 +172,6 @@ Array.from(scriptSelect.options).forEach(opt=>{
   });
 });
 
-updateList.addEventListener("input",function(){
-  this.style.height="auto";
-  this.style.height=this.scrollHeight+"px";
-});
-
-/* PREVIEW */
 previewBtn.onclick=()=>{
   pGame.textContent=gameSelect.value;
   pScript.textContent=[...scriptSelect.selectedOptions].map(o=>o.value).join(", ");
@@ -201,29 +179,28 @@ previewBtn.onclick=()=>{
   pUpdate.textContent=updateList.value;
 };
 
-/* SEND */
 sendBtn.onclick=async()=>{
 const payload={
 content:"<@&1390026095855796284>",
 username:"Nexa Hub〢Update Log",
 avatar_url:"https://i.imgur.com/0ncD3l8.jpeg",
-embeds:[{
-title:"```Nexa Hub: Update Logs```",
-description:"🚀 New update available!",
-color:15527138,
-thumbnail:{url:"https://i.imgur.com/0ncD3l8.jpeg"},
-
-/* ✅ IMAGE GIF EMBED */
-image:{url:"https://i.imgur.com/SnVNao1.gif"},
-
-fields:[
-{name:"🎮 Game",value:gameSelect.value,inline:true},
-{name:"📦 Script",value:[...scriptSelect.selectedOptions].map(o=>o.value).join(", "),inline:true},
-{name:"✅ Version",value:versionInput.value},
-{name:"📋 Update List",value:"```"+updateList.value+"```"}
-],
-timestamp:new Date().toISOString()
-}]
+embeds:[
+  { image:{url:"https://i.imgur.com/kJdhR4a.gif"} },
+  {
+    title:"```Nexa Hub: Update Logs```",
+    description:"🚀 New update available!",
+    color:15527138,
+    thumbnail:{url:"https://i.imgur.com/fENCN25.gif"},
+    image:{url:"https://i.imgur.com/SnVNao1.gif"},
+    fields:[
+      {name:"🎮 Game",value:gameSelect.value,inline:true},
+      {name:"📦 Script",value:[...scriptSelect.selectedOptions].map(o=>o.value).join(", "),inline:true},
+      {name:"✅ Version",value:versionInput.value},
+      {name:"📋 Update List",value:"```"+updateList.value+"```"}
+    ],
+    timestamp:new Date().toISOString()
+  }
+]
 };
 
 await fetch(webhookSelect.value,{
