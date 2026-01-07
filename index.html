@@ -1,264 +1,239 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Nexa Hub Update Sender v2.4</title>
+
 <style>
-  :root {
-    --bg-dark: #0d1117;
-    --panel: #161b22;
-    --text: #e6edf3;
-    --accent: #ec4c4c;
-    --secondary: #9ba3b4;
-    --green: #238636;
-    --blue: #58a6ff;
-    --purple: #bc8cff;
-  }
-  body {
-    font-family: "Inter", "Segoe UI", sans-serif;
-    background: radial-gradient(circle at top, #111726 0%, #0d1117 100%);
-    color: var(--text);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 0;
-    padding: 40px 20px;
-    min-height: 100vh;
-  }
-  .container {
-    background: rgba(22, 27, 34, 0.95);
-    border: 1px solid #2f343f;
-    border-radius: 16px;
-    backdrop-filter: blur(6px);
-    padding: 25px 30px;
-    width: 100%;
-    max-width: 700px;
-    box-shadow: 0 0 25px rgba(0,0,0,0.4);
-    animation: fadeIn 0.5s ease;
-  }
-  h1 { text-align: center; color: var(--accent); font-size: 28px; }
-  h2 { text-align: center; color: var(--secondary); margin-bottom: 25px; }
-  label { display: block; color: var(--secondary); margin-bottom: 5px; }
-  select, input, textarea {
-    width: 100%; background: var(--panel); color: var(--text);
-    border-radius: 8px; padding: 12px; border: 1px solid #30363d;
-  }
-  select[multiple] { height: 120px; }
+:root {
+  --bg-dark:#0d1117;
+  --panel:#161b22;
+  --text:#e6edf3;
+  --accent:#ec4c4c;
+  --secondary:#9ba3b4;
+  --green:#238636;
+  --blue:#58a6ff;
+  --purple:#bc8cff;
+}
 
-  /* ✅ UPDATE LIST TEXTAREA FIX (besar + auto resize) */
-  textarea {
-    width: 100%;
-    min-height: 180px;
-    font-size: 18px;          /* teks besar */
-    line-height: 1.6;         /* spasi antar baris */
-    resize: none;             /* matikan resize manual, biar auto */
-    overflow-y: hidden;       /* scroll dihilangkan */
-    transition: height 0.2s ease;
-  }
+body {
+  font-family: "Inter","Segoe UI",sans-serif;
+  background: radial-gradient(circle at top,#111726 0%,#0d1117 100%);
+  color:var(--text);
+  margin:0;
+  padding:40px 20px;
+}
 
-  button {
-    flex: 1; padding: 13px; background: var(--green); color: white;
-    border: none; border-radius: 8px; font-weight: 600; cursor: pointer;
-  }
-  button.secondary { background: var(--blue); }
-  .button-group { display: flex; gap: 10px; margin-top: 25px; }
-  .status { margin-top: 15px; text-align: center; font-size: 16px; }
-  .success { color: #2ea043; }  /* hijau terang biar lebih jelas */
-  .error { color: var(--accent); }
-  small { color: var(--secondary); }
+/* ✅ LAYOUT SPLIT KIRI FORM – KANAN PREVIEW */
+.wrapper {
+  display:flex;
+  gap:20px;
+  max-width:1200px;
+  margin:auto;
+}
+
+.container {
+  background:rgba(22,27,34,0.95);
+  border:1px solid #2f343f;
+  border-radius:16px;
+  backdrop-filter:blur(6px);
+  padding:25px 30px;
+  flex:1;
+}
+
+.preview-box {
+  background:#0d1117;
+  border:1px solid #30363d;
+  border-radius:16px;
+  padding:20px;
+  width:420px;
+}
+
+h1{text-align:center;color:var(--accent)}
+h2{text-align:center;color:var(--secondary);margin-bottom:20px}
+
+label{color:var(--secondary)}
+select,input,textarea{
+  width:100%;
+  background:var(--panel);
+  color:var(--text);
+  border-radius:8px;
+  padding:12px;
+  border:1px solid #30363d;
+}
+
+textarea{
+  min-height:160px;
+  font-size:16px;
+  resize:none;
+}
+
+button{
+  padding:13px;
+  background:var(--green);
+  border:none;
+  border-radius:8px;
+  font-weight:600;
+  cursor:pointer;
+  color:white;
+}
+
+button.secondary{background:var(--blue)}
+.button-group{display:flex;gap:10px;margin-top:20px}
+
+.status{text-align:center;margin-top:10px}
+.success{color:#2ea043}
+.error{color:var(--accent)}
+
+.preview-embed{
+  background:#161b22;
+  border-radius:10px;
+  padding:15px;
+  font-size:14px;
+}
+
+.preview-embed img{
+  width:100%;
+  border-radius:8px;
+  margin-top:10px;
+}
 </style>
 </head>
 
 <body>
+
+<div class="wrapper">
+
+<!-- ================= FORM ================= -->
 <div class="container">
-  <h1>Nexa Hub</h1>
-  <h2>Update Log Sender (Webhook System) v2.2</h2>
+<h1>Nexa Hub</h1>
+<h2>Update Log Sender v2.2</h2>
 
-  <div class="form-group">
-    <label>🔗 Select Webhook URLs (Multi-Select)</label>
-    <select id="webhookSelect" multiple>
-      <option value="https://discord.com/api/webhooks/1389650936779112680/n0_vYgnRtCnmX8v0d2buMpnQrXn6SDZYELeNvdI50pRx7HiTR78JN-XVPdr0PuLzS6V1">Discord Nexa</option>
-      <option value="https://discord.com/api/webhooks/EXAMPLE_WEBHOOK_2">Discord ???</option>
-      <option value="https://discord.com/api/webhooks/EXAMPLE_WEBHOOK_3">Discord ???</option>
-    </select>
-  </div>
+<label>🔗 Select Webhook</label>
+<select id="webhookSelect" multiple>
+<option value="https://discord.com/api/webhooks/XXXX">Discord Nexa</option>
+</select>
 
-  <div class="form-group">
-    <label>🎮 Select Game</label>
-    <select id="gameSelect">
-      <option value="Fish It">Fish It</option>
-      <option value="Plant Vs Brainrot">Plant Vs Brainrot</option>
-    </select>
-  </div>
+<br><br>
 
-  <div class="form-group">
-    <label>📦 Script Type (Multi-Select)</label>
-    <select id="scriptSelect" multiple>
-      <option value="Free">Free</option>
-      <option value="Premium">Premium</option>
-      <option value="Fixed">Fixed</option>
-    </select>
-    <small style="font-size: 12px;">Click to select multiple (no CTRL needed).</small>
-  </div>
+<label>🎮 Select Game</label>
+<select id="gameSelect">
+<option>Fish It</option>
+<option>Plant Vs Brainrot</option>
+</select>
 
-  <div class="form-group">
-    <label>✅ Version</label>
-    <input type="text" id="versionInput" placeholder="Example: v1.2.3" />
-  </div>
+<br><br>
 
-  <div class="form-group">
-    <label>📋 Update List</label>
-    <textarea id="updateList" placeholder="Tulis list update di sini..."></textarea>
-  </div>
+<label>📦 Script Type</label>
+<select id="scriptSelect" multiple>
+<option>Free</option>
+<option>Premium</option>
+<option>Fixed</option>
+</select>
 
-  <div class="form-group">
-    <label>📎 Upload Image/Video (Optional)</label>
-    <input type="file" id="fileInput" accept="image/*,video/*" />
-  </div>
+<br><br>
 
-  <div class="button-group">
-    <button id="previewBtn" class="secondary">👀 Preview Embed</button>
-    <button id="sendBtn">🚀 Send Update</button>
-  </div>
+<label>✅ Version</label>
+<input id="versionInput" placeholder="v1.2.3">
 
-  <div id="status" class="status"></div>
+<br><br>
 
-  <div id="previewSection" style="display:none; margin-top:20px; border:1px solid #30363d; padding:20px; border-radius:10px;">
-    <h3 style="color: var(--purple);">Preview</h3>
-    <pre id="previewBox" style="white-space:pre-wrap; color:#9ba3b4;"></pre>
-  </div>
+<label>📋 Update List</label>
+<textarea id="updateList"></textarea>
+
+<br><br>
+
+<label>📎 Upload Image / Video</label>
+<input type="file" id="fileInput">
+
+<div class="button-group">
+<button class="secondary" id="previewBtn">👀 Preview</button>
+<button id="sendBtn">🚀 Send</button>
+</div>
+
+<div id="status" class="status"></div>
+</div>
+
+<!-- ================= PREVIEW ================= -->
+<div class="preview-box">
+<h3 style="color:var(--purple)">Discord Embed Preview</h3>
+
+<div class="preview-embed" id="previewEmbed">
+<b>🎮 Game:</b><br>
+<span id="pGame">-</span><br><br>
+
+<b>📦 Script:</b><br>
+<span id="pScript">-</span><br><br>
+
+<b>✅ Version:</b><br>
+<span id="pVersion">-</span><br><br>
+
+<b>📋 Update:</b>
+<pre id="pUpdate"></pre>
+
+<!-- ✅ IMAGE PREVIEW -->
+<img src="https://i.imgur.com/SnVNao1.gif">
+</div>
+</div>
+
 </div>
 
 <script>
-/* ELEMENT */
-const webhookSelect = document.getElementById("webhookSelect");
-const gameSelect = document.getElementById("gameSelect");
-const scriptSelect = document.getElementById("scriptSelect");
-const versionInput = document.getElementById("versionInput");
-const updateList = document.getElementById("updateList");
-const fileInput = document.getElementById("fileInput");
-const previewBtn = document.getElementById("previewBtn");
-const sendBtn = document.getElementById("sendBtn");
-const previewSection = document.getElementById("previewSection");
-const previewBox = document.getElementById("previewBox");
-const statusBox = document.getElementById("status");
-
-/* MULTISELECT FIX — CLICK WITHOUT CTRL */
-Array.from(scriptSelect.options).forEach(opt => {
-  opt.addEventListener("mousedown", (e) => {
+const scriptSelect=document.getElementById("scriptSelect");
+Array.from(scriptSelect.options).forEach(opt=>{
+  opt.addEventListener("mousedown",e=>{
     e.preventDefault();
-    opt.selected = !opt.selected;  
+    opt.selected=!opt.selected;
   });
 });
 
-/* ✅ AUTO RESIZE TEXTAREA BIAR SEMUA TEXT KELIATAN */
-updateList.addEventListener("input", function () {
-  this.style.height = "auto";  
-  this.style.height = this.scrollHeight + "px";
+updateList.addEventListener("input",function(){
+  this.style.height="auto";
+  this.style.height=this.scrollHeight+"px";
 });
 
-/* PREVIEW SYSTEM */
-function buildPreview() {
-  const scripts = Array.from(scriptSelect.selectedOptions).map(o => o.value);
-  const scriptText = scripts.join(", ");
-  const game = gameSelect.value;
-
-  previewBox.textContent =
-`🎮 Game: ${game}
-📦 Script Type: ${scriptText}
-✅ Version: ${versionInput.value}
-📋 Updates:
-${updateList.value}`;
-}
-
-/* PREVIEW BUTTON */
-previewBtn.onclick = () => {
-  buildPreview();
-  previewSection.style.display = "block";
+/* PREVIEW */
+previewBtn.onclick=()=>{
+  pGame.textContent=gameSelect.value;
+  pScript.textContent=[...scriptSelect.selectedOptions].map(o=>o.value).join(", ");
+  pVersion.textContent=versionInput.value;
+  pUpdate.textContent=updateList.value;
 };
 
-/* SEND BUTTON */
-sendBtn.onclick = async () => {
-  const selectedWebhooks = Array.from(webhookSelect.selectedOptions).map(o => o.value);
-  const scripts = Array.from(scriptSelect.selectedOptions).map(o => o.value);
+/* SEND */
+sendBtn.onclick=async()=>{
+const payload={
+content:"<@&1390026095855796284>",
+username:"Nexa Hub〢Update Log",
+avatar_url:"https://i.imgur.com/0ncD3l8.jpeg",
+embeds:[{
+title:"```Nexa Hub: Update Logs```",
+description:"🚀 New update available!",
+color:15527138,
+thumbnail:{url:"https://i.imgur.com/0ncD3l8.jpeg"},
 
-  if (selectedWebhooks.length === 0) {
-    statusBox.textContent = "⚠️ Select at least 1 webhook!";
-    statusBox.className = "status error";
-    return;
-  }
-  if (scripts.length === 0) {
-    statusBox.textContent = "⚠️ Select script type!";
-    statusBox.className = "status error";
-    return;
-  }
+/* ✅ IMAGE GIF EMBED */
+image:{url:"https://i.imgur.com/SnVNao1.gif"},
 
-  const scriptText = scripts.join(", ");
-  const game = gameSelect.value;
-  const version = versionInput.value.trim();
-  const updates = updateList.value.trim();
-  const file = fileInput.files[0];
+fields:[
+{name:"🎮 Game",value:gameSelect.value,inline:true},
+{name:"📦 Script",value:[...scriptSelect.selectedOptions].map(o=>o.value).join(", "),inline:true},
+{name:"✅ Version",value:versionInput.value},
+{name:"📋 Update List",value:"```"+updateList.value+"```"}
+],
+timestamp:new Date().toISOString()
+}]
+};
 
-  const payload = {
-    content: "<@&1390026095855796284>",
-    username: "Nexa Hub〢Update Log",
-    avatar_url: "https://i.imgur.com/0ncD3l8.jpeg",
-    embeds: [
-      {
-        title: "```Nexa Hub: Update Logs```",
-        description: "🚀 New update available for Nexa Hub!",
-        color: 15527138,
-        thumbnail: { url: "https://i.imgur.com/0ncD3l8.jpeg" },
-        fields: [
-          { name: "`🎮 Games`", value: `\`\`\`${game} (${scriptText})\`\`\``, inline: true },
-          { name: "`✅ Version`", value: `\`\`\`lua\n${version}\n\`\`\``, inline: true },
-          { name: "`📋 Update List`", value: `\`\`\`yml\n${updates}\n\`\`\`` }
-        ],
-        timestamp: new Date().toISOString(),
-        footer: { text: "Nexa Hub Update" }
-      }
-    ]
-  };
+await fetch(webhookSelect.value,{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify(payload)
+});
 
-  statusBox.textContent = "⏳ Sending...";
-  statusBox.className = "status";
-
-  let success = 0;
-  let fail = 0;
-
-  for (const url of selectedWebhooks) {
-    try {
-      let body;
-      let headers = {};
-
-      if (file) {
-        const formData = new FormData();
-        formData.append("file", file);
-        formData.append("payload_json", JSON.stringify(payload));
-        body = formData;
-      } else {
-        headers["Content-Type"] = "application/json";
-        body = JSON.stringify(payload);
-      }
-
-      const res = await fetch(url, { method: "POST", headers, body });
-      if (res.ok) success++;
-      else fail++;
-
-    } catch (err) {
-      fail++;
-    }
-  }
-
-  if (fail === 0) {
-    statusBox.textContent = `✅ Sent to ${success} webhook(s)!`;
-    statusBox.className = "status success";
-  } else {
-    statusBox.textContent = `⚠️ Success: ${success}, Failed: ${fail}`;
-    statusBox.className = "status error";
-  }
+status.textContent="✅ Sent!";
+status.className="status success";
 };
 </script>
 
