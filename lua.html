@@ -6,7 +6,8 @@
   <title>Premium Lua Roblox Syntax Checker</title>
 
   <!-- Google Font Premium Look -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
     * {
@@ -17,30 +18,116 @@
 
     body {
       font-family: 'Inter', sans-serif;
-      background: #0a0f18;
+      background: linear-gradient(135deg, #0a0f18 0%, #151e2d 100%);
       color: #e6edf3;
-      height: 100vh;
+      min-height: 100vh;
+      padding: 24px;
       display: flex;
       flex-direction: column;
-      padding: 24px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(circle at 20% 80%, rgba(255, 30, 30, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 107, 107, 0.08) 0%, transparent 50%);
+      z-index: -1;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 28px;
     }
 
     h1 {
-      font-size: 32px;
-      font-weight: 700;
-      text-align: center;
-      background: linear-gradient(90deg, #ff1e1e, #ff6b6b);
+      font-size: 36px;
+      font-weight: 800;
+      background: linear-gradient(90deg, #ff1e1e, #ff6b6b, #ff8e8e);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      margin-bottom: 16px;
-      letter-spacing: 1px;
+      margin-bottom: 8px;
+      letter-spacing: -0.5px;
+      position: relative;
+      display: inline-block;
+    }
+
+    h1::after {
+      content: '';
+      position: absolute;
+      width: 120px;
+      height: 4px;
+      background: linear-gradient(90deg, #ff1e1e, #ff6b6b);
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-radius: 2px;
+    }
+
+    .subtitle {
+      font-size: 16px;
+      color: #8b949e;
+      font-weight: 500;
+      margin-top: 12px;
     }
 
     #container {
       display: grid;
       grid-template-columns: 1fr 1fr;
       flex: 1;
-      gap: 20px;
+      gap: 28px;
+      margin-bottom: 28px;
+    }
+
+    .panel {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #1f2d3d;
+    }
+
+    .panel-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #e6edf3;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .panel-title i {
+      color: #ff1e1e;
+    }
+
+    .char-count {
+      font-size: 13px;
+      color: #8b949e;
+      background: rgba(31, 45, 61, 0.5);
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-family: 'Fira Code', monospace;
+    }
+
+    .code-container {
+      flex: 1;
+      position: relative;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
     }
 
     textarea {
@@ -51,89 +138,234 @@
       font-weight: 500;
       background: #111822;
       color: #e6edf3;
-      border: 1px solid #1f2d3d;
+      border: 2px solid #1f2d3d;
       border-radius: 12px;
-      padding: 16px;
+      padding: 20px;
       outline: none;
-      transition: 0.3s;
+      resize: none;
+      transition: all 0.3s;
+      line-height: 1.6;
     }
 
     textarea:focus {
       border-color: #ff1e1e;
-      box-shadow: 0 0 12px rgba(255, 30, 30, 0.5);
+      box-shadow: 0 0 0 3px rgba(255, 30, 30, 0.2), 0 8px 24px rgba(0, 0, 0, 0.4);
     }
 
     #output {
       width: 100%;
       height: 100%;
       background: #111822;
-      border: 1px solid #1f2d3d;
+      border: 2px solid #1f2d3d;
       border-radius: 12px;
-      padding: 16px;
+      padding: 20px;
       font-family: 'Fira Code', monospace;
       font-size: 14px;
       overflow-y: auto;
-      transition: 0.3s;
+      transition: all 0.3s;
+      line-height: 1.6;
+      white-space: pre-wrap;
+    }
+
+    .output-success {
+      border-color: #10b981;
+      background: rgba(16, 185, 129, 0.05);
+    }
+
+    .output-error {
+      border-color: #ff1e1e;
+      background: rgba(255, 30, 30, 0.05);
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 14px 32px;
+      font-size: 16px;
+      font-weight: 600;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     }
 
     #checkBtn {
-      margin-top: 16px;
-      padding: 12px 32px;
-      font-size: 16px;
-      font-weight: 600;
-      background: #ff1e1e;
-      border: none;
+      background: linear-gradient(90deg, #ff1e1e, #ff6b6b);
       color: white;
-      border-radius: 50px;
-      cursor: pointer;
-      transition: 0.3s;
-      align-self: center;
-      box-shadow: 0 4px 18px rgba(255, 30, 30, 0.4);
     }
 
     #checkBtn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 22px rgba(255, 30, 30, 0.6);
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(255, 30, 30, 0.4);
+    }
+
+    #clearBtn {
+      background: #1f2d3d;
+      color: #e6edf3;
+    }
+
+    #clearBtn:hover {
+      background: #2d3e54;
+      transform: translateY(-3px);
     }
 
     #saran {
-      margin-top: 16px;
+      margin-top: 8px;
       width: 100%;
-      background: #111822;
+      background: linear-gradient(135deg, #111822 0%, #151e2d 100%);
       border-left: 4px solid #ff1e1e;
-      border-radius: 8px;
-      padding: 16px;
+      border-radius: 10px;
+      padding: 20px;
       font-family: 'Fira Code', monospace;
       font-size: 13px;
       white-space: pre-wrap;
       display: none;
       color: #f7c948;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+      line-height: 1.7;
+    }
+
+    .saran-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      color: #ffcc00;
     }
 
     /* Custom Scrollbar Premium */
     ::-webkit-scrollbar {
-      width: 6px;
+      width: 10px;
     }
-    ::-webkit-scrollbar-thumb {
-      background: #ff1e1e;
+    
+    ::-webkit-scrollbar-track {
+      background: #0a0f18;
       border-radius: 10px;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, #ff1e1e, #ff6b6b);
+      border-radius: 10px;
+      border: 2px solid #0a0f18;
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid #1f2d3d;
+      color: #8b949e;
+      font-size: 14px;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 1024px) {
+      #container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+      
+      .panel {
+        height: 400px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 16px;
+      }
+      
+      h1 {
+        font-size: 28px;
+      }
+      
+      .controls {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .btn {
+        width: 100%;
+        max-width: 300px;
+        justify-content: center;
+      }
     }
   </style>
 </head>
 
 <body>
 
-  <h1>Lua Roblox Syntax Checker PRO</h1>
-
-  <div id="container">
-    <textarea id="luaCode" placeholder="Paste Lua Roblox script here..."></textarea>
-    <pre id="output">Waiting for code check...</pre>
+  <div class="header">
+    <h1><i class="fas fa-code"></i> Lua Roblox Syntax Checker PRO</h1>
+    <p class="subtitle">Validasi kode Lua Anda dengan presisi tinggi dan saran perbaikan otomatis</p>
   </div>
 
-  <button id="checkBtn">Check Syntax</button>
+  <div id="container">
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">
+          <i class="fas fa-edit"></i>
+          <span>Kode Lua Roblox</span>
+        </div>
+        <div class="char-count" id="charCount">0 karakter</div>
+      </div>
+      <div class="code-container">
+        <textarea id="luaCode" placeholder="-- Tempel skrip Lua Roblox Anda di sini...
+-- Contoh:
+local Players = game:GetService('Players')
+
+local function onPlayerAdded(player)
+    print(player.Name .. ' bergabung ke game!')
+end
+
+Players.PlayerAdded:Connect(onPlayerAdded)"></textarea>
+      </div>
+    </div>
+    
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">
+          <i class="fas fa-clipboard-check"></i>
+          <span>Hasil Pemeriksaan</span>
+        </div>
+        <div class="char-count" id="status">Menunggu</div>
+      </div>
+      <div class="code-container">
+        <pre id="output">✅ Syntax Checker siap digunakan.
+Tempel kode Lua Anda di panel kiri, lalu klik tombol "Check Syntax".</pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button id="checkBtn" class="btn">
+      <i class="fas fa-bolt"></i>
+      Check Syntax
+    </button>
+    <button id="clearBtn" class="btn">
+      <i class="fas fa-broom"></i>
+      Clear Code
+    </button>
+  </div>
 
   <div id="saran"></div>
+
+  <div class="footer">
+    <p>Lua Roblox Syntax Checker PRO • Mendukung Lua 5.3 • Dibuat dengan <i class="fas fa-heart" style="color:#ff1e1e;"></i> untuk developer Roblox</p>
+  </div>
 
   <!-- Load Fengari Lua interpreter -->
   <script src="https://unpkg.com/fengari-web/dist/fengari-web.js"></script>
@@ -143,53 +375,171 @@
     const outputEl = document.getElementById('output');
     const saranEl = document.getElementById('saran');
     const checkBtn = document.getElementById('checkBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const charCountEl = document.getElementById('charCount');
+    const statusEl = document.getElementById('status');
+
+    // Update character count
+    luaCodeEl.addEventListener('input', function() {
+      const charCount = luaCodeEl.value.length;
+      const lineCount = luaCodeEl.value.split('\n').length;
+      charCountEl.textContent = `${charCount} karakter, ${lineCount} baris`;
+      
+      if (charCount === 0) {
+        statusEl.textContent = "Menunggu";
+        outputEl.textContent = "✅ Syntax Checker siap digunakan.\nTempel kode Lua Anda di panel kiri, lalu klik tombol 'Check Syntax'.";
+        outputEl.className = "";
+        saranEl.style.display = "none";
+      }
+    });
 
     function beriSaran(errorMsg, code) {
       errorMsg = errorMsg.toLowerCase();
       let suggestions = [];
-
+      
+      suggestions.push("🚀 **DEBUG INSIGHT**");
+      suggestions.push("=".repeat(40));
+      
+      // Common Lua syntax errors
       if (errorMsg.includes("expected identifier")) {
-        suggestions.push("• Potential invalid character or variable name typo.");
+        suggestions.push("• Periksa nama variabel: pastikan tidak mengandung karakter khusus atau diawali angka.");
+        suggestions.push("• Pastikan tidak ada kata kunci Lua yang digunakan sebagai nama variabel (seperti 'local', 'function', 'end').");
       }
+      
       if (errorMsg.includes("syntax error near")) {
-        suggestions.push("• Check for unclosed brackets or missing `end`.");
+        suggestions.push("• Kemungkinan ada tanda baca yang hilang atau salah penempatan.");
+        suggestions.push("• Cek apakah semua statement diakhiri dengan benar.");
       }
+      
+      if (errorMsg.includes("unfinished string")) {
+        suggestions.push("• String tidak ditutup dengan tanda kutip yang sesuai.");
+        suggestions.push("• Gunakan escape character (\\\") jika diperlukan string di dalam string.");
+      }
+      
+      // Check for specific pattern issues
       if ((code.match(/"/g) || []).length % 2 !== 0) {
-        suggestions.push("• Unfinished string detected. Close all quotes.");
+        suggestions.push("• ⚠️ DETECTED: Jumlah tanda kutip ganda tidak genap.");
+        suggestions.push("• SOLUTION: Tutup semua string dengan tanda kutip ganda (\").");
       }
+      
+      if ((code.match(/'/g) || []).length % 2 !== 0) {
+        suggestions.push("• ⚠️ DETECTED: Jumlah tanda kutip tunggal tidak genap.");
+        suggestions.push("• SOLUTION: Tutup semua string dengan tanda kutip tunggal (').");
+      }
+      
       if ((code.match(/\(/g) || []).length !== (code.match(/\)/g) || []).length) {
-        suggestions.push("• Parentheses mismatch.");
+        suggestions.push("• ⚠️ DETECTED: Jumlah tanda kurung buka dan tutup tidak sama.");
+        suggestions.push("• SOLUTION: Pastikan setiap '(' memiliki pasangan ')'.");
       }
+      
+      if ((code.match(/\{/g) || []).length !== (code.match(/\}/g) || []).length) {
+        suggestions.push("• ⚠️ DETECTED: Jumlah kurung kurawal buka dan tutup tidak sama.");
+        suggestions.push("• SOLUTION: Pastikan setiap '{' memiliki pasangan '}'.");
+      }
+      
       if ((code.match(/\[/g) || []).length !== (code.match(/\]/g) || []).length) {
-        suggestions.push("• Square bracket mismatch.");
+        suggestions.push("• ⚠️ DETECTED: Jumlah tanda kurung siku tidak sama.");
+        suggestions.push("• SOLUTION: Pastikan setiap '[' memiliki pasangan ']'.");
       }
-
-      if (suggestions.length === 0) {
-        suggestions.push("• Review the error line carefully.");
+      
+      // Roblox-specific suggestions
+      const robloxKeywords = ["game:", "GetService", "Instance.new", "Workspace", "Players"];
+      const containsRoblox = robloxKeywords.some(keyword => code.includes(keyword));
+      
+      if (containsRoblox) {
+        suggestions.push("");
+        suggestions.push("🎮 **ROBLOX SPECIFIC TIPS**");
+        suggestions.push("=".repeat(40));
+        suggestions.push("• Pastikan menggunakan wait() untuk yield script jika diperlukan.");
+        suggestions.push("• Gunakan RemoteEvents/Functions untuk komunikasi client-server.");
+        suggestions.push("• Hindari infinite loops tanpa yield di Roblox Lua.");
       }
-
+      
+      if (suggestions.length <= 3) {
+        suggestions.push("");
+        suggestions.push("💡 **GENERAL ADVICE**");
+        suggestions.push("=".repeat(40));
+        suggestions.push("• Periksa baris yang disebutkan dalam pesan error.");
+        suggestions.push("• Gunakan editor dengan syntax highlighting untuk mempermudah.");
+        suggestions.push("• Pecah kode kompleks menjadi fungsi-fungsi kecil.");
+      }
+      
       return suggestions.join("\n");
     }
 
     function checkLua() {
       const code = luaCodeEl.value;
+      
+      if (!code.trim()) {
+        outputEl.textContent = "❌ Tidak ada kode untuk diperiksa.\nSilakan masukkan kode Lua di panel sebelah kiri.";
+        outputEl.className = "output-error";
+        statusEl.textContent = "Error";
+        statusEl.style.color = "#ff4444";
+        saranEl.style.display = "none";
+        return;
+      }
 
       try {
         fengari.load(code);
-        outputEl.textContent = "✅ Valid Lua script. No syntax error detected.";
-        outputEl.style.color = "#4ade80";
+        outputEl.textContent = "✅ **VALID LUA SCRIPT**\n\nTidak ada kesalahan sintaks yang terdeteksi.\nKode Anda siap dijalankan di Roblox Studio.";
+        outputEl.className = "output-success";
+        statusEl.textContent = "Valid";
+        statusEl.style.color = "#10b981";
         saranEl.style.display = "none";
       } catch (err) {
-        outputEl.textContent = "❌ Syntax error detected:\n" + err.message;
-        outputEl.style.color = "#ff4444";
+        outputEl.textContent = "❌ **SYNTAX ERROR DETECTED**\n\n" + err.message + "\n\n" + 
+                               "📝 **Error Details:**\n" + 
+                               "Pesan: " + err.message + "\n" +
+                               "Jenis: " + (err.name || "Syntax Error");
+        outputEl.className = "output-error";
+        statusEl.textContent = "Invalid";
+        statusEl.style.color = "#ff4444";
 
         const hasilSaran = beriSaran(err.message, code);
-        saranEl.textContent = "💡 Debug Insight:\n" + hasilSaran;
+        saranEl.innerHTML = `<div class="saran-header"><i class="fas fa-lightbulb"></i> <span>Debug Insight & Suggestions</span></div>` + hasilSaran;
         saranEl.style.display = "block";
       }
     }
 
+    function clearCode() {
+      luaCodeEl.value = "";
+      outputEl.textContent = "✅ Syntax Checker siap digunakan.\nTempel kode Lua Anda di panel kiri, lalu klik tombol 'Check Syntax'.";
+      outputEl.className = "";
+      saranEl.style.display = "none";
+      statusEl.textContent = "Menunggu";
+      statusEl.style.color = "";
+      charCountEl.textContent = "0 karakter";
+    }
+
     checkBtn.addEventListener('click', checkLua);
+    clearBtn.addEventListener('click', clearCode);
+
+    // Add some example code on first load
+    window.addEventListener('DOMContentLoaded', function() {
+      if (luaCodeEl.value.trim() === "") {
+        luaCodeEl.value = `-- Contoh kode Lua Roblox
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local function welcomePlayer(player)
+    local leaderstats = Instance.new("Folder")
+    leaderstats.Name = "leaderstats"
+    leaderstats.Parent = player
+    
+    local coins = Instance.new("IntValue")
+    coins.Name = "Coins"
+    coins.Value = 100
+    coins.Parent = leaderstats
+    
+    print(player.Name .. " telah bergabung dengan " .. game.Name)
+end
+
+Players.PlayerAdded:Connect(welcomePlayer)
+
+print("Script Lua berhasil dijalankan!")`;
+        luaCodeEl.dispatchEvent(new Event('input'));
+      }
+    });
   </script>
 
 </body>
