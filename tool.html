@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexa Tools - Debugger Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary-color: #4a3f8c;
+            --secondary-color: #6c5ce7;
+            --accent-color: #00cec9;
+            --danger-color: #ff7675;
+            --success-color: #00b894;
+            --warning-color: #fdcb6e;
+            --dark-bg: #2d3436;
+            --light-bg: #f5f6fa;
+            --text-light: #ffffff;
+            --text-dark: #2d3436;
+            --border-radius: 12px;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: var(--border-radius);
+            padding: 25px 40px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, var(--secondary-color), var(--accent-color));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--text-light);
+        }
+
+        .logo-text h1 {
+            color: var(--text-light);
+            font-size: 32px;
+            margin-bottom: 5px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .logo-text p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+        }
+
+        .stats {
+            display: flex;
+            gap: 25px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px 25px;
+            border-radius: var(--border-radius);
+            min-width: 150px;
+            text-align: center;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: var(--text-light);
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 25px;
+        }
+
+        .log-panel {
+            background: var(--light-bg);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+            height: 600px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .panel-header h2 {
+            color: var(--dark-bg);
+            font-size: 22px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .log-filters {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            background: #e0e0e0;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn.active {
+            background: var(--secondary-color);
+            color: var(--text-light);
+        }
+
+        .filter-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .log-container {
+            flex: 1;
+            overflow-y: auto;
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .log-entry {
+            padding: 10px 15px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            background: white;
+            border-left: 4px solid var(--primary-color);
+            animation: fadeIn 0.3s ease;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .log-time {
+            color: #666;
+            font-size: 12px;
+            min-width: 90px;
+            padding-top: 2px;
+        }
+
+        .log-type {
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .log-message {
+            flex: 1;
+            word-break: break-word;
+        }
+
+        .log-type.system { background: #dfe6e9; color: #2d3436; }
+        .log-type.print { background: #74b9ff; color: white; }
+        .log-type.require { background: #00b894; color: white; }
+        .log-type.security { background: #ff7675; color: white; }
+        .log-type.url { background: #a29bfe; color: white; }
+        .log-type.encrypted { background: #fd79a8; color: white; }
+
+        .control-panel {
+            background: var(--light-bg);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .control-group {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .control-group h3 {
+            color: var(--dark-bg);
+            margin-bottom: 15px;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toggle-switch {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-switch:hover {
+            background: #e9ecef;
+        }
+
+        .switch-label {
+            font-weight: 500;
+            color: var(--dark-bg);
+        }
+
+        .switch {
+            position: relative;
+            width: 60px;
+            height: 30px;
+            background: #ccc;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .switch::after {
+            content: '';
+            position: absolute;
+            width: 26px;
+            height: 26px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .switch.active {
+            background: var(--success-color);
+        }
+
+        .switch.active::after {
+            transform: translateX(30px);
+        }
+
+        .btn {
+            padding: 14px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .btn-primary {
+            background: var(--secondary-color);
+            color: var(--text-light);
+        }
+
+        .btn-danger {
+            background: var(--danger-color);
+            color: var(--text-light);
+        }
+
+        .btn-warning {
+            background: var(--warning-color);
+            color: var(--dark-bg);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .url-list {
+            max-height: 200px;
+            overflow-y: auto;
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+        .url-item {
+            padding: 10px;
+            margin-bottom: 8px;
+            background: white;
+            border-radius: 6px;
+            font-size: 14px;
+            word-break: break-all;
+            border-left: 3px solid var(--accent-color);
+        }
+
+        .url-item:hover {
+            background: #e9ecef;
+            cursor: pointer;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 40px;
+            font-size: 14px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            background: var(--success-color);
+            color: white;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: fadeIn 0.3s ease;
+            z-index: 1000;
+        }
+
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+            
+            .logo {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-bug"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>Nexa Tools Debugger</h1>
+                    <p>Real-time monitoring and exploit protection system</p>
+                </div>
+            </div>
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-value" id="logCount">0</div>
+                    <div class="stat-label">Logs</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="uptime">0s</div>
+                    <div class="stat-label">Uptime</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="urlCount">0</div>
+                    <div class="stat-label">URLs Captured</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="blockedCount">0</div>
+                    <div class="stat-label">Exploits Blocked</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Log Panel -->
+            <div class="log-panel">
+                <div class="panel-header">
+                    <h2><i class="fas fa-terminal"></i> Real-time Logs</h2>
+                    <div>
+                        <button class="btn btn-warning" onclick="clearLogs()">
+                            <i class="fas fa-trash"></i> Clear Logs
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="log-filters">
+                    <button class="filter-btn active" onclick="filterLogs('all')">All</button>
+                    <button class="filter-btn" onclick="filterLogs('system')">System</button>
+                    <button class="filter-btn" onclick="filterLogs('print')">Print</button>
+                    <button class="filter-btn" onclick="filterLogs('security')">Security</button>
+                    <button class="filter-btn" onclick="filterLogs('url')">URL</button>
+                    <button class="filter-btn" onclick="filterLogs('require')">Require</button>
+                </div>
+                
+                <div class="log-container" id="logContainer">
+                    <!-- Log entries will be inserted here -->
+                    <div class="log-entry">
+                        <div class="log-time" id="currentTime">--:--:--</div>
+                        <div class="log-type system">System</div>
+                        <div class="log-message">Nexa Tools Debugger initialized successfully</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Control Panel -->
+            <div class="control-panel">
+                <div class="control-group">
+                    <h3><i class="fas fa-cogs"></i> System Controls</h3>
+                    
+                    <div class="toggle-switch" onclick="toggleSetting('logging')">
+                        <div class="switch-label">
+                            <i class="fas fa-play-circle"></i> Logging Active
+                        </div>
+                        <div class="switch active" id="loggingSwitch"></div>
+                    </div>
+                    
+                    <div class="toggle-switch" onclick="toggleSetting('antiExploit')">
+                        <div class="switch-label">
+                            <i class="fas fa-shield-alt"></i> Anti-Exploit
+                        </div>
+                        <div class="switch active" id="antiExploitSwitch"></div>
+                    </div>
+                    
+                    <button class="btn btn-primary" onclick="pauseLogging()">
+                        <i class="fas fa-pause"></i> Pause Logging
+                    </button>
+                </div>
+
+                <div class="control-group">
+                    <h3><i class="fas fa-globe"></i> URL Monitoring</h3>
+                    <div class="url-list" id="urlList">
+                        <!-- URLs will be inserted here -->
+                        <div class="url-item">https://example.com/api/script1</div>
+                        <div class="url-item">https://api.server.com/load</div>
+                    </div>
+                    <button class="btn btn-primary" onclick="exportURLs()">
+                        <i class="fas fa-download"></i> Export URLs
+                    </button>
+                </div>
+
+                <div class="control-group">
+                    <h3><i class="fas fa-exclamation-triangle"></i> Security</h3>
+                    <div class="toggle-switch" onclick="toggleSetting('autoBlock')">
+                        <div class="switch-label">
+                            <i class="fas fa-ban"></i> Auto-Block Exploits
+                        </div>
+                        <div class="switch active" id="autoBlockSwitch"></div>
+                    </div>
+                    <button class="btn btn-danger" onclick="simulateExploit()">
+                        <i class="fas fa-virus"></i> Test Exploit Detection
+                    </button>
+                </div>
+
+                <div class="control-group">
+                    <h3><i class="fas fa-tools"></i> Tools</h3>
+                    <button class="btn btn-primary" onclick="exportLogs()">
+                        <i class="fas fa-file-export"></i> Export Logs
+                    </button>
+                    <button class="btn btn-warning" onclick="clearAll()">
+                        <i class="fas fa-broom"></i> Clear All Data
+                    </button>
+                    <button class="btn btn-danger" onclick="destroyDebugger()">
+                        <i class="fas fa-skull-crossbones"></i> Destroy Debugger
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>Nexa Tools Debugger v2.0 | © 2024 All rights reserved | Security Monitoring System</p>
+            <p><i class="fas fa-code"></i> Built with advanced exploit detection algorithms</p>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="notification" style="display: none;">
+        <i class="fas fa-check-circle"></i>
+        <span id="notificationText">Operation completed successfully</span>
+    </div>
+
+    <script>
+        // State management
+        let state = {
+            logs: [],
+            urls: [],
+            settings: {
+                loggingActive: true,
+                antiExploit: true,
+                autoBlock: true
+            },
+            counters: {
+                logs: 0,
+                blocked: 0,
+                urls: 0
+            },
+            startTime: Date.now(),
+            activeFilter: 'all'
+        };
+
+        // DOM Elements
+        const logContainer = document.getElementById('logContainer');
+        const urlList = document.getElementById('urlList');
+        const logCount = document.getElementById('logCount');
+        const urlCount = document.getElementById('urlCount');
+        const blockedCount = document.getElementById('blockedCount');
+        const uptime = document.getElementById('uptime');
+        const currentTime = document.getElementById('currentTime');
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            updateTime();
+            setInterval(updateTime, 1000);
+            setInterval(updateUptime, 1000);
+            simulateLogs();
+            
+            // Load saved state
+            loadState();
+            updateUI();
+        });
+
+        // Time functions
+        function updateTime() {
+            const now = new Date();
+            currentTime.textContent = now.toLocaleTimeString();
+        }
+
+        function updateUptime() {
+            const seconds = Math.floor((Date.now() - state.startTime) / 1000);
+            uptime.textContent = `${seconds}s`;
+        }
+
+        // Log functions
+        function addLog(message, type = 'system') {
+            if (!state.settings.loggingActive && type !== 'system') return;
+            
+            const log = {
+                id: Date.now(),
+                time: new Date().toLocaleTimeString(),
+                type: type,
+                message: message,
+                timestamp: Date.now()
+            };
+            
+            state.logs.unshift(log);
+            state.counters.logs++;
+            
+            if (state.activeFilter === 'all' || state.activeFilter === type) {
+                displayLog(log);
+            }
+            
+            updateCounters();
+            saveState();
+            
+            // Show notification for important logs
+            if (type === 'security') {
+                showNotification(`Security Alert: ${message.substring(0, 50)}...`);
+            }
+        }
+
+        function displayLog(log) {
+            const logEntry = document.createElement('div');
+            logEntry.className = 'log-entry';
+            logEntry.innerHTML = `
+                <div class="log-time">${log.time}</div>
+                <div class="log-type ${log.type}">${log.type.toUpperCase()}</div>
+                <div class="log-message">${log.message}</div>
+            `;
+            
+            logContainer.insertBefore(logEntry, logContainer.firstChild);
+            
+            // Limit displayed logs
+            if (logContainer.children.length > 100) {
+                logContainer.removeChild(logContainer.lastChild);
+            }
+            
+            // Animate new log
+            logEntry.style.animation = 'fadeIn 0.3s ease';
+        }
+
+        function filterLogs(type) {
+            state.activeFilter = type;
+            
+            // Update filter buttons
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Clear displayed logs
+            logContainer.innerHTML = '';
+            
+            // Display filtered logs
+            const filteredLogs = type === 'all' 
+                ? state.logs 
+                : state.logs.filter(log => log.type === type);
+            
+            filteredLogs.slice(0, 100).forEach(log => displayLog(log));
+        }
+
+        function clearLogs() {
+            logContainer.innerHTML = '';
+            showNotification('Logs cleared successfully');
+        }
+
+        // URL functions
+        function captureURL(url, content) {
+            if (!state.urls.some(u => u.url === url)) {
+                state.urls.unshift({
+                    url: url,
+                    content: content.substring(0, 500) + (content.length > 500 ? '...' : ''),
+                    timestamp: Date.now(),
+                    type: detectURLType(content)
+                });
+                
+                state.counters.urls++;
+                updateURLList();
+                updateCounters();
+                saveState();
+                
+                addLog(`URL captured: ${url}`, 'url');
+            }
+        }
+
+        function updateURLList() {
+            urlList.innerHTML = '';
+            state.urls.slice(0, 10).forEach(url => {
+                const urlItem = document.createElement('div');
+                urlItem.className = 'url-item';
+                urlItem.textContent = url.url;
+                urlItem.onclick = () => viewURLDetails(url);
+                urlList.appendChild(urlItem);
+            });
+        }
+
+        function detectURLType(content) {
+            if (content.includes('Luraph') || content.includes('Luarmor')) return 'exploit';
+            if (content.includes('MoonSec')) return 'encrypted';
+            if (content.includes('loadstring') || content.includes('require')) return 'script';
+            return 'normal';
+        }
+
+        // Control functions
+        function toggleSetting(setting) {
+            state.settings[setting] = !state.settings[setting];
+            const switchEl = document.getElementById(`${setting}Switch`);
+            switchEl.classList.toggle('active', state.settings[setting]);
+            
+            addLog(`${setting} ${state.settings[setting] ? 'enabled' : 'disabled'}`, 'system');
+            saveState();
+            showNotification(`${setting} ${state.settings[setting] ? 'enabled' : 'disabled'}`);
+        }
+
+        function pauseLogging() {
+            state.settings.loggingActive = !state.settings.loggingActive;
+            const switchEl = document.getElementById('loggingSwitch');
+            switchEl.classList.toggle('active', state.settings.loggingActive);
+            
+            const btn = event.target.closest('button');
+            btn.innerHTML = state.settings.loggingActive 
+                ? '<i class="fas fa-pause"></i> Pause Logging'
+                : '<i class="fas fa-play"></i> Resume Logging';
+            
+            addLog(`Logging ${state.settings.loggingActive ? 'resumed' : 'paused'}`, 'system');
+            showNotification(`Logging ${state.settings.loggingActive ? 'resumed' : 'paused'}`);
+        }
+
+        // Export functions
+        function exportLogs() {
+            const logsText = state.logs.map(log => 
+                `[${log.time}] [${log.type.toUpperCase()}] ${log.message}`
+            ).join('\n');
+            
+            downloadFile('nexa-logs.txt', logsText);
+            showNotification('Logs exported successfully');
+        }
+
+        function exportURLs() {
+            const urlsText = state.urls.map(url => 
+                `[${new Date(url.timestamp).toLocaleString()}] ${url.url}`
+            ).join('\n');
+            
+            downloadFile('nexa-urls.txt', urlsText);
+            showNotification('URLs exported successfully');
+        }
+
+        function downloadFile(filename, content) {
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Security functions
+        function simulateExploit() {
+            const exploitCode = `return setfenv(function(...) return iUjSIQX(...) end, setmetatable({ ["iUjSIQX"] = ... }, { __index = getfenv((...)) }))`;
+            
+            if (state.settings.antiExploit) {
+                state.counters.blocked++;
+                addLog(`Exploit detected and blocked: Luraph pattern`, 'security');
+                addLog(`Blocked code: ${exploitCode.substring(0, 100)}...`, 'security');
+                showNotification('Exploit detected and blocked!', 'security');
+            } else {
+                addLog(`WARNING: Exploit would have been executed: ${exploitCode.substring(0, 100)}...`, 'security');
+                showNotification('Exploit detection is disabled!', 'warning');
+            }
+            
+            updateCounters();
+        }
+
+        // Utility functions
+        function updateCounters() {
+            logCount.textContent = state.counters.logs;
+            urlCount.textContent = state.counters.urls;
+            blockedCount.textContent = state.counters.blocked;
+        }
+
+        function updateUI() {
+            document.getElementById('loggingSwitch').classList.toggle('active', state.settings.loggingActive);
+            document.getElementById('antiExploitSwitch').classList.toggle('active', state.settings.antiExploit);
+            document.getElementById('autoBlockSwitch').classList.toggle('active', state.settings.autoBlock);
+            updateCounters();
+        }
+
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            const text = document.getElementById('notificationText');
+            
+            text.textContent = message;
+            notification.style.background = type === 'success' ? '#00b894' : 
+                                           type === 'warning' ? '#fdcb6e' : '#ff7675';
+            notification.style.display = 'flex';
+            
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+
+        function clearAll() {
+            if (confirm('Are you sure you want to clear all data? This cannot be undone.')) {
+                state.logs = [];
+                state.urls = [];
+                state.counters = { logs: 0, blocked: 0, urls: 0 };
+                logContainer.innerHTML = '';
+                urlList.innerHTML = '';
+                updateCounters();
+                saveState();
+                showNotification('All data cleared');
+            }
+        }
+
+        function destroyDebugger() {
+            if (confirm('Are you sure you want to destroy the debugger? This will remove all data.')) {
+                localStorage.removeItem('nexaToolsState');
+                document.body.innerHTML = '<div style="padding: 50px; text-align: center; color: white;"><h1>Nexa Tools Debugger Destroyed</h1><p>All monitoring has been stopped.</p></div>';
+            }
+        }
+
+        // State persistence
+        function saveState() {
+            localStorage.setItem('nexaToolsState', JSON.stringify(state));
+        }
+
+        function loadState() {
+            const saved = localStorage.getItem('nexaToolsState');
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                state.logs = parsed.logs || [];
+                state.urls = parsed.urls || [];
+                state.settings = parsed.settings || state.settings;
+                state.counters = parsed.counters || state.counters;
+                state.startTime = parsed.startTime || Date.now();
+                
+                // Display loaded logs
+                state.logs.slice(0, 50).forEach(log => displayLog(log));
+                updateURLList();
+            }
+        }
+
+        // Simulation functions (for demo)
+        function simulateLogs() {
+            // Initial logs
+            setTimeout(() => addLog('Player connected: User123', 'system'), 500);
+            setTimeout(() => addLog('print("Hello World")', 'print'), 1500);
+            setTimeout(() => addLog('Module required: ReplicatedStorage.Module', 'require'), 2500);
+            setTimeout(() => captureURL('https://api.example.com/script.lua', '-- Sample script\nprint("Loaded")'), 3500);
+            
+            // Periodic simulation
+            setInterval(() => {
+                if (Math.random() > 0.7) {
+                    const messages = [
+                        'Physics simulation updated',
+                        'Network packet sent',
+                        'Render frame completed',
+                        'Script execution finished'
+                    ];
+                    addLog(messages[Math.floor(Math.random() * messages.length)], 'system');
+                }
+            }, 5000);
+        }
+
+        // Public API
+        window.NexaTools = {
+            addLog,
+            captureURL,
+            simulateExploit,
+            getState: () => ({ ...state }),
+            clearLogs,
+            exportLogs,
+            exportURLs
+        };
+    </script>
+</body>
+</html>
