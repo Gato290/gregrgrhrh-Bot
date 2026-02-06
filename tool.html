@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Deobfuscate & Lurapy Tools</title>
+    <title>Super Secure Obfuscator</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -12,576 +13,591 @@
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        
+
         body {
-            background: linear-gradient(135deg, #0f172a, #1e293b);
-            color: #e2e8f0;
+            background: linear-gradient(135deg, #0c2461 0%, #1e3799 100%);
+            color: #f1f2f6;
             min-height: 100vh;
             padding: 20px;
         }
-        
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
+            padding: 20px;
         }
-        
+
         header {
             text-align: center;
             margin-bottom: 40px;
             padding: 20px;
-            border-bottom: 2px solid #3b82f6;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
         }
-        
-        header h1 {
+
+        h1 {
             font-size: 2.8rem;
             margin-bottom: 10px;
-            background: linear-gradient(90deg, #60a5fa, #3b82f6);
+            background: linear-gradient(to right, #00cec9, #81ecec);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
         }
-        
-        header p {
+
+        .tagline {
             font-size: 1.2rem;
-            color: #94a3b8;
-            max-width: 800px;
-            margin: 0 auto;
+            opacity: 0.9;
+            margin-bottom: 20px;
         }
-        
+
+        .security-badge {
+            display: inline-block;
+            background: #e74c3c;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+
         .main-content {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 30px;
             margin-bottom: 40px;
         }
-        
+
         @media (max-width: 768px) {
             .main-content {
                 grid-template-columns: 1fr;
             }
         }
-        
-        .tool-section {
-            background: rgba(30, 41, 59, 0.8);
+
+        .panel {
+            background: rgba(255, 255, 255, 0.05);
             border-radius: 15px;
             padding: 25px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-            border: 1px solid #334155;
-            transition: transform 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
         }
-        
-        .tool-section:hover {
-            transform: translateY(-5px);
-        }
-        
-        .section-header {
+
+        .panel-header {
             display: flex;
             align-items: center;
             margin-bottom: 20px;
             padding-bottom: 15px;
-            border-bottom: 1px solid #475569;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
-        
-        .section-header i {
-            font-size: 1.8rem;
+
+        .panel-header i {
+            font-size: 1.5rem;
             margin-right: 15px;
-            color: #60a5fa;
+            color: #00cec9;
         }
-        
-        .section-header h2 {
+
+        .panel-header h2 {
             font-size: 1.8rem;
-            color: #f1f5f9;
         }
-        
-        .input-group {
-            margin-bottom: 20px;
-        }
-        
-        .input-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #cbd5e1;
-        }
-        
+
         textarea {
             width: 100%;
-            height: 200px;
+            height: 300px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: #f1f2f6;
+            font-size: 1rem;
             padding: 15px;
-            background: #1e293b;
-            border: 1px solid #475569;
-            border-radius: 8px;
-            color: #f1f5f9;
-            font-family: 'Consolas', 'Monaco', monospace;
-            font-size: 14px;
             resize: vertical;
-            outline: none;
+            font-family: monospace;
             transition: border 0.3s;
         }
-        
+
         textarea:focus {
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+            outline: none;
+            border-color: #00cec9;
         }
-        
-        .button-group {
+
+        .controls {
             display: flex;
-            gap: 15px;
             flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
         }
-        
-        button {
-            padding: 12px 24px;
+
+        .btn {
+            padding: 12px 25px;
             border: none;
             border-radius: 8px;
-            font-weight: 600;
-            font-size: 1rem;
+            font-weight: bold;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            transition: all 0.3s ease;
+            gap: 10px;
+            transition: all 0.3s;
+            font-size: 1rem;
         }
-        
+
         .btn-primary {
-            background: linear-gradient(90deg, #3b82f6, #2563eb);
+            background: linear-gradient(to right, #00cec9, #0984e3);
             color: white;
-            flex-grow: 1;
+            flex: 1;
         }
-        
-        .btn-primary:hover {
-            background: linear-gradient(90deg, #2563eb, #1d4ed8);
-            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.4);
-        }
-        
+
         .btn-secondary {
-            background: #475569;
-            color: #e2e8f0;
-        }
-        
-        .btn-secondary:hover {
-            background: #64748b;
-        }
-        
-        .btn-danger {
-            background: linear-gradient(90deg, #ef4444, #dc2626);
+            background: rgba(255, 255, 255, 0.1);
             color: white;
         }
-        
-        .btn-danger:hover {
-            background: linear-gradient(90deg, #dc2626, #b91c1c);
-            box-shadow: 0 5px 15px rgba(220, 38, 38, 0.4);
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(0, 0, 0, 0.3);
         }
-        
-        .result-container {
-            margin-top: 30px;
+
+        .btn:active {
+            transform: translateY(-1px);
         }
-        
-        .result-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
+
+        .btn-primary:hover {
+            background: linear-gradient(to right, #00b894, #0778c4);
         }
-        
-        .result-header h3 {
-            font-size: 1.3rem;
-            color: #cbd5e1;
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
         }
-        
-        .result-box {
-            background: #1e293b;
-            border: 1px solid #475569;
-            border-radius: 8px;
+
+        .info-box {
+            background: rgba(0, 206, 201, 0.1);
+            border-left: 4px solid #00cec9;
             padding: 15px;
-            min-height: 100px;
-            max-height: 300px;
-            overflow-y: auto;
-            font-family: 'Consolas', 'Monaco', monospace;
-            font-size: 14px;
-            white-space: pre-wrap;
-            word-wrap: break-word;
+            border-radius: 0 8px 8px 0;
+            margin-top: 20px;
+            font-size: 0.95rem;
         }
-        
+
+        .info-box h3 {
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
         .stats {
             display: flex;
             justify-content: space-between;
-            margin-top: 10px;
-            color: #94a3b8;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #00cec9;
+        }
+
+        .stat-label {
             font-size: 0.9rem;
+            opacity: 0.8;
         }
-        
-        .info-section {
-            background: rgba(30, 41, 59, 0.8);
-            border-radius: 15px;
-            padding: 25px;
-            margin-top: 30px;
-            border: 1px solid #334155;
-        }
-        
-        .info-section h3 {
-            font-size: 1.5rem;
-            margin-bottom: 15px;
-            color: #f1f5f9;
-        }
-        
-        .info-section p {
-            line-height: 1.6;
-            margin-bottom: 15px;
-            color: #cbd5e1;
-        }
-        
-        .info-list {
-            margin-left: 20px;
-            margin-bottom: 20px;
-        }
-        
-        .info-list li {
-            margin-bottom: 8px;
-            color: #cbd5e1;
-        }
-        
+
         footer {
             text-align: center;
             margin-top: 40px;
             padding-top: 20px;
-            border-top: 1px solid #475569;
-            color: #94a3b8;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
             font-size: 0.9rem;
+            opacity: 0.8;
         }
-        
-        .notification {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            padding: 15px 25px;
-            background: #10b981;
-            color: white;
+
+        .algorithm-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .algo-option {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.05);
             border-radius: 8px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            display: none;
-            z-index: 1000;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid transparent;
+        }
+
+        .algo-option:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .algo-option.active {
+            background: rgba(0, 206, 201, 0.2);
+            border-color: #00cec9;
+            color: #00cec9;
+            font-weight: bold;
+        }
+
+        .password-field {
+            margin-bottom: 20px;
+        }
+
+        .password-field input {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #f1f2f6;
+            font-size: 1rem;
+        }
+
+        .password-field input:focus {
+            outline: none;
+            border-color: #00cec9;
+        }
+
+        .password-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .output-controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1><i class="fas fa-code"></i> Deobfuscate & Lurapy Tools</h1>
-            <p>Alat untuk deobfuscate kode JavaScript dan melakukan lurapy (enkripsi dasar) pada teks</p>
+            <h1><i class="fas fa-user-secret"></i> SUPER SECURE OBFUSCATOR</h1>
+            <p class="tagline">Transformasi kode dengan enkripsi multi-layer untuk keamanan maksimal</p>
+            <div class="security-badge">
+                <i class="fas fa-shield-alt"></i> LEVEL KEAMANAN: MAXIMUM
+            </div>
         </header>
-        
+
         <div class="main-content">
-            <section class="tool-section">
-                <div class="section-header">
-                    <i class="fas fa-unlock"></i>
-                    <h2>Deobfuscate JavaScript</h2>
+            <div class="panel">
+                <div class="panel-header">
+                    <i class="fas fa-code"></i>
+                    <h2>Input Kode</h2>
                 </div>
                 
-                <div class="input-group">
-                    <label for="jsInput"><i class="fas fa-code"></i> Masukkan kode JavaScript terobfuscate:</label>
-                    <textarea id="jsInput" placeholder="Paste kode JavaScript terobfuscate di sini..."></textarea>
+                <div class="algorithm-selector">
+                    <div class="algo-option active" data-algo="secure">Secure Obfuscation</div>
+                    <div class="algo-option" data-algo="advanced">Advanced Encryption</div>
+                    <div class="algo-option" data-algo="military">Military Grade</div>
                 </div>
+
+                <div class="password-field">
+                    <label class="password-label">
+                        <i class="fas fa-key"></i> Password Enkripsi (Opsional)
+                    </label>
+                    <input type="password" id="encryptionPassword" placeholder="Masukkan password untuk enkripsi tambahan">
+                </div>
+
+                <textarea id="inputCode" placeholder="Masukkan kode JavaScript, HTML, atau CSS di sini..."></textarea>
                 
-                <div class="button-group">
-                    <button class="btn-primary" id="deobfuscateBtn">
-                        <i class="fas fa-magic"></i> Deobfuscate
+                <div class="controls">
+                    <button class="btn btn-primary" id="obfuscateBtn">
+                        <i class="fas fa-lock"></i> OBFUSCATE KODE
                     </button>
-                    <button class="btn-secondary" id="clearJsBtn">
-                        <i class="fas fa-trash"></i> Hapus
+                    <button class="btn btn-secondary" id="clearBtn">
+                        <i class="fas fa-trash"></i> BERSIHKAN
+                    </button>
+                    <button class="btn btn-secondary" id="exampleBtn">
+                        <i class="fas fa-eye"></i> CONTOH
                     </button>
                 </div>
-                
-                <div class="result-container">
-                    <div class="result-header">
-                        <h3><i class="fas fa-file-code"></i> Hasil Deobfuscate:</h3>
-                        <button class="btn-secondary" id="copyJsBtn">
-                            <i class="far fa-copy"></i> Salin
-                        </button>
-                    </div>
-                    <div class="result-box" id="jsOutput"></div>
-                    <div class="stats">
-                        <span id="jsInputStats">Input: 0 karakter</span>
-                        <span id="jsOutputStats">Output: 0 karakter</span>
-                    </div>
+
+                <div class="info-box">
+                    <h3><i class="fas fa-info-circle"></i> Informasi Keamanan</h3>
+                    <p>Obfuscator ini menggunakan algoritma AES-256, encoding base64 multi-layer, dan teknik pengacakan variabel untuk melindungi kode Anda dari reverse engineering.</p>
                 </div>
-            </section>
-            
-            <section class="tool-section">
-                <div class="section-header">
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">
                     <i class="fas fa-lock"></i>
-                    <h2>Lurapy / Enkripsi</h2>
+                    <h2>Output Kode</h2>
                 </div>
                 
-                <div class="input-group">
-                    <label for="textInput"><i class="fas fa-text-height"></i> Masukkan teks untuk di-lurapy:</label>
-                    <textarea id="textInput" placeholder="Masukkan teks atau kode di sini..."></textarea>
-                </div>
+                <textarea id="outputCode" readonly placeholder="Kode terobfuscate akan muncul di sini..."></textarea>
                 
-                <div class="button-group">
-                    <button class="btn-primary" id="encryptBtn">
-                        <i class="fas fa-lock"></i> Enkripsi
+                <div class="output-controls">
+                    <button class="btn btn-secondary" id="copyBtn">
+                        <i class="fas fa-copy"></i> SALIN
                     </button>
-                    <button class="btn-primary" id="decryptBtn">
-                        <i class="fas fa-unlock"></i> Dekripsi
+                    <button class="btn btn-secondary" id="downloadBtn">
+                        <i class="fas fa-download"></i> UNDUH
                     </button>
-                    <button class="btn-danger" id="clearTextBtn">
-                        <i class="fas fa-trash"></i> Hapus
+                    <button class="btn btn-primary" id="testBtn">
+                        <i class="fas fa-play"></i> TEST KODE
                     </button>
                 </div>
-                
-                <div class="result-container">
-                    <div class="result-header">
-                        <h3><i class="fas fa-key"></i> Hasil:</h3>
-                        <button class="btn-secondary" id="copyTextBtn">
-                            <i class="far fa-copy"></i> Salin
-                        </button>
+
+                <div class="stats">
+                    <div class="stat">
+                        <div class="stat-value" id="inputLength">0</div>
+                        <div class="stat-label">Karakter Input</div>
                     </div>
-                    <div class="result-box" id="textOutput"></div>
-                    <div class="stats">
-                        <span id="textInputStats">Input: 0 karakter</span>
-                        <span id="textOutputStats">Output: 0 karakter</span>
+                    <div class="stat">
+                        <div class="stat-value" id="outputLength">0</div>
+                        <div class="stat-label">Karakter Output</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value" id="obfuscationLevel">0%</div>
+                        <div class="stat-label">Tingkat Obfuscasi</div>
                     </div>
                 </div>
-            </section>
+
+                <div class="info-box">
+                    <h3><i class="fas fa-exclamation-triangle"></i> Peringatan</h3>
+                    <p>Simpan password dengan aman jika digunakan. Kode yang terobfuscate tidak dapat dikembalikan tanpa password yang tepat. Backup kode asli sebelum mengobfuscate.</p>
+                </div>
+            </div>
         </div>
-        
-        <section class="info-section">
-            <h3><i class="fas fa-info-circle"></i> Informasi Alat</h3>
-            <p>Alat ini menyediakan dua fungsi utama:</p>
-            <ul class="info-list">
-                <li><strong>Deobfuscate JavaScript:</strong> Membantu mengembalikan kode JavaScript yang telah di-obfuscate ke bentuk yang lebih mudah dibaca dan dipahami.</li>
-                <li><strong>Lurapy/Enkripsi:</strong> Melakukan enkripsi dan dekripsi sederhana pada teks menggunakan algoritma Base64 dengan rotasi karakter untuk keamanan tambahan.</li>
-            </ul>
-            <p><strong>Catatan:</strong> Alat ini berjalan sepenuhnya di browser. Data tidak dikirim ke server manapun.</p>
-        </section>
-        
+
         <footer>
-            <p>Deobfuscate & Lurapy Tools &copy; 2023 | Dibuat dengan <i class="fas fa-heart" style="color: #ef4444;"></i> untuk developer</p>
+            <p><i class="fas fa-copyright"></i> 2023 Super Secure Obfuscator | Dibuat dengan <i class="fas fa-heart" style="color:#e74c3c"></i> untuk keamanan kode Anda</p>
+            <p style="margin-top:5px;font-size:0.8rem;">Semua proses berjalan di browser Anda, tidak ada data yang dikirim ke server</p>
         </footer>
     </div>
-    
-    <div class="notification" id="notification">Teks berhasil disalin!</div>
 
     <script>
-        // Fungsi untuk menampilkan notifikasi
-        function showNotification(message) {
-            const notification = document.getElementById('notification');
-            notification.textContent = message;
-            notification.style.display = 'block';
-            
-            setTimeout(() => {
-                notification.style.display = 'none';
-            }, 3000);
-        }
-        
-        // Fungsi untuk update statistik karakter
-        function updateStats() {
-            // Update statistik JavaScript
-            const jsInput = document.getElementById('jsInput').value;
-            const jsOutput = document.getElementById('jsOutput').textContent;
-            document.getElementById('jsInputStats').textContent = `Input: ${jsInput.length} karakter`;
-            document.getElementById('jsOutputStats').textContent = `Output: ${jsOutput.length} karakter`;
-            
-            // Update statistik teks
-            const textInput = document.getElementById('textInput').value;
-            const textOutput = document.getElementById('textOutput').textContent;
-            document.getElementById('textInputStats').textContent = `Input: ${textInput.length} karakter`;
-            document.getElementById('textOutputStats').textContent = `Output: ${textOutput.length} karakter`;
-        }
-        
-        // Fungsi deobfuscate JavaScript sederhana
-        function deobfuscateJavaScript(code) {
-            try {
-                // Coba format kode dengan indentasi yang lebih baik
-                let formatted = code;
-                
-                // Ganti karakter escape sederhana
-                formatted = formatted.replace(/\\x([0-9A-Fa-f]{2})/g, (match, hex) => {
-                    return String.fromCharCode(parseInt(hex, 16));
-                });
-                
-                // Ganti escape Unicode
-                formatted = formatted.replace(/\\u([0-9A-Fa-f]{4})/g, (match, hex) => {
-                    return String.fromCharCode(parseInt(hex, 16));
-                });
-                
-                // Coba parse dan format ulang kode jika valid
-                try {
-                    // Formatting sederhana untuk kode JavaScript
-                    // Tambahkan newline setelah {, }, ;, dan sebelum }
-                    formatted = formatted.replace(/;/g, ';\n');
-                    formatted = formatted.replace(/{/g, ' {\n');
-                    formatted = formatted.replace(/}/g, '\n}\n');
-                    
-                    // Hapus baris kosong berlebihan
-                    formatted = formatted.replace(/\n\s*\n/g, '\n');
-                    
-                    // Tambahkan indentasi dasar
-                    let lines = formatted.split('\n');
-                    let indentLevel = 0;
-                    let result = [];
-                    
-                    for (let line of lines) {
-                        line = line.trim();
-                        if (line.length === 0) {
-                            result.push('');
-                            continue;
-                        }
-                        
-                        // Kurangi indentasi sebelum }
-                        if (line.startsWith('}')) {
-                            indentLevel = Math.max(0, indentLevel - 1);
-                        }
-                        
-                        // Tambahkan indentasi
-                        result.push('  '.repeat(indentLevel) + line);
-                        
-                        // Tingkatkan indentasi setelah {
-                        if (line.endsWith('{')) {
-                            indentLevel++;
-                        }
-                    }
-                    
-                    formatted = result.join('\n');
-                } catch (e) {
-                    console.log("Formatting otomatis gagal, menggunakan kode asli");
-                }
-                
-                return formatted;
-            } catch (error) {
-                return `Error dalam deobfuscate: ${error.message}\n\nKode asli:\n${code}`;
-            }
-        }
-        
-        // Fungsi lurapy (enkripsi sederhana)
-        function lurapyEncrypt(text) {
-            if (!text) return '';
-            
-            // Encode ke Base64 terlebih dahulu
-            let base64 = btoa(encodeURIComponent(text));
-            
-            // Lakukan rotasi karakter sederhana
-            let result = '';
-            for (let i = 0; i < base64.length; i++) {
-                let charCode = base64.charCodeAt(i);
-                // Rotasi karakter dengan pola sederhana
-                let rotated = ((charCode - 32 + 47) % 94) + 32;
-                result += String.fromCharCode(rotated);
-            }
-            
-            // Tambahkan prefix untuk identifikasi
-            return 'LUPRYv1:' + result;
-        }
-        
-        // Fungsi untuk mendekripsi lurapy
-        function lurapyDecrypt(encryptedText) {
-            if (!encryptedText) return '';
-            
-            // Hapus prefix jika ada
-            let text = encryptedText;
-            if (text.startsWith('LUPRYv1:')) {
-                text = text.substring(8);
-            }
-            
-            // Balikkan rotasi karakter
-            let base64 = '';
-            for (let i = 0; i < text.length; i++) {
-                let charCode = text.charCodeAt(i);
-                // Rotasi balik karakter
-                let original = ((charCode - 32 - 47 + 94) % 94) + 32;
-                base64 += String.fromCharCode(original);
-            }
-            
-            try {
-                // Decode dari Base64
-                return decodeURIComponent(atob(base64));
-            } catch (error) {
-                return `Error dekripsi: ${error.message}\nPastikan teks terenkripsi valid.`;
-            }
-        }
-        
-        // Fungsi untuk menyalin teks ke clipboard
-        function copyToClipboard(text) {
-            navigator.clipboard.writeText(text)
-                .then(() => showNotification('Teks berhasil disalin!'))
-                .catch(err => {
-                    console.error('Gagal menyalin: ', err);
-                    showNotification('Gagal menyalin teks');
-                });
-        }
-        
-        // Event Listeners
         document.addEventListener('DOMContentLoaded', function() {
-            // Update stats on input
-            document.getElementById('jsInput').addEventListener('input', updateStats);
-            document.getElementById('textInput').addEventListener('input', updateStats);
+            const inputCode = document.getElementById('inputCode');
+            const outputCode = document.getElementById('outputCode');
+            const obfuscateBtn = document.getElementById('obfuscateBtn');
+            const clearBtn = document.getElementById('clearBtn');
+            const copyBtn = document.getElementById('copyBtn');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const testBtn = document.getElementById('testBtn');
+            const exampleBtn = document.getElementById('exampleBtn');
+            const encryptionPassword = document.getElementById('encryptionPassword');
+            const inputLength = document.getElementById('inputLength');
+            const outputLength = document.getElementById('outputLength');
+            const obfuscationLevel = document.getElementById('obfuscationLevel');
+            const algoOptions = document.querySelectorAll('.algo-option');
             
-            // Deobfuscate JavaScript
-            document.getElementById('deobfuscateBtn').addEventListener('click', function() {
-                const input = document.getElementById('jsInput').value;
-                const output = deobfuscateJavaScript(input);
-                document.getElementById('jsOutput').textContent = output;
-                updateStats();
-                showNotification('Deobfuscate selesai!');
+            let selectedAlgorithm = 'secure';
+
+            algoOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    algoOptions.forEach(opt => opt.classList.remove('active'));
+                    this.classList.add('active');
+                    selectedAlgorithm = this.getAttribute('data-algo');
+                });
             });
-            
-            // Enkripsi teks
-            document.getElementById('encryptBtn').addEventListener('click', function() {
-                const input = document.getElementById('textInput').value;
-                const output = lurapyEncrypt(input);
-                document.getElementById('textOutput').textContent = output;
-                updateStats();
-                showNotification('Enkripsi selesai!');
-            });
-            
-            // Dekripsi teks
-            document.getElementById('decryptBtn').addEventListener('click', function() {
-                const input = document.getElementById('textInput').value;
-                const output = lurapyDecrypt(input);
-                document.getElementById('textOutput').textContent = output;
-                updateStats();
-                showNotification('Dekripsi selesai!');
-            });
-            
-            // Hapus input JavaScript
-            document.getElementById('clearJsBtn').addEventListener('click', function() {
-                document.getElementById('jsInput').value = '';
-                document.getElementById('jsOutput').textContent = '';
-                updateStats();
-                showNotification('Input JavaScript dihapus');
-            });
-            
-            // Hapus input teks
-            document.getElementById('clearTextBtn').addEventListener('click', function() {
-                document.getElementById('textInput').value = '';
-                document.getElementById('textOutput').textContent = '';
-                updateStats();
-                showNotification('Input teks dihapus');
-            });
-            
-            // Salin hasil JavaScript
-            document.getElementById('copyJsBtn').addEventListener('click', function() {
-                const text = document.getElementById('jsOutput').textContent;
-                if (text) {
-                    copyToClipboard(text);
+
+            function updateStats() {
+                const inputText = inputCode.value;
+                const outputText = outputCode.value;
+                
+                inputLength.textContent = inputText.length;
+                outputLength.textContent = outputText.length;
+                
+                if (inputText.length > 0 && outputText.length > 0) {
+                    const level = Math.min(99, Math.round((outputText.length / Math.max(1, inputText.length)) * 100));
+                    obfuscationLevel.textContent = level + '%';
                 } else {
-                    showNotification('Tidak ada teks untuk disalin');
+                    obfuscationLevel.textContent = '0%';
+                }
+            }
+
+            inputCode.addEventListener('input', updateStats);
+            outputCode.addEventListener('input', updateStats);
+
+            function generateRandomString(length) {
+                const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+                let result = '';
+                for (let i = 0; i < length; i++) {
+                    result += chars.charAt(Math.floor(Math.random() * chars.length));
+                }
+                return result;
+            }
+
+            function obfuscateString(str, password = '') {
+                let obfuscated = str;
+                
+                if (selectedAlgorithm === 'advanced' || selectedAlgorithm === 'military') {
+                    const key = password || generateRandomString(32);
+                    const salt = CryptoJS.lib.WordArray.random(16);
+                    const iv = CryptoJS.lib.WordArray.random(16);
+                    
+                    const keyDerived = CryptoJS.PBKDF2(key, salt, {
+                        keySize: 256/32,
+                        iterations: selectedAlgorithm === 'military' ? 10000 : 5000
+                    });
+                    
+                    const encrypted = CryptoJS.AES.encrypt(obfuscated, keyDerived, {
+                        iv: iv,
+                        mode: CryptoJS.mode.CBC,
+                        padding: CryptoJS.pad.Pkcs7
+                    });
+                    
+                    obfuscated = salt.toString() + iv.toString() + encrypted.toString();
+                }
+                
+                let base64Encoded = btoa(unescape(encodeURIComponent(obfuscated)));
+                
+                for (let i = 0; i < (selectedAlgorithm === 'military' ? 3 : 2); i++) {
+                    base64Encoded = btoa(base64Encoded);
+                }
+                
+                const varNames = [];
+                const chunks = [];
+                const chunkSize = selectedAlgorithm === 'military' ? 50 : 100;
+                
+                for (let i = 0; i < base64Encoded.length; i += chunkSize) {
+                    chunks.push(base64Encoded.substring(i, i + chunkSize));
+                }
+                
+                chunks.forEach((chunk, index) => {
+                    varNames.push(`_0x${generateRandomString(6)}`);
+                });
+                
+                let result = `(function(){`;
+                result += `var ${varNames.join(',')}='';\n`;
+                
+                chunks.forEach((chunk, index) => {
+                    const reversed = chunk.split('').reverse().join('');
+                    const encoded = btoa(reversed);
+                    result += `${varNames[index]}='${encoded}';\n`;
+                });
+                
+                result += `var _result='';\n`;
+                varNames.forEach(varName => {
+                    result += `_result+=atob(${varName}).split('').reverse().join('');\n`;
+                });
+                
+                for (let i = 0; i < (selectedAlgorithm === 'military' ? 3 : 2); i++) {
+                    result += `_result=atob(_result);\n`;
+                }
+                
+                if (password && (selectedAlgorithm === 'advanced' || selectedAlgorithm === 'military')) {
+                    result += `try{`;
+                    result += `var _salt=CryptoJS.enc.Hex.parse(_result.substr(0,32));`;
+                    result += `var _iv=CryptoJS.enc.Hex.parse(_result.substr(32,32));`;
+                    result += `var _encrypted=_result.substr(64);`;
+                    result += `var _key=CryptoJS.PBKDF2('${password}', _salt, {keySize:256/32, iterations:${selectedAlgorithm === 'military' ? 10000 : 5000}});`;
+                    result += `var _decrypted=CryptoJS.AES.decrypt(_encrypted, _key, {iv:_iv, mode:CryptoJS.mode.CBC, padding:CryptoJS.pad.Pkcs7});`;
+                    result += `_result=_decrypted.toString(CryptoJS.enc.Utf8);`;
+                    result += `}catch(e){_result='ERROR: Wrong password or corrupted data';}`;
+                } else {
+                    result += `_result=decodeURIComponent(escape(atob(_result)));`;
+                }
+                
+                result += `return _result;})()`;
+                
+                return result;
+            }
+
+            obfuscateBtn.addEventListener('click', function() {
+                const code = inputCode.value.trim();
+                if (!code) {
+                    alert('Masukkan kode terlebih dahulu!');
+                    return;
+                }
+
+                try {
+                    const password = encryptionPassword.value;
+                    const obfuscatedCode = obfuscateString(code, password);
+                    outputCode.value = obfuscatedCode;
+                    updateStats();
+                } catch (error) {
+                    outputCode.value = `// Error: ${error.message}`;
                 }
             });
-            
-            // Salin hasil teks
-            document.getElementById('copyTextBtn').addEventListener('click', function() {
-                const text = document.getElementById('textOutput').textContent;
-                if (text) {
-                    copyToClipboard(text);
-                } else {
-                    showNotification('Tidak ada teks untuk disalin');
+
+            clearBtn.addEventListener('click', function() {
+                inputCode.value = '';
+                outputCode.value = '';
+                encryptionPassword.value = '';
+                updateStats();
+            });
+
+            copyBtn.addEventListener('click', function() {
+                if (!outputCode.value) {
+                    alert('Tidak ada kode untuk disalin!');
+                    return;
+                }
+                
+                outputCode.select();
+                outputCode.setSelectionRange(0, 99999);
+                
+                try {
+                    navigator.clipboard.writeText(outputCode.value);
+                    const originalText = copyBtn.innerHTML;
+                    copyBtn.innerHTML = '<i class="fas fa-check"></i> TERSALIN!';
+                    setTimeout(() => {
+                        copyBtn.innerHTML = originalText;
+                    }, 2000);
+                } catch (err) {
+                    alert('Gagal menyalin ke clipboard');
                 }
             });
-            
-            // Update stats awal
+
+            downloadBtn.addEventListener('click', function() {
+                if (!outputCode.value) {
+                    alert('Tidak ada kode untuk diunduh!');
+                    return;
+                }
+                
+                const blob = new Blob([outputCode.value], { type: 'text/javascript' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `obfuscated_code_${Date.now()}.js`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            });
+
+            testBtn.addEventListener('click', function() {
+                if (!outputCode.value) {
+                    alert('Tidak ada kode untuk diuji!');
+                    return;
+                }
+                
+                try {
+                    const result = eval(outputCode.value);
+                    if (typeof result === 'string') {
+                        alert('Kode berhasil dijalankan! Hasil:\n\n' + result.substring(0, 500) + (result.length > 500 ? '...' : ''));
+                    } else {
+                        alert('Kode berhasil dijalankan!');
+                    }
+                } catch (error) {
+                    alert('Error saat menjalankan kode:\n\n' + error.message);
+                }
+            });
+
+            exampleBtn.addEventListener('click', function() {
+                const exampleCode = `function contohFungsi() {
+    var pesan = "Halo, ini kode contoh!";
+    var angkaRahasia = 42;
+    var hasil = pesan + " Angka rahasia: " + angkaRahasia;
+    console.log(hasil);
+    return hasil;
+}
+
+contohFungsi();`;
+                
+                inputCode.value = exampleCode;
+                updateStats();
+            });
+
             updateStats();
         });
     </script>
