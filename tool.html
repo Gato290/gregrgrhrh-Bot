@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>NEXA OBFUSCATOR v6.0</title>
+    <title>NEXA OBFUSCATOR v5.0</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -127,7 +127,7 @@
         }
 
         .app-container {
-            display: grid; grid-template-columns: 350px 1fr;
+            display: grid; grid-template-columns: 320px 1fr;
             height: calc(100vh - 60px);
         }
 
@@ -297,59 +297,6 @@
             width: 0%;
             transition: width 0.3s ease;
             border-radius: 3px;
-        }
-
-        .preset-buttons {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 8px;
-            margin-top: 8px;
-        }
-
-        .preset-btn {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid var(--border);
-            color: var(--text-muted);
-            padding: 8px;
-            border-radius: 6px;
-            font-size: 0.7rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-align: center;
-        }
-
-        .preset-btn:hover {
-            background: rgba(255,255,255,0.1);
-            border-color: var(--primary);
-            color: var(--text-main);
-        }
-
-        .anti-tool-presets {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 8px;
-            margin-top: 8px;
-        }
-
-        .anti-tool-btn {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid var(--border);
-            color: var(--primary-light);
-            padding: 10px;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-align: center;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            justify-content: center;
-        }
-
-        .anti-tool-btn:hover {
-            background: rgba(139, 92, 246, 0.1);
-            border-color: var(--primary);
         }
 
         .btn-primary {
@@ -584,7 +531,7 @@
     <div class="bg-glow"></div>
     <nav>
         <div class="logo">NEXA OBFUSCATOR</div>
-        <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 700;">ANTI-TOOL BUILD 6.0</div>
+        <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 700;">QUANTUM-BUILD 5.0</div>
         <div class="nav-controls">
             <button class="theme-toggle" id="themeToggle">DARK MODE</button>
         </div>
@@ -635,25 +582,6 @@
             </div>
 
             <div class="setting-card">
-                <h3>Anti-Tool Presets</h3>
-                <div class="anti-tool-presets">
-                    <button class="anti-tool-btn" onclick="loadAntiToolPreset('debugger')">
-                        <span>🔍</span>
-                        Debugger Tool
-                    </button>
-                    <button class="anti-tool-btn" onclick="loadAntiToolPreset('anti-exploit')">
-                        <span>🛡️</span>
-                        Anti-Exploit
-                    </button>
-                    <button class="anti-tool-btn" onclick="loadAntiToolPreset('monitor')">
-                        <span>📊</span>
-                        System Monitor
-                    </button>
-                </div>
-                <div class="perf-info">Special obfuscation for anti-tool scripts</div>
-            </div>
-
-            <div class="setting-card">
                 <h3>Quantum Layers</h3>
                 <div class="control tooltip" data-tooltip="Rotates character codes">
                     <span>Rotation Flow</span>
@@ -674,22 +602,22 @@
             </div>
 
             <div class="setting-card">
-                <h3>Advanced Anti-Tool Options</h3>
+                <h3>Advanced Options</h3>
                 <div class="control tooltip" data-tooltip="Add junk code to confuse decompilers">
                     <span>Junk Code Injection</span>
-                    <label class="toggle"><input type="checkbox" id="opt-junk" checked><span class="slider"></span></label>
+                    <label class="toggle"><input type="checkbox" id="opt-junk"><span class="slider"></span></label>
                 </div>
                 <div class="control tooltip" data-tooltip="String encryption for additional protection">
                     <span>String Encryption</span>
-                    <label class="toggle"><input type="checkbox" id="opt-string" checked><span class="slider"></span></label>
+                    <label class="toggle"><input type="checkbox" id="opt-string"><span class="slider"></span></label>
                 </div>
                 <div class="control tooltip" data-tooltip="Control flow flattening (experimental)">
                     <span>Flow Flattening</span>
                     <label class="toggle"><input type="checkbox" id="opt-flow"><span class="slider"></span></label>
                 </div>
-                <div class="control tooltip" data-tooltip="Anti-decompiler techniques">
-                    <span>Anti-Decompiler</span>
-                    <label class="toggle"><input type="checkbox" id="opt-anti-decomp" checked><span class="slider"></span></label>
+                <div class="control tooltip" data-tooltip="Integrate anti-tool/debugger protection">
+                    <span>Anti-Tool Protection</span>
+                    <label class="toggle"><input type="checkbox" id="opt-antitool" checked><span class="slider"></span></label>
                 </div>
             </div>
 
@@ -748,8 +676,8 @@
                     </div>
                 </div>
                 <div id="logs">
-                    <div class="log-entry info">NEXA OBFUSCATOR v6.0 - Anti-Tool Edition</div>
-                    <div class="log-entry info">Special obfuscation for anti-debug and monitoring tools</div>
+                    <div class="log-entry info">NEXA OBFUSCATOR v5.0 - Quantum systems engaged</div>
+                    <div class="log-entry info">Select obfuscation level and performance mode</div>
                 </div>
             </div>
         </main>
@@ -773,7 +701,7 @@
             junkCode: false,
             stringEncryption: false,
             flowFlattening: false,
-            antiDecompiler: false,
+            antiTool: false,
             color: 'level-easy'
         },
         medium: {
@@ -784,7 +712,7 @@
             junkCode: true,
             stringEncryption: false,
             flowFlattening: false,
-            antiDecompiler: true,
+            antiTool: true,
             color: 'level-medium'
         },
         hard: {
@@ -794,8 +722,8 @@
             iterations: 3,
             junkCode: true,
             stringEncryption: true,
-            flowFlattening: true,
-            antiDecompiler: true,
+            flowFlattening: false,
+            antiTool: true,
             color: 'level-hard'
         },
         expert: {
@@ -806,7 +734,7 @@
             junkCode: true,
             stringEncryption: true,
             flowFlattening: true,
-            antiDecompiler: true,
+            antiTool: true,
             color: 'level-expert'
         }
     };
@@ -839,9 +767,9 @@
         }
     };
 
-    // Anti-Tool Presets
-    const antiToolPresets = {
-        'debugger': `local RunService = game:GetService("RunService")
+    // ANTI-TOOL/DEBUGGER CODE
+    const ANTI_TOOL_CODE = `
+local RunService = game:GetService("RunService")
 local HttpService = game:GetService("HttpService")
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
@@ -879,7 +807,7 @@ local function addLog(message, logType)
         end
         
         local timestamp = os.date("%H:%M:%S")
-        local logEntry = string.format("[%s][%s] %s\n", timestamp, logType, message)
+        local logEntry = string.format("[%s][%s] %s\\n", timestamp, logType, message)
         
         appendfile(fileName, logEntry)
         logFileSize = logFileSize + #message
@@ -928,7 +856,7 @@ local function handleAntiDetection(exploitName, code)
         
         local timestamp = os.time()
         local fileName = string.format("NexaTools/detections/detection_%d.txt", timestamp)
-        writefile(fileName, string.format("Detection: %s\nTime: %s\n\nCode:\n%s", 
+        writefile(fileName, string.format("Detection: %s\\nTime: %s\\n\\nCode:\\n%s", 
             exploitName, os.date(), code))
     end)
     
@@ -956,7 +884,7 @@ local function captureURL(url, content)
             
             local safeFileName = url:gsub("[^%w]", "_"):sub(1, 50)
             local fileName = "NexaTools/urls/" .. safeFileName .. ".txt"
-            writefile(fileName, "URL: " .. url .. "\n\n" .. content)
+            writefile(fileName, "URL: " .. url .. "\\n\\n" .. content)
             
             addLog("URL disimpan: " .. safeFileName .. ".txt", "URL")
         end)
@@ -970,7 +898,7 @@ local function installPrintHook()
     
     local stealthPrint = function(...)
         local args = {...}
-        local message = table.concat(args, "\t")
+        local message = table.concat(args, "\\t")
         
         if printHookActive then
             addLog(message, "print")
@@ -1178,177 +1106,10 @@ end
 addLog("Nexa Tools Debugger initialized", "System")
 addLog("Player: " .. LocalPlayer.Name, "System")
 addLog("Anti-Detection: " .. (antiExploitActive and "ON" or "OFF"), "System")
-addLog("Stealth mode: " .. (isStealthMode and "ON" or "OFF"), "System")
+addLog("Stealth mode: " .. (isStealthMode and "ON" : "OFF"), "System")
 
-return NexaTools`,
-        
-        'anti-exploit': `-- Advanced Anti-Exploit System
-local RunService = game:GetService("RunService")
-local Players = game:GetService("Players")
-
-local Security = {
-    Detections = {},
-    LastScan = tick(),
-    ScanInterval = 30
-}
-
--- Hook critical functions
-local originalLoadstring = loadstring or function() end
-local originalRequire = require
-local originalPrint = print
-
--- Detection patterns
-local exploitPatterns = {
-    "Luraph",
-    "Luarmor", 
-    "MoonSec",
-    "iUjSIQX",
-    "setfenv",
-    "getfenv",
-    "debug\\.get",
-    "debug\\.set",
-    "hookfunction",
-    "setupvalue",
-    "getupvalue"
-}
-
-function Security:ScanMemory()
-    local currentTime = tick()
-    if currentTime - self.LastScan < self.ScanInterval then
-        return
-    end
-    
-    self.LastScan = currentTime
-    
-    -- Check for suspicious modules
-    for _, module in pairs(getloadedmodules() or {}) do
-        if module and module:IsA("ModuleScript") then
-            local success, source = pcall(function()
-                return module.Source
-            end)
-            
-            if success then
-                for _, pattern in ipairs(exploitPatterns) do
-                    if source:find(pattern) then
-                        self:LogDetection("Suspicious module: " .. module:GetFullName())
-                        break
-                    end
-                end
-            end
-        end
-    end
-end
-
-function Security:LogDetection(message)
-    table.insert(self.Detections, {
-        Time = os.date("%H:%M:%S"),
-        Message = message
-    })
-    
-    -- Send alert
-    warn("[SECURITY ALERT] " .. message)
-    
-    -- Log to file if possible
-    pcall(function()
-        if isfolder and writefile then
-            if not isfolder("SecurityLogs") then
-                makefolder("SecurityLogs")
-            end
-            local logFile = "SecurityLogs/detections.txt"
-            local logEntry = string.format("[%s] %s\n", os.date(), message)
-            
-            if isfile(logFile) then
-                appendfile(logFile, logEntry)
-            else
-                writefile(logFile, logEntry)
-            end
-        end
-    end)
-end
-
--- Start security scanning
-RunService.Heartbeat:Connect(function()
-    Security:ScanMemory()
-end)
-
--- Return security object
-return Security`,
-        
-        'monitor': `-- System Monitor Tool
-local RunService = game:GetService("RunService")
-local StatsService = game:GetService("Stats")
-
-local Monitor = {
-    PerformanceData = {},
-    MemoryHistory = {},
-    FPSHistory = {},
-    MaxHistorySize = 100
-}
-
-function Monitor:Update()
-    local currentTime = tick()
-    
-    -- Get memory usage
-    local memory = collectgarbage("count")
-    table.insert(self.MemoryHistory, {
-        time = currentTime,
-        value = memory
-    })
-    
-    -- Keep history size limited
-    if #self.MemoryHistory > self.MaxHistorySize then
-        table.remove(self.MemoryHistory, 1)
-    end
-    
-    -- Get FPS
-    local fps = 1 / RunService.Heartbeat:Wait()
-    table.insert(self.FPSHistory, {
-        time = currentTime,
-        value = fps
-    })
-    
-    if #self.FPSHistory > self.MaxHistorySize then
-        table.remove(self.FPSHistory, 1)
-    end
-    
-    -- Update performance data
-    self.PerformanceData = {
-        Memory = memory,
-        FPS = math.floor(fps),
-        Uptime = math.floor(currentTime - self.StartTime)
-    }
-end
-
-function Monitor:GetReport()
-    local avgMemory = 0
-    for _, data in ipairs(self.MemoryHistory) do
-        avgMemory = avgMemory + data.value
-    end
-    avgMemory = avgMemory / #self.MemoryHistory
-    
-    local avgFPS = 0
-    for _, data in ipairs(self.FPSHistory) do
-        avgFPS = avgFPS + data.value
-    end
-    avgFPS = avgFPS / #self.FPSHistory
-    
-    return {
-        CurrentMemory = self.PerformanceData.Memory,
-        AverageMemory = math.floor(avgMemory),
-        CurrentFPS = self.PerformanceData.FPS,
-        AverageFPS = math.floor(avgFPS),
-        Uptime = self.PerformanceData.Uptime
-    }
-end
-
--- Start monitoring
-Monitor.StartTime = tick()
-RunService.Heartbeat:Connect(function()
-    Monitor:Update()
-end)
-
-return Monitor`
-    };
+return NexaTools
+`;
 
     // Theme toggle
     $('themeToggle').addEventListener('click', () => {
@@ -1431,7 +1192,7 @@ return Monitor`
         $('opt-junk').checked = config.junkCode;
         $('opt-string').checked = config.stringEncryption;
         $('opt-flow').checked = config.flowFlattening;
-        $('opt-anti-decomp').checked = config.antiDecompiler;
+        $('opt-antitool').checked = config.antiTool;
         
         log(`Obfuscation level set to: ${config.name}`, 'info');
     }
@@ -1451,21 +1212,6 @@ return Monitor`
         log(`Performance mode set to: ${config.name}`, 'info');
     }
 
-    // Load anti-tool preset
-    function loadAntiToolPreset(presetName) {
-        if (antiToolPresets[presetName]) {
-            $('input').value = antiToolPresets[presetName];
-            $('input').dispatchEvent(new Event('input'));
-            
-            // Auto-select expert level for anti-tool scripts
-            setObfuscationLevel('expert');
-            setPerformanceMode('maximum');
-            
-            log(`Loaded ${presetName} anti-tool preset`, 'success');
-            log('Auto-set to Expert level & Maximum performance mode', 'info');
-        }
-    }
-
     // Random name generator
     function randName(l = 14) {
         if ($('opt-barcode').checked) {
@@ -1476,7 +1222,7 @@ return Monitor`
     }
 
     // Nexa watermark
-    const NEXA_WATERMARK = `--[[ NEXA OBFUSCATOR v6.0 - Quantum Anti-Tool Protection ]]`;
+    const NEXA_WATERMARK = `--[[ NEXA OBFUSCATOR v5.0 - Quantum Lua Protection + Anti-Tool System ]]`;
 
     // Advanced obfuscation functions
     function addJunkCode(code) {
@@ -1490,7 +1236,7 @@ return Monitor`
             `local ${randName()} = bit32.bxor(1, 2, 3, 4)`
         ];
         
-        const junkCount = Math.floor(Math.random() * 5) + 3;
+        const junkCount = Math.floor(Math.random() * 3) + 2;
         let junk = '';
         for (let i = 0; i < junkCount; i++) {
             junk += junkFuncs[Math.floor(Math.random() * junkFuncs.length)] + ';\n';
@@ -1502,105 +1248,20 @@ return Monitor`
     function encryptStrings(code) {
         if (!$('opt-string').checked) return code;
         
-        // Complex string encryption with multiple methods
+        // Simple string encryption (base64-like)
         return code.replace(/"[^"]*"/g, (match) => {
             const str = match.slice(1, -1);
-            if (str.length === 0) return match;
-            
-            // Randomly choose encryption method
-            const method = Math.floor(Math.random() * 3);
-            
-            switch(method) {
-                case 0: // Base64-like
-                    const encoded = btoa(unescape(encodeURIComponent(str)));
-                    return `(function() local e="${encoded}"; return loadstring("return \\""..e.."\\""))()`;
-                    
-                case 1: // Character code array
-                    const codes = [];
-                    for(let i = 0; i < str.length; i++) {
-                        codes.push(str.charCodeAt(i));
-                    }
-                    const varName = randName();
-                    return `(function() local ${varName}={${codes.join(',')}}; local s=""; for i=1,#${varName} do s=s..string.char(${varName}[i]) end; return s end)()`;
-                    
-                case 2: // XOR encryption
-                    const key = Math.floor(Math.random() * 255);
-                    const xorCodes = [];
-                    for(let i = 0; i < str.length; i++) {
-                        xorCodes.push(str.charCodeAt(i) ^ key);
-                    }
-                    const xorName = randName();
-                    return `(function() local ${xorName}={${xorCodes.join(',')}}; local s=""; for i=1,#${xorName} do s=s..string.char(bit32.bxor(${xorName}[i], ${key})) end; return s end)()`;
-                    
-                default:
-                    return match;
-            }
+            const encoded = btoa(unescape(encodeURIComponent(str)));
+            return `(function() local e="${encoded}"; return loadstring("return \\""..e.."\\""))()`;
         });
     }
 
     function applyFlowFlattening(code) {
         if (!$('opt-flow').checked) return code;
         
-        // Advanced flow flattening
-        const switchVar = randName();
-        const resultVar = randName();
-        const cases = [];
-        
-        // Split code into chunks and create switch cases
-        const lines = code.split('\n');
-        for(let i = 0; i < lines.length; i++) {
-            if (lines[i].trim().length > 0) {
-                cases.push(`if ${switchVar} == ${i} then ${lines[i]} end`);
-            }
-        }
-        
-        return `local ${switchVar} = 0
-local ${resultVar} = nil
-while ${switchVar} < ${cases.length} do
-    ${cases.join('\n    ')}
-    ${switchVar} = ${switchVar} + 1
-end`;
-    }
-
-    function applyAntiDecompiler(code) {
-        if (!$('opt-anti-decomp').checked) return code;
-        
-        // Anti-decompiler techniques
-        const antiPatterns = [
-            `--[[${randName(20)}]]`,
-            `--[=[ ${randName(15)} ]=]`,
-            `--${randName(10)}`,
-            `--[[${Date.now()}]]`
-        ];
-        
-        // Add confusing comments
-        let modified = code;
-        const lines = modified.split('\n');
-        for(let i = 0; i < lines.length; i += 5) {
-            if (i < lines.length) {
-                const pattern = antiPatterns[Math.floor(Math.random() * antiPatterns.length)];
-                lines[i] = lines[i] + ' ' + pattern;
-            }
-        }
-        modified = lines.join('\n');
-        
-        // Add fake errors
-        const fakeError = `local ${randName()} = function() error("${randName()}") end`;
-        modified = fakeError + '\n' + modified;
-        
-        // Add misleading variable names
-        const misleadingVars = [
-            "Luraph_Detected",
-            "Decompiler_Active",
-            "Debugger_Hook",
-            "Anti_Tool_Flag"
-        ];
-        
-        for(const varName of misleadingVars) {
-            modified = `local ${varName} = false\n` + modified;
-        }
-        
-        return modified;
+        // Simple flow flattening by adding redundant conditionals
+        const varName = randName();
+        return `local ${varName} = true\nif ${varName} then\n${code}\nend`;
     }
 
     // Layer wrapping functions
@@ -1630,6 +1291,28 @@ end`;
         }
 
         return `local function ${v_run}() local ${v_data}="${processed}"; local ${v_tbl}={}; for ${v_it}=1,#${v_data} do ${logic} end; local ${v_res}=table.concat(${v_tbl}); local ${v_load}=(loadstring or load); if ${v_load} then local _f,_e=${v_load}(${v_res}); if _f then pcall(_f) end end end; ${v_run}();`;
+    }
+
+    // Integrate anti-tool protection
+    function integrateAntiTool(code) {
+        if (!$('opt-antitool').checked) return code;
+        
+        log("Integrating anti-tool/debugger system...", "process");
+        
+        // Create integration wrapper
+        const antiToolWrapper = `
+--[[ NEXA ANTI-TOOL PROTECTION v1.0 ]]
+
+do
+    -- Inject anti-tool system
+    ${ANTI_TOOL_CODE}
+end
+
+--[[ MAIN PROGRAM STARTS HERE ]]
+${code}
+`;
+        
+        return antiToolWrapper;
     }
 
     // Main obfuscation function
@@ -1663,9 +1346,9 @@ end`;
         const levelConfig = levelConfigs[obfuscationLevel];
         const perfConfig = perfConfigs[performanceMode];
         
-        log(`NEXA OBFUSCATOR v6.0 - Starting ${levelConfig.name} level encryption`, "process");
+        log(`NEXA OBFUSCATOR v5.0 - Starting ${levelConfig.name} level encryption`, "process");
         log(`Performance mode: ${perfConfig.name}`, "info");
-        log(`Anti-Tool protection: ${$('opt-anti-decomp').checked ? 'ON' : 'OFF'}`, "info");
+        log(`Anti-tool protection: ${$('opt-antitool').checked ? 'ENABLED' : 'DISABLED'}`, "info");
         
         try {
             // Progress update
@@ -1678,11 +1361,11 @@ end`;
             let payload = source;
             const layersApplied = [];
             
-            // Apply anti-decompiler techniques first
-            if (levelConfig.antiDecompiler && $('opt-anti-decomp').checked) {
-                log("Applying anti-decompiler techniques...", "process");
-                payload = applyAntiDecompiler(payload);
-                layersApplied.push("Anti-Decompiler");
+            // Integrate anti-tool protection first
+            if ($('opt-antitool').checked) {
+                log("Integrating anti-tool/debugger system...", "process");
+                payload = integrateAntiTool(payload);
+                layersApplied.push("Anti-Tool System");
             }
             
             // Apply advanced techniques based on level
@@ -1766,7 +1449,7 @@ end`;
             log(`Level: ${levelConfig.name} | Mode: ${perfConfig.name}`, "info");
             log(`Time: ${processTime}ms | Size: ${originalSize} → ${obfuscatedSize} chars (+${sizeIncrease}%)`, "info");
             log(`Layers applied: ${layersApplied.length}`, "info");
-            log("Anti-Tool protection active: " + (levelConfig.antiDecompiler ? "YES" : "NO"), "success");
+            log(`Anti-tool protection: ${$('opt-antitool').checked ? '✓ ENABLED' : '✗ DISABLED'}`, $('opt-antitool').checked ? 'success' : 'warning');
             log("Nexa payload ready for deployment.", "success");
 
         } catch (e) {
@@ -1801,15 +1484,44 @@ end`;
         });
     }
 
-    // Initialize
-    $('input').value = antiToolPresets.debugger;
-    $('input').dispatchEvent(new Event('input'));
-    setObfuscationLevel('expert');
-    setPerformanceMode('maximum');
+    // Preset scripts
+    const presets = {
+        simple: `print("Hello from Nexa Obfuscator v5.0!")
+local security = "QUANTUM_ENCRYPTED"
+print("Security Level: " .. security)`,
+        
+        antiToolTest: `-- Test script with anti-tool protection
+print("Testing Nexa Anti-Tool System")
+
+-- Function to demonstrate protection
+function testFunction()
+    local data = {
+        name = "Protected Data",
+        value = 12345,
+        secret = "This is secret"
+    }
     
-    log("Welcome to Nexa Obfuscator v6.0 - Anti-Tool Edition", "info");
-    log("Loaded debugger tool preset with expert-level protection", "success");
-    log("Anti-decompiler techniques enabled", "process");
+    for key, value in pairs(data) do
+        print(key .. ": " .. tostring(value))
+    end
+end
+
+testFunction()
+
+-- Simulate exploit detection
+local fakeExploit = "return setfenv(function(...) end, getfenv())"
+print("Exploit pattern check completed")`
+    };
+
+    // Initialize
+    $('input').value = presets.antiToolTest;
+    $('input').dispatchEvent(new Event('input'));
+    setObfuscationLevel('medium');
+    setPerformanceMode('balanced');
+    
+    log("Welcome to Nexa Obfuscator v5.0", "info");
+    log("Anti-tool/debugger system integrated", "success");
+    log("Select obfuscation level and performance mode", "info");
 </script>
 </body>
 </html>
