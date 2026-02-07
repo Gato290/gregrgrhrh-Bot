@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>NEXA OBFUSCATOR v5.0 - Anti-Debugger</title>
+    <title>NEXA OBFUSCATOR v5.0 - Executor Detector</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -195,6 +195,46 @@
         }
         input:checked + .slider { background-color: var(--primary); }
         input:checked + .slider:before { transform: translateX(20px); background-color: var(--bg-deep); }
+
+        /* Executor Detection */
+        .executor-selector {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .executor-btn {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 8px 4px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .executor-btn:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: var(--primary);
+        }
+
+        .executor-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            font-weight: 600;
+        }
+
+        .executor-btn .exec-icon {
+            font-size: 0.9rem;
+        }
 
         /* Anti-Debug Level */
         .anti-debug-selector {
@@ -563,7 +603,7 @@
                 grid-template-columns: repeat(2, 1fr);
             }
             
-            .anti-debug-selector {
+            .executor-selector, .anti-debug-selector {
                 grid-template-columns: repeat(2, 1fr);
             }
         }
@@ -583,6 +623,25 @@
 
     <div class="app-container">
         <aside>
+            <div class="setting-card">
+                <h3>Executor Detection <span class="level-indicator level-medium" id="executorIndicator"></span></h3>
+                <div class="executor-selector">
+                    <button class="executor-btn" data-exec="disabled" onclick="setExecutorDetection('disabled')">
+                        <span class="exec-icon">❌</span>
+                        Disabled
+                    </button>
+                    <button class="executor-btn active" data-exec="normal" onclick="setExecutorDetection('normal')">
+                        <span class="exec-icon">🛡️</span>
+                        Normal
+                    </button>
+                    <button class="executor-btn" data-exec="aggressive" onclick="setExecutorDetection('aggressive')">
+                        <span class="exec-icon">💀</span>
+                        Aggressive
+                    </button>
+                </div>
+                <div class="perf-info" id="executorInfo">Detect popular executors, show message if not found</div>
+            </div>
+
             <div class="setting-card">
                 <h3>Anti-Debugger/Tools <span class="level-indicator level-easy" id="antiDebugIndicator"></span></h3>
                 <div class="anti-debug-selector">
@@ -736,8 +795,9 @@
                 </div>
                 <div id="logs">
                     <div class="log-entry info">NEXA OBFUSCATOR v5.0 - Quantum systems engaged</div>
+                    <div class="log-entry info">Executor Detection system loaded</div>
                     <div class="log-entry info">Anti-Debugger system loaded</div>
-                    <div class="log-entry info">Select obfuscation level and anti-debug mode</div>
+                    <div class="log-entry info">Select executor detection mode</div>
                 </div>
             </div>
         </main>
@@ -750,7 +810,33 @@
     let obfuscationLevel = 'medium';
     let performanceMode = 'balanced';
     let antiDebugMode = 'basic';
+    let executorDetection = 'normal';
     let startTime = 0;
+
+    // Configuration for executor detection
+    const executorConfigs = {
+        disabled: {
+            name: 'Disabled',
+            description: 'No executor detection',
+            techniques: [],
+            color: 'level-easy',
+            icon: '❌'
+        },
+        normal: {
+            name: 'Normal',
+            description: 'Detect popular executors, show message if not found',
+            techniques: ['detect_executors', 'print_message', 'check_http'],
+            color: 'level-medium',
+            icon: '🛡️'
+        },
+        aggressive: {
+            name: 'Aggressive',
+            description: 'Enhanced detection with fallback protection',
+            techniques: ['detect_executors', 'print_message', 'check_http', 'hook_check', 'environment_check', 'graceful_fallback'],
+            color: 'level-hard',
+            icon: '💀'
+        }
+    };
 
     // Configuration for anti-debugger levels
     const antiDebugConfigs = {
@@ -908,6 +994,24 @@
         statsPanel.style.display = statsPanel.style.display === 'none' ? 'grid' : 'none';
     }
 
+    // Set executor detection mode
+    function setExecutorDetection(mode) {
+        executorDetection = mode;
+        const config = executorConfigs[mode];
+        
+        // Update UI
+        document.querySelectorAll('.executor-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        document.querySelector(`.executor-btn[data-exec="${mode}"]`).classList.add('active');
+        
+        // Update indicator
+        $('executorIndicator').className = `level-indicator ${config.color}`;
+        $('executorInfo').textContent = config.description;
+        
+        log(`Executor Detection mode set to: ${config.name}`, 'info');
+    }
+
     // Set anti-debug mode
     function setAntiDebug(mode) {
         antiDebugMode = mode;
@@ -978,6 +1082,217 @@
 
     // Nexa watermark
     const NEXA_WATERMARK = `--[[ NEXA OBFUSCATOR v5.0 - Quantum Lua Protection ]]`;
+
+    // Executor detection code generator
+    function generateExecutorDetectionCode() {
+        const config = executorConfigs[executorDetection];
+        if (config.techniques.length === 0) return '';
+        
+        const detectCode = [];
+        
+        // Main executor detection logic
+        if (config.techniques.includes('detect_executors')) {
+            const execName = randName();
+            const execResult = randName();
+            const execFound = randName();
+            const execMsg = randName();
+            
+            detectCode.push(`
+-- Smart Executor Detection System
+local ${execName} = function()
+    -- Check for popular executors
+    local ${execResult} = false
+    local ${execFound} = ""
+    
+    -- Synapse X
+    if type(syn) == "table" and type(syn.request) == "function" then
+        ${execResult} = true
+        ${execFound} = "Synapse X"
+    end
+    
+    -- HTTP Request (common in executors)
+    if not ${execResult} and type(http_request) == "function" then
+        ${execResult} = true
+        ${execFound} = "HTTP Supported Executor"
+    end
+    
+    -- Fluxus
+    if not ${execResult} and type(fluxus) == "table" and type(fluxus.request) == "function" then
+        ${execResult} = true
+        ${execFound} = "Fluxus"
+    end
+    
+    -- KRNL
+    if not ${execResult} and type(krnl) == "table" and type(request) == "function" then
+        ${execResult} = true
+        ${execFound} = "KRNL"
+    end
+    
+    -- Other common executors
+    if not ${execResult} and type(getexecutorname) == "function" then
+        ${execResult} = true
+        ${execFound} = "Unknown Executor"
+    end
+    
+    -- Check for executor environment
+    if not ${execResult} and type(identifyexecutor) == "function" then
+        ${execResult} = true
+        ${execFound} = "Generic Executor"
+    end
+    
+    -- Check for loadstring support (essential for executors)
+    if not ${execResult} and type(loadstring) == "function" then
+        local ${execMsg}, ${randName()} = pcall(loadstring, "return true")
+        if ${execMsg} then
+            ${execResult} = true
+            ${execFound} = "Loadstring Supported"
+        end
+    end
+    
+    -- If no executor found, show message but don't block
+    if not ${execResult} then
+        print("⚠️ NEXA OBFUSCATOR: Script designed for Roblox executors")
+        print("⚠️ Please run this script with Synapse X, KRNL, Fluxus, or similar")
+        print("⚠️ Script will continue but some features may not work properly")
+        print("")
+    else
+        -- Optional: Print executor name in debug mode
+        if false then -- Set to true for debugging
+            print("✓ NEXA: Running on " .. ${execFound})
+        end
+    end
+    
+    return ${execResult}, ${execFound}
+end
+
+-- Execute detection and store result
+local ${randName()}, ${randName()} = ${execName}()`);
+        }
+        
+        // HTTP request check (for enhanced detection)
+        if (config.techniques.includes('check_http')) {
+            detectCode.push(`
+-- HTTP Request availability check
+local ${randName()} = function()
+    -- Try to get Request function safely
+    local ${randName()} = (syn and syn.request)
+        or http_request
+        or (fluxus and fluxus.request)
+        or (krnl and request)
+        or nil
+    
+    -- Check if request function exists
+    if ${randName()} and type(${randName()}) == "function" then
+        return true, "HTTP Request available"
+    end
+    
+    return false, "HTTP Request not available"
+end
+
+local ${randName()}, ${randName()} = ${randName()}()
+`);
+        }
+        
+        // Hook check (aggressive mode)
+        if (config.techniques.includes('hook_check')) {
+            detectCode.push(`
+-- Hook function check (prevent tampering)
+local ${randName()} = function()
+    if debug and type(debug.sethook) == "function" then
+        local ${randName()}, ${randName()} = pcall(debug.sethook)
+        if ${randName()} then
+            debug.sethook() -- Clear any existing hooks
+        end
+    end
+end
+
+pcall(${randName()})`);
+        }
+        
+        // Environment check
+        if (config.techniques.includes('environment_check')) {
+            detectCode.push(`
+-- Environment safety check
+local ${randName()} = function()
+    local ${randName()} = {}
+    
+    -- Check for Roblox-specific objects
+    if game and type(game) == "table" then
+        ${randName()}.roblox = true
+    end
+    
+    -- Check for workspace
+    if workspace and type(workspace) == "table" then
+        ${randName()}.workspace = true
+    end
+    
+    -- Check for Player object
+    if game and game.Players and game.Players.LocalPlayer then
+        ${randName()}.player = true
+    end
+    
+    -- If no Roblox environment detected
+    if not ${randName()}.roblox then
+        print("⚠️ NEXA: Script appears to be outside Roblox environment")
+        print("⚠️ This script is designed for Roblox Lua")
+    end
+    
+    return ${randName()}
+end
+
+local ${randName()} = ${randName()}()`);
+        }
+        
+        // Graceful fallback system
+        if (config.techniques.includes('graceful_fallback')) {
+            detectCode.push(`
+-- Graceful fallback for missing functions
+local ${randName()} = function()
+    -- Create safe wrapper for loadstring
+    local ${randName()} = loadstring or function(code)
+        local ${randName()}, ${randName()} = pcall(load, code)
+        if ${randName()} then
+            return ${randName()}
+        end
+        return nil, ${randName()}
+    end
+    
+    -- Create safe wrapper for require
+    local ${randName()} = function(module)
+        local ${randName()}, ${randName()} = pcall(require, module)
+        if ${randName()} then
+            return ${randName()}
+        end
+        return nil
+    end
+    
+    -- Create safe print function
+    local ${randName()} = print or function(...)
+        local ${randName()} = {...}
+        local ${randName()} = ""
+        for i, v in ipairs(${randName()}) do
+            ${randName()} = ${randName()} .. tostring(v) .. "\\t"
+        end
+        warn(${randName()})
+    end
+    
+    return {
+        loadstring = ${randName()},
+        require = ${randName()},
+        print = ${randName()}
+    }
+end
+
+local ${randName()} = ${randName()}()
+-- Override unsafe functions
+if not loadstring and ${randName()}.loadstring then
+    loadstring = ${randName()}.loadstring
+end
+`);
+        }
+        
+        return detectCode.join('\n');
+    }
 
     // Advanced anti-debug functions
     function generateAntiDebugCode() {
@@ -1262,8 +1577,10 @@ print("Sum: " .. a .. ", Product: " .. b)`
         const levelConfig = levelConfigs[obfuscationLevel];
         const perfConfig = perfConfigs[performanceMode];
         const antiConfig = antiDebugConfigs[antiDebugMode];
+        const execConfig = executorConfigs[executorDetection];
         
         log(`NEXA OBFUSCATOR v5.0 - Starting ${levelConfig.name} level encryption`, "process");
+        log(`Executor Detection: ${execConfig.name}`, "info");
         log(`Anti-Debug mode: ${antiConfig.name}`, "info");
         log(`Performance mode: ${perfConfig.name}`, "info");
         
@@ -1277,6 +1594,14 @@ print("Sum: " .. a .. ", Product: " .. b)`
             
             let payload = source;
             const layersApplied = [];
+            
+            // Apply executor detection code if enabled
+            if (execConfig.techniques.length > 0) {
+                log("Generating executor detection system...", "process");
+                const execDetectionCode = generateExecutorDetectionCode();
+                payload = execDetectionCode + '\n' + payload;
+                layersApplied.push("Executor Detection");
+            }
             
             // Apply anti-debug code if enabled
             if (antiConfig.techniques.length > 0) {
@@ -1364,7 +1689,7 @@ print("Sum: " .. a .. ", Product: " .. b)`
             
             // Final log
             log("✓ Quantum encryption complete!", "success");
-            log(`Level: ${levelConfig.name} | Anti-Debug: ${antiConfig.name} | Mode: ${perfConfig.name}`, "info");
+            log(`Level: ${levelConfig.name} | Executor: ${execConfig.name} | Anti-Debug: ${antiConfig.name}`, "info");
             log(`Time: ${processTime}ms | Size: ${originalSize} → ${obfuscatedSize} chars (+${sizeIncrease}%)`, "info");
             log(`Layers applied: ${layersApplied.length}`, "info");
             log("Nexa payload ready for deployment.", "success");
@@ -1404,13 +1729,15 @@ print("Sum: " .. a .. ", Product: " .. b)`
     // Initialize
     $('input').value = presets.simple;
     $('input').dispatchEvent(new Event('input'));
+    setExecutorDetection('normal');
     setAntiDebug('basic');
     setObfuscationLevel('medium');
     setPerformanceMode('balanced');
     
     log("Welcome to Nexa Obfuscator v5.0", "info");
+    log("Executor Detection system loaded", "info");
     log("Anti-Debugger system loaded", "info");
-    log("Select anti-debug mode and obfuscation level", "info");
+    log("Select executor detection mode and obfuscation level", "info");
 </script>
 </body>
 </html>
