@@ -299,6 +299,31 @@
             border-radius: 3px;
         }
 
+        .preset-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .preset-btn {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 8px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .preset-btn:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: var(--primary);
+            color: var(--text-main);
+        }
+
         .btn-primary {
             background: linear-gradient(135deg, var(--primary), var(--accent));
             color: white; 
@@ -615,10 +640,6 @@
                     <span>Flow Flattening</span>
                     <label class="toggle"><input type="checkbox" id="opt-flow"><span class="slider"></span></label>
                 </div>
-                <div class="control tooltip" data-tooltip="Integrate anti-tool/debugger protection">
-                    <span>Anti-Tool Protection</span>
-                    <label class="toggle"><input type="checkbox" id="opt-antitool" checked><span class="slider"></span></label>
-                </div>
             </div>
 
             <div class="stats-panel" id="statsPanel" style="display: none;">
@@ -701,7 +722,6 @@
             junkCode: false,
             stringEncryption: false,
             flowFlattening: false,
-            antiTool: false,
             color: 'level-easy'
         },
         medium: {
@@ -712,7 +732,6 @@
             junkCode: true,
             stringEncryption: false,
             flowFlattening: false,
-            antiTool: true,
             color: 'level-medium'
         },
         hard: {
@@ -723,7 +742,6 @@
             junkCode: true,
             stringEncryption: true,
             flowFlattening: false,
-            antiTool: true,
             color: 'level-hard'
         },
         expert: {
@@ -734,7 +752,6 @@
             junkCode: true,
             stringEncryption: true,
             flowFlattening: true,
-            antiTool: true,
             color: 'level-expert'
         }
     };
@@ -766,350 +783,6 @@
             icon: '🛡️'
         }
     };
-
-    // ANTI-TOOL/DEBUGGER CODE
-    const ANTI_TOOL_CODE = `
-local RunService = game:GetService("RunService")
-local HttpService = game:GetService("HttpService")
-local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
-
--- ========== CONFIGURATION ==========
-local isLoggingActive = true
-local isStealthMode = false
-local logFileIndex = 1
-local logFileSize = 0
-local maxLogSize = 200000
-local capturedURLs = {}
-local antiExploitActive = true
-
-local startTime = tick()
-
--- ========== LOGGING SYSTEM ==========
-local function addLog(message, logType)
-    if not isLoggingActive then return end
-    
-    logType = logType or "LOG"
-    
-    -- Handle log file rotation
-    if maxLogSize <= logFileSize + #message then
-        logFileIndex = logFileIndex + 1
-        logFileSize = 0
-    end
-    
-    local folderName = "NexaTools"
-    local fileName = string.format("%s/logs_%d.txt", folderName, logFileIndex)
-    
-    -- Save to file
-    pcall(function()
-        if not isfolder(folderName) then
-            makefolder(folderName)
-        end
-        
-        local timestamp = os.date("%H:%M:%S")
-        local logEntry = string.format("[%s][%s] %s\\n", timestamp, logType, message)
-        
-        appendfile(fileName, logEntry)
-        logFileSize = logFileSize + #message
-    end)
-    
-    -- Also print to console if not in stealth mode
-    if not isStealthMode then
-        print(string.format("[NexaTools][%s] %s", logType, message))
-    end
-    
-    return true
-end
-
--- ========== ANTI-DETECTION SYSTEM ==========
-local function detectLuraphPattern(code)
-    local patterns = {
-        "return setfenv%(function%(%.%.%.%)",
-        "setmetatable%(%{.*%}%,%s*%{%s*__index%s*=%s*getfenv",
-        "Luraph",
-        "Luarmor",
-        "MoonSec",
-        "iUjSIQX",
-        "%%%]%]%-%-"
-    }
-    
-    for _, pattern in ipairs(patterns) do
-        if code:find(pattern) then
-            return true, pattern
-        end
-    end
-    
-    return false
-end
-
-local function handleAntiDetection(exploitName, code)
-    if not antiExploitActive then return false end
-    
-    addLog(string.format("%s terdeteksi!", exploitName), "DETECTION")
-    addLog(string.format("Pattern: %s", code:sub(1, 100)), "DETECTION")
-    
-    -- Save detection info
-    pcall(function()
-        if not isfolder("NexaTools/detections") then
-            makefolder("NexaTools/detections")
-        end
-        
-        local timestamp = os.time()
-        local fileName = string.format("NexaTools/detections/detection_%d.txt", timestamp)
-        writefile(fileName, string.format("Detection: %s\\nTime: %s\\n\\nCode:\\n%s", 
-            exploitName, os.date(), code))
-    end)
-    
-    return true
-end
-
--- ========== URL CAPTURE SYSTEM ==========
-local function captureURL(url, content)
-    if not capturedURLs[url] then
-        capturedURLs[url] = true
-        addLog("URL ditemukan: " .. url, "URL")
-        
-        -- Check for exploit patterns in URL content
-        local isExploit, pattern = detectLuraphPattern(content)
-        if isExploit then
-            addLog("Exploit pattern detected: " .. pattern, "DETECTION")
-            handleAntiDetection("Luraph/Luarmor in URL", content)
-        end
-        
-        -- Save URL content to file
-        pcall(function()
-            if not isfolder("NexaTools/urls") then
-                makefolder("NexaTools/urls")
-            end
-            
-            local safeFileName = url:gsub("[^%w]", "_"):sub(1, 50)
-            local fileName = "NexaTools/urls/" .. safeFileName .. ".txt"
-            writefile(fileName, "URL: " .. url .. "\\n\\n" .. content)
-            
-            addLog("URL disimpan: " .. safeFileName .. ".txt", "URL")
-        end)
-    end
-end
-
--- ========== HOOK FUNCTIONS ==========
-local function installPrintHook()
-    local originalPrint = print
-    local printHookActive = true
-    
-    local stealthPrint = function(...)
-        local args = {...}
-        local message = table.concat(args, "\\t")
-        
-        if printHookActive then
-            addLog(message, "print")
-        end
-        
-        return originalPrint(unpack(args))
-    end
-    
-    -- Replace print with stealth version
-    _G.print = stealthPrint
-    getfenv().print = stealthPrint
-    
-    if getgenv then
-        getgenv().print = stealthPrint
-    end
-    
-    addLog("Print hook installed", "System")
-    
-    return function(state)
-        printHookActive = state
-    end
-end
-
-local function installLoadstringHook()
-    if not loadstring then return nil end
-    
-    local originalLoadstring = loadstring
-    local loadstringHookActive = true
-    
-    local stealthLoadstring = function(code)
-        if loadstringHookActive then
-            local isExploit = detectLuraphPattern(code)
-            
-            if isExploit then
-                handleAntiDetection("Luraph/Luarmor in loadstring", code)
-                addLog("Exploit script terdeteksi!", "DETECTION")
-            end
-            
-            addLog("loadstring executed", "Loadstring")
-            addLog(code:sub(1, 500), "Loadstring")
-        end
-        
-        return originalLoadstring(code)
-    end
-    
-    -- Replace loadstring with stealth version
-    if getgenv then
-        getgenv().loadstring = stealthLoadstring
-    end
-    
-    addLog("Loadstring hook installed", "System")
-    
-    return function(state)
-        loadstringHookActive = state
-    end
-end
-
-local function installRequireHook()
-    local originalRequire = require
-    local requireHookActive = true
-    
-    local stealthRequire = function(module)
-        if requireHookActive then
-            local moduleInfo = "Unknown"
-            if typeof(module) == "Instance" and module:IsA("ModuleScript") then
-                moduleInfo = module:GetFullName() or "Unknown"
-            end
-            addLog("Module dipanggil: " .. moduleInfo, "require")
-            
-            -- Check module source for exploits
-            if module:IsA("ModuleScript") then
-                local success, source = pcall(function()
-                    return module.Source
-                end)
-                
-                if success and source then
-                    local isExploit = detectLuraphPattern(source)
-                    if isExploit then
-                        handleAntiDetection("Luraph/Luarmor in ModuleScript", source)
-                        addLog("ModuleScript mengandung exploit!", "DETECTION")
-                    end
-                end
-            end
-        end
-        
-        return originalRequire(module)
-    end
-    
-    -- Replace require with stealth version
-    _G.require = stealthRequire
-    getfenv().require = stealthRequire
-    
-    if getgenv then
-        getgenv().require = stealthRequire
-    end
-    
-    addLog("Require hook installed", "System")
-    
-    return function(state)
-        requireHookActive = state
-    end
-end
-
--- ========== MONITORING SYSTEM ==========
-local function startMonitoring()
-    addLog("Monitoring system aktif", "System")
-    
-    local monitorTimer = 0
-    RunService.Heartbeat:Connect(function(deltaTime)
-        monitorTimer = monitorTimer + deltaTime
-        
-        -- Log status every 60 seconds
-        if monitorTimer >= 60 then
-            monitorTimer = 0
-            local uptime = math.floor(tick() - startTime)
-            addLog(string.format("System active for %d seconds", uptime), "Monitor")
-            
-            -- Check memory usage
-            local memory = collectgarbage("count")
-            addLog(string.format("Memory usage: %.2f KB", memory), "Monitor")
-        end
-    end)
-end
-
--- ========== INITIALIZATION ==========
--- Install hooks
-local togglePrintHook = installPrintHook()
-local toggleLoadstringHook = installLoadstringHook()
-local toggleRequireHook = installRequireHook()
-
--- Start monitoring
-startMonitoring()
-
--- ========== EXPOSED FUNCTIONS ==========
-local NexaTools = {
-    -- Logging functions
-    AddLog = addLog,
-    SetLogging = function(state)
-        isLoggingActive = state
-        addLog("Logging " .. (state and "enabled" or "disabled"), "System")
-        return isLoggingActive
-    end,
-    
-    -- Anti-detection functions
-    SetAntiDetection = function(state)
-        antiExploitActive = state
-        addLog("Anti-Detection " .. (state and "enabled" or "disabled"), "System")
-        return antiExploitActive
-    end,
-    
-    -- URL capture
-    CaptureURL = function(url, content)
-        if url and content then
-            captureURL(url, content)
-            addLog("URL captured: " .. url, "URL")
-            return true
-        end
-        return false
-    end,
-    
-    -- Hook controls
-    TogglePrintHook = function(state)
-        if togglePrintHook then
-            togglePrintHook(state)
-        end
-    end,
-    
-    ToggleLoadstringHook = function(state)
-        if toggleLoadstringHook then
-            toggleLoadstringHook(state)
-        end
-    end,
-    
-    ToggleRequireHook = function(state)
-        if toggleRequireHook then
-            toggleRequireHook(state)
-        end
-    end,
-    
-    -- System info
-    GetStatus = function()
-        return {
-            LoggingActive = isLoggingActive,
-            AntiDetectionActive = antiExploitActive,
-            Uptime = math.floor(tick() - startTime),
-            LogCount = logFileIndex,
-            MemoryUsage = collectgarbage("count")
-        }
-    end,
-    
-    -- Utility
-    SetStealthMode = function(state)
-        isStealthMode = state
-        addLog("Stealth mode " .. (state and "enabled" or "disabled"), "System")
-        return isStealthMode
-    end
-}
-
--- Make available globally
-if getgenv then
-    getgenv().NexaTools = NexaTools
-end
-
--- Initial log
-addLog("Nexa Tools Debugger initialized", "System")
-addLog("Player: " .. LocalPlayer.Name, "System")
-addLog("Anti-Detection: " .. (antiExploitActive and "ON" or "OFF"), "System")
-addLog("Stealth mode: " .. (isStealthMode and "ON" : "OFF"), "System")
-
-return NexaTools
-`;
 
     // Theme toggle
     $('themeToggle').addEventListener('click', () => {
@@ -1192,7 +865,6 @@ return NexaTools
         $('opt-junk').checked = config.junkCode;
         $('opt-string').checked = config.stringEncryption;
         $('opt-flow').checked = config.flowFlattening;
-        $('opt-antitool').checked = config.antiTool;
         
         log(`Obfuscation level set to: ${config.name}`, 'info');
     }
@@ -1222,7 +894,7 @@ return NexaTools
     }
 
     // Nexa watermark
-    const NEXA_WATERMARK = `--[[ NEXA OBFUSCATOR v5.0 - Quantum Lua Protection + Anti-Tool System ]]`;
+    const NEXA_WATERMARK = `--[[ NEXA OBFUSCATOR v5.0 - Quantum Lua Protection ]]`;
 
     // Advanced obfuscation functions
     function addJunkCode(code) {
@@ -1293,26 +965,37 @@ return NexaTools
         return `local function ${v_run}() local ${v_data}="${processed}"; local ${v_tbl}={}; for ${v_it}=1,#${v_data} do ${logic} end; local ${v_res}=table.concat(${v_tbl}); local ${v_load}=(loadstring or load); if ${v_load} then local _f,_e=${v_load}(${v_res}); if _f then pcall(_f) end end end; ${v_run}();`;
     }
 
-    // Integrate anti-tool protection
-    function integrateAntiTool(code) {
-        if (!$('opt-antitool').checked) return code;
+    // Preset scripts
+    const presets = {
+        simple: `print("Hello from Nexa Obfuscator v5.0!")
+local security = "QUANTUM_ENCRYPTED"
+print("Security Level: " .. security)`,
         
-        log("Integrating anti-tool/debugger system...", "process");
-        
-        // Create integration wrapper
-        const antiToolWrapper = `
---[[ NEXA ANTI-TOOL PROTECTION v1.0 ]]
-
-do
-    -- Inject anti-tool system
-    ${ANTI_TOOL_CODE}
+        loop: `for i = 1, 10 do
+    print("Nexa Iteration: " .. i)
 end
 
---[[ MAIN PROGRAM STARTS HERE ]]
-${code}
-`;
+local items = {"A", "B", "C", "D"}
+for _, item in ipairs(items) do
+    print("Item: " .. item)
+end`,
         
-        return antiToolWrapper;
+        function: `function quantumCalculate(x, y)
+    local sum = x + y
+    local product = x * y
+    return sum, product
+end
+
+local a, b = quantumCalculate(5, 3)
+print("Sum: " .. a .. ", Product: " .. b)`
+    };
+
+    function loadPreset(name) {
+        if (presets[name]) {
+            $('input').value = presets[name];
+            $('input').dispatchEvent(new Event('input'));
+            log(`Loaded ${name} preset`, 'success');
+        }
     }
 
     // Main obfuscation function
@@ -1348,7 +1031,6 @@ ${code}
         
         log(`NEXA OBFUSCATOR v5.0 - Starting ${levelConfig.name} level encryption`, "process");
         log(`Performance mode: ${perfConfig.name}`, "info");
-        log(`Anti-tool protection: ${$('opt-antitool').checked ? 'ENABLED' : 'DISABLED'}`, "info");
         
         try {
             // Progress update
@@ -1360,13 +1042,6 @@ ${code}
             
             let payload = source;
             const layersApplied = [];
-            
-            // Integrate anti-tool protection first
-            if ($('opt-antitool').checked) {
-                log("Integrating anti-tool/debugger system...", "process");
-                payload = integrateAntiTool(payload);
-                layersApplied.push("Anti-Tool System");
-            }
             
             // Apply advanced techniques based on level
             if (levelConfig.stringEncryption && $('opt-string').checked) {
@@ -1449,7 +1124,6 @@ ${code}
             log(`Level: ${levelConfig.name} | Mode: ${perfConfig.name}`, "info");
             log(`Time: ${processTime}ms | Size: ${originalSize} → ${obfuscatedSize} chars (+${sizeIncrease}%)`, "info");
             log(`Layers applied: ${layersApplied.length}`, "info");
-            log(`Anti-tool protection: ${$('opt-antitool').checked ? '✓ ENABLED' : '✗ DISABLED'}`, $('opt-antitool').checked ? 'success' : 'warning');
             log("Nexa payload ready for deployment.", "success");
 
         } catch (e) {
@@ -1484,43 +1158,13 @@ ${code}
         });
     }
 
-    // Preset scripts
-    const presets = {
-        simple: `print("Hello from Nexa Obfuscator v5.0!")
-local security = "QUANTUM_ENCRYPTED"
-print("Security Level: " .. security)`,
-        
-        antiToolTest: `-- Test script with anti-tool protection
-print("Testing Nexa Anti-Tool System")
-
--- Function to demonstrate protection
-function testFunction()
-    local data = {
-        name = "Protected Data",
-        value = 12345,
-        secret = "This is secret"
-    }
-    
-    for key, value in pairs(data) do
-        print(key .. ": " .. tostring(value))
-    end
-end
-
-testFunction()
-
--- Simulate exploit detection
-local fakeExploit = "return setfenv(function(...) end, getfenv())"
-print("Exploit pattern check completed")`
-    };
-
     // Initialize
-    $('input').value = presets.antiToolTest;
+    $('input').value = presets.simple;
     $('input').dispatchEvent(new Event('input'));
     setObfuscationLevel('medium');
     setPerformanceMode('balanced');
     
     log("Welcome to Nexa Obfuscator v5.0", "info");
-    log("Anti-tool/debugger system integrated", "success");
     log("Select obfuscation level and performance mode", "info");
 </script>
 </body>
