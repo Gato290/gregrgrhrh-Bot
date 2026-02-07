@@ -1,605 +1,313 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
+    <title>STAR OBFUSCATOR</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Super Secure Obfuscator</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        :root {
+            --bg-deep: #020205;
+            --bg-panel: #08080e;
+            --primary: #fcd34d; /* Star Yellow */
+            --accent: #6366f1;
+            --text-main: #f8fafc;
+            --text-muted: #64748b;
+            --border: #1e293b;
+            --success: #fbbf24;
+            --font-code: 'JetBrains Mono', monospace;
         }
+
+        * { box-sizing: border-box; outline: none; }
 
         body {
-            background: linear-gradient(135deg, #0c2461 0%, #1e3799 100%);
-            color: #f1f2f6;
+            margin: 0;
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
             min-height: 100vh;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 40px;
-            padding: 20px;
-            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
-        }
-
-        h1 {
-            font-size: 2.8rem;
-            margin-bottom: 10px;
-            background: linear-gradient(to right, #00cec9, #81ecec);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-        }
-
-        .tagline {
-            font-size: 1.2rem;
-            opacity: 0.9;
-            margin-bottom: 20px;
-        }
-
-        .security-badge {
-            display: inline-block;
-            background: #e74c3c;
-            color: white;
-            padding: 8px 20px;
-            border-radius: 30px;
-            font-weight: bold;
-            font-size: 0.9rem;
-            letter-spacing: 1px;
-        }
-
-        .main-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            margin-bottom: 40px;
-        }
-
-        @media (max-width: 768px) {
-            .main-content {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .panel {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-        }
-
-        .panel-header {
             display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            flex-direction: column;
+            overflow: hidden;
         }
 
-        .panel-header i {
-            font-size: 1.5rem;
-            margin-right: 15px;
-            color: #00cec9;
+        /* Starfield Background Effect */
+        .starfield {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+            background-image: 
+                radial-gradient(1px 1px at 20px 30px, #eee, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 40px 70px, #fff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 50px 160px, #ddd, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 90px 40px, #fff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 130px 80px, #fff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 160px 120px, #ddd, rgba(0,0,0,0));
+            background-repeat: repeat;
+            background-size: 200px 200px;
+            opacity: 0.3;
         }
 
-        .panel-header h2 {
-            font-size: 1.8rem;
+        .bg-glow {
+            position: fixed; top: 0; left: 50%; width: 50%; height: 50%; z-index: -1;
+            background: radial-gradient(circle at 50% 0%, rgba(252, 211, 77, 0.05) 0%, transparent 70%);
+            transform: translateX(-50%);
         }
+
+        nav {
+            height: 60px; border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 24px; background: rgba(8, 8, 14, 0.9);
+            backdrop-filter: blur(20px);
+        }
+
+        .logo { font-weight: 800; letter-spacing: 0.1em; font-size: 1.2rem; display: flex; align-items: center; gap: 8px;}
+        .logo span { color: var(--primary); text-shadow: 0 0 10px var(--primary); }
+
+        .app-container {
+            display: grid; grid-template-columns: 280px 1fr;
+            height: calc(100vh - 60px);
+        }
+
+        aside {
+            background: var(--bg-panel); border-right: 1px solid var(--border);
+            padding: 24px; display: flex; flex-direction: column; gap: 20px;
+        }
+
+        .setting-card { background: rgba(255,255,255,0.02); padding: 12px; border-radius: 8px; border: 1px solid var(--border); }
+        .setting-card h3 { font-size: 0.65rem; text-transform: uppercase; color: var(--text-muted); margin: 0 0 10px 0; letter-spacing: 0.1em; }
+        
+        .control { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 0.85rem; }
+        
+        .toggle { position: relative; width: 34px; height: 16px; }
+        .toggle input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #1e293b; transition: .3s; border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute; content: ""; height: 10px; width: 10px;
+            left: 3px; bottom: 3px; background-color: #cbd5e1; transition: .3s; border-radius: 50%;
+        }
+        input:checked + .slider { background-color: var(--primary); }
+        input:checked + .slider:before { transform: translateX(18px); background-color: var(--bg-deep); }
+
+        .main-workspace { padding: 20px; display: flex; flex-direction: column; gap: 16px; overflow: hidden; }
+        .editors { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; flex: 1; min-height: 0; }
+        
+        .editor-wrap { display: flex; flex-direction: column; background: var(--bg-panel); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+        .editor-label { padding: 10px 16px; background: rgba(255,255,255,0.03); font-size: 0.7rem; font-weight: 700; color: var(--text-muted); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
 
         textarea {
-            width: 100%;
-            height: 300px;
-            background: rgba(0, 0, 0, 0.3);
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            color: #f1f2f6;
-            font-size: 1rem;
-            padding: 15px;
-            resize: vertical;
-            font-family: monospace;
-            transition: border 0.3s;
-        }
-
-        textarea:focus {
-            outline: none;
-            border-color: #00cec9;
-        }
-
-        .controls {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .btn {
-            padding: 12px 25px;
-            border: none;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            transition: all 0.3s;
-            font-size: 1rem;
+            flex: 1; background: transparent; border: none; color: #e2e8f0;
+            padding: 16px; font-family: var(--font-code); font-size: 13px; resize: none; line-height: 1.6;
         }
 
         .btn-primary {
-            background: linear-gradient(to right, #00cec9, #0984e3);
-            color: white;
-            flex: 1;
+            background: var(--primary); color: var(--bg-deep); border: none; padding: 14px;
+            border-radius: 8px; font-weight: 800; cursor: pointer; transition: 0.2s;
+            text-transform: uppercase; letter-spacing: 0.05em;
         }
+        .btn-primary:hover { transform: translateY(-1px); filter: brightness(1.1); box-shadow: 0 0 15px rgba(252, 211, 77, 0.4); }
+        .btn-primary:active { transform: translateY(0); }
+        .btn-primary:disabled { opacity: 0.3; cursor: not-allowed; }
 
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
+        .terminal {
+            height: 140px; background: #000; border-radius: 8px; border: 1px solid var(--border);
+            padding: 12px; font-family: var(--font-code); font-size: 11px; overflow-y: auto; color: #94a3b8;
         }
-
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 7px 15px rgba(0, 0, 0, 0.3);
-        }
-
-        .btn:active {
-            transform: translateY(-1px);
-        }
-
-        .btn-primary:hover {
-            background: linear-gradient(to right, #00b894, #0778c4);
-        }
-
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        .info-box {
-            background: rgba(0, 206, 201, 0.1);
-            border-left: 4px solid #00cec9;
-            padding: 15px;
-            border-radius: 0 8px 8px 0;
-            margin-top: 20px;
-            font-size: 0.95rem;
-        }
-
-        .info-box h3 {
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .stats {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .stat {
-            text-align: center;
-        }
-
-        .stat-value {
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: #00cec9;
-        }
-
-        .stat-label {
-            font-size: 0.9rem;
-            opacity: 0.8;
-        }
-
-        footer {
-            text-align: center;
-            margin-top: 40px;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            font-size: 0.9rem;
-            opacity: 0.8;
-        }
-
-        .algorithm-selector {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .algo-option {
-            padding: 10px 20px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s;
-            border: 1px solid transparent;
-        }
-
-        .algo-option:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .algo-option.active {
-            background: rgba(0, 206, 201, 0.2);
-            border-color: #00cec9;
-            color: #00cec9;
-            font-weight: bold;
-        }
-
-        .password-field {
-            margin-bottom: 20px;
-        }
-
-        .password-field input {
-            width: 100%;
-            padding: 12px 15px;
-            background: rgba(0, 0, 0, 0.3);
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            color: #f1f2f6;
-            font-size: 1rem;
-        }
-
-        .password-field input:focus {
-            outline: none;
-            border-color: #00cec9;
-        }
-
-        .password-label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-        }
-
-        .output-controls {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 20px;
-        }
+        .log-entry.success { color: var(--success); }
+        .log-entry.process { color: var(--primary); }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1><i class="fas fa-user-secret"></i> SUPER SECURE OBFUSCATOR</h1>
-            <p class="tagline">Transformasi kode dengan enkripsi multi-layer untuk keamanan maksimal</p>
-            <div class="security-badge">
-                <i class="fas fa-shield-alt"></i> LEVEL KEAMANAN: MAXIMUM
-            </div>
-        </header>
 
-        <div class="main-content">
-            <div class="panel">
-                <div class="panel-header">
-                    <i class="fas fa-code"></i>
-                    <h2>Input Kode</h2>
-                </div>
-                
-                <div class="algorithm-selector">
-                    <div class="algo-option active" data-algo="secure">Secure Obfuscation</div>
-                    <div class="algo-option" data-algo="advanced">Advanced Encryption</div>
-                    <div class="algo-option" data-algo="military">Military Grade</div>
-                </div>
+    <div class="starfield"></div>
+    <div class="bg-glow"></div>
+    <nav>
+        <div class="logo"><span>STAR</span> OBFUSCATOR</div>
+        <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 700;">GALAXY-BUILD 3.8.1</div>
+    </nav>
 
-                <div class="password-field">
-                    <label class="password-label">
-                        <i class="fas fa-key"></i> Password Enkripsi (Opsional)
-                    </label>
-                    <input type="password" id="encryptionPassword" placeholder="Masukkan password untuk enkripsi tambahan">
+    <div class="app-container">
+        <aside>
+            <div class="setting-card">
+                <h3>Star System</h3>
+                <div class="control">
+                    <span>Bytecode VM</span>
+                    <label class="toggle"><input type="checkbox" checked disabled><span class="slider"></span></label>
                 </div>
-
-                <textarea id="inputCode" placeholder="Masukkan kode JavaScript, HTML, atau CSS di sini..."></textarea>
-                
-                <div class="controls">
-                    <button class="btn btn-primary" id="obfuscateBtn">
-                        <i class="fas fa-lock"></i> OBFUSCATE KODE
-                    </button>
-                    <button class="btn btn-secondary" id="clearBtn">
-                        <i class="fas fa-trash"></i> BERSIHKAN
-                    </button>
-                    <button class="btn btn-secondary" id="exampleBtn">
-                        <i class="fas fa-eye"></i> CONTOH
-                    </button>
-                </div>
-
-                <div class="info-box">
-                    <h3><i class="fas fa-info-circle"></i> Informasi Keamanan</h3>
-                    <p>Obfuscator ini menggunakan algoritma AES-256, encoding base64 multi-layer, dan teknik pengacakan variabel untuk melindungi kode Anda dari reverse engineering.</p>
+                <div class="control">
+                    <span>Barcode Meta</span>
+                    <label class="toggle"><input type="checkbox" id="opt-barcode" checked><span class="slider"></span></label>
                 </div>
             </div>
 
-            <div class="panel">
-                <div class="panel-header">
-                    <i class="fas fa-lock"></i>
-                    <h2>Output Kode</h2>
+            <div class="setting-card">
+                <h3>Atmospheric Layers</h3>
+                <div class="control">
+                    <span>Rotation Flow</span>
+                    <label class="toggle"><input type="checkbox" id="opt-rot" checked><span class="slider"></span></label>
                 </div>
-                
-                <textarea id="outputCode" readonly placeholder="Kode terobfuscate akan muncul di sini..."></textarea>
-                
-                <div class="output-controls">
-                    <button class="btn btn-secondary" id="copyBtn">
-                        <i class="fas fa-copy"></i> SALIN
-                    </button>
-                    <button class="btn btn-secondary" id="downloadBtn">
-                        <i class="fas fa-download"></i> UNDUH
-                    </button>
-                    <button class="btn btn-primary" id="testBtn">
-                        <i class="fas fa-play"></i> TEST KODE
-                    </button>
+                <div class="control">
+                    <span>XOR Matrix</span>
+                    <label class="toggle"><input type="checkbox" id="opt-xor" checked><span class="slider"></span></label>
                 </div>
-
-                <div class="stats">
-                    <div class="stat">
-                        <div class="stat-value" id="inputLength">0</div>
-                        <div class="stat-label">Karakter Input</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-value" id="outputLength">0</div>
-                        <div class="stat-label">Karakter Output</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-value" id="obfuscationLevel">0%</div>
-                        <div class="stat-label">Tingkat Obfuscasi</div>
-                    </div>
-                </div>
-
-                <div class="info-box">
-                    <h3><i class="fas fa-exclamation-triangle"></i> Peringatan</h3>
-                    <p>Simpan password dengan aman jika digunakan. Kode yang terobfuscate tidak dapat dikembalikan tanpa password yang tepat. Backup kode asli sebelum mengobfuscate.</p>
+                <div class="control">
+                    <span>Inverse Binary</span>
+                    <label class="toggle"><input type="checkbox" id="opt-inv" checked><span class="slider"></span></label>
                 </div>
             </div>
-        </div>
 
-        <footer>
-            <p><i class="fas fa-copyright"></i> 2023 Super Secure Obfuscator | Dibuat dengan <i class="fas fa-heart" style="color:#e74c3c"></i> untuk keamanan kode Anda</p>
-            <p style="margin-top:5px;font-size:0.8rem;">Semua proses berjalan di browser Anda, tidak ada data yang dikirim ke server</p>
-        </footer>
+            <button class="btn-primary" id="buildBtn" onclick="runHybridBuild()">do the thing</button>
+        </aside>
+
+        <main class="main-workspace">
+            <div class="editors">
+                <div class="editor-wrap">
+                    <div class="editor-label">SOURCE CODE</div>
+                    <textarea id="input" spellcheck="false" placeholder="-- Paste Lua script here..."></textarea>
+                </div>
+                <div class="editor-wrap">
+                    <div class="editor-label">STAR_PAYLOAD.LUA <span style="cursor:pointer; color: var(--primary);" onclick="copyResult()">[COPY]</span></div>
+                    <textarea id="output" readonly spellcheck="false" placeholder="-- Output will be generated here..."></textarea>
+                </div>
+            </div>
+
+            <div class="terminal" id="logs">
+                <div class="log-entry">STAR Kernel online. All systems nominal.</div>
+            </div>
+        </main>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const inputCode = document.getElementById('inputCode');
-            const outputCode = document.getElementById('outputCode');
-            const obfuscateBtn = document.getElementById('obfuscateBtn');
-            const clearBtn = document.getElementById('clearBtn');
-            const copyBtn = document.getElementById('copyBtn');
-            const downloadBtn = document.getElementById('downloadBtn');
-            const testBtn = document.getElementById('testBtn');
-            const exampleBtn = document.getElementById('exampleBtn');
-            const encryptionPassword = document.getElementById('encryptionPassword');
-            const inputLength = document.getElementById('inputLength');
-            const outputLength = document.getElementById('outputLength');
-            const obfuscationLevel = document.getElementById('obfuscationLevel');
-            const algoOptions = document.querySelectorAll('.algo-option');
+<script>
+    const $ = id => document.getElementById(id);
+    const log = (m, t='') => {
+        const d = document.createElement('div');
+        d.className = 'log-entry ' + t;
+        d.innerText = `[${new Date().toLocaleTimeString()}] ${m}`;
+        $('logs').appendChild(d);
+        $('logs').scrollTop = $('logs').scrollHeight;
+    };
+
+    function randName(l=14) {
+        if ($('opt-barcode').checked) {
+            const c = ['I', 'l', '1'];
+            return "I" + [...Array(l)].map(() => c[Math.floor(Math.random()*c.length)]).join("");
+        }
+        return "_" + Math.random().toString(36).slice(2, 11).toUpperCase();
+    }
+
+    const STAR_WATERMARK = `
+--[[ 
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⣰⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣴⡾
+⠀⠀⣿⡍⠛⠲⣶⣄⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣠⡴⠞⠉⣠⡞⠀⠀
+⠀⠀⠘⣽⢷⣦⣌⣈⠋⡚⠿⣦⡀⠀⠀⣴⣶⡄⠀⠀⣠⡶⠚⠛⣙⣭⠠⣤⣶⣯⠆⠀⠀⠀
+⠀⠀⠀⣼⣷⣀⠀⠀⠈⠀⠀⠀⢻⡇⠺⡿⠛⣿⡅⠀⢿⠀⠀⣼⠿⣫⣭⣠⣤⡶⠂⠀⠀⠀
+⠀⠀⠀⠀⠉⠛⠿⣹⣾⠔⠃⠀⠈⠳⠾⠏⠀⠻⣷⡺⠋⠀⣤⣸⣷⣶⡾⠖⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠈⠒⠷⣿⡻⣞⣀⣄⣀⣀⡄⠀⠀⣠⣄⣸⡿⣾⣿⡽⡄⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠛⠟⠯⣽⢿⡿⠃⠀⢀⣿⡙⠑⠙⠛⠉⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢰⣯⣦⣾⣿⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣼⣿⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⣿⢩⡿⠘⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⣽⡃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+        STAR OBFUSCATOR
+]]\n`;
+
+    function wrapLayer(code, type) {
+        const v_run = randName();
+        const v_data = randName();
+        const v_tbl = randName();
+        const v_it = randName();
+        const v_res = randName();
+        const v_load = randName();
+        
+        const bytes = new TextEncoder().encode(code);
+        let processed = "";
+        let logic = "";
+
+        if (type === "rotation") {
+            const offset = Math.floor(Math.random() * 60) + 15;
+            for(let b of bytes) processed += "\\" + ((b + offset) % 256);
+            logic = `table.insert(${v_tbl},string.char((${v_data}:byte(${v_it})-${offset})%256))`;
+        } else if (type === "xor") {
+            const key = Math.floor(Math.random() * 254) + 1;
+            for(let b of bytes) processed += "\\" + (b ^ key);
+            logic = `table.insert(${v_tbl},string.char(bit32.bxor(${v_data}:byte(${v_it}), ${key})))`;
+        } else if (type === "inversion") {
+            for(let b of bytes) processed += "\\" + (255 - b);
+            logic = `table.insert(${v_tbl},string.char(255 - ${v_data}:byte(${v_it})))`;
+        }
+
+        return `local function ${v_run}() local ${v_data}="${processed}"; local ${v_tbl}={}; for ${v_it}=1,#${v_data} do ${logic} end; local ${v_res}=table.concat(${v_tbl}); local ${v_load}=(loadstring or load); if ${v_load} then local _f,_e=${v_load}(${v_res}); if _f then pcall(_f) end end end; ${v_run}();`;
+    }
+
+    async function runHybridBuild() {
+        const source = $('input').value;
+        if (!source.trim()) return log("Source missing. Aborting.", "error");
+
+        const btn = $('buildBtn');
+        btn.disabled = true;
+        btn.innerText = "CALCULATING ORBIT...";
+        $('logs').innerHTML = '';
+        log("STAR OBFUSCATOR - Version 3.8 Hybrid initiated.", "process");
+
+        await new Promise(r => setTimeout(r, 400));
+
+        try {
+            log("Generating Bytecode VM Matrix...");
+            const masterKey = Math.floor(Math.random() * 255);
+            const bytes = new TextEncoder().encode(source);
+            let rollingKey = masterKey;
+            let opcodes = [];
             
-            let selectedAlgorithm = 'secure';
-
-            algoOptions.forEach(option => {
-                option.addEventListener('click', function() {
-                    algoOptions.forEach(opt => opt.classList.remove('active'));
-                    this.classList.add('active');
-                    selectedAlgorithm = this.getAttribute('data-algo');
-                });
-            });
-
-            function updateStats() {
-                const inputText = inputCode.value;
-                const outputText = outputCode.value;
-                
-                inputLength.textContent = inputText.length;
-                outputLength.textContent = outputText.length;
-                
-                if (inputText.length > 0 && outputText.length > 0) {
-                    const level = Math.min(99, Math.round((outputText.length / Math.max(1, inputText.length)) * 100));
-                    obfuscationLevel.textContent = level + '%';
-                } else {
-                    obfuscationLevel.textContent = '0%';
-                }
+            for (let i = 0; i < bytes.length; i++) {
+                opcodes.push((bytes[i] ^ rollingKey) + (i % 7));
+                rollingKey = (rollingKey + 13) % 255;
             }
 
-            inputCode.addEventListener('input', updateStats);
-            outputCode.addEventListener('input', updateStats);
+            const v_ops = randName();
+            const v_stk = randName();
+            const v_ip = randName();
+            const v_run = randName();
 
-            function generateRandomString(length) {
-                const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-                let result = '';
-                for (let i = 0; i < length; i++) {
-                    result += chars.charAt(Math.floor(Math.random() * chars.length));
-                }
-                return result;
+            let payload = `local ${v_ops} = {${opcodes.join(',')}} local function ${v_run}() local ${v_stk} = {} local ${v_ip} = ${masterKey} for i=1, #${v_ops} do local v = (${v_ops}[i] - ((i-1)%7)) ${v_stk}[#${v_stk}+1] = string.char(bit32.bxor(v, ${v_ip})) ${v_ip} = (${v_ip} + 13) % 255 end local f, e = (loadstring or load)(table.concat(${v_stk})) if f then pcall(f) end end ${v_run}()`.replace(/\s+/g, ' ');
+
+            const layers = [];
+            if ($('opt-rot').checked) layers.push("rotation");
+            if ($('opt-xor').checked) layers.push("xor");
+            if ($('opt-inv').checked) layers.push("inversion");
+
+            log(`Stacking ${layers.length} atmospheric security layers...`, "process");
+            
+            layers.sort(() => Math.random() - 0.5);
+
+            for(let l of layers) {
+                log(`Applying ${l.toUpperCase()} doing it :3...`);
+                payload = wrapLayer(payload, l).replace(/\s+/g, ' ');
+                await new Promise(r => setTimeout(r, 100));
             }
 
-            function obfuscateString(str, password = '') {
-                let obfuscated = str;
-                
-                if (selectedAlgorithm === 'advanced' || selectedAlgorithm === 'military') {
-                    const key = password || generateRandomString(32);
-                    const salt = CryptoJS.lib.WordArray.random(16);
-                    const iv = CryptoJS.lib.WordArray.random(16);
-                    
-                    const keyDerived = CryptoJS.PBKDF2(key, salt, {
-                        keySize: 256/32,
-                        iterations: selectedAlgorithm === 'military' ? 10000 : 5000
-                    });
-                    
-                    const encrypted = CryptoJS.AES.encrypt(obfuscated, keyDerived, {
-                        iv: iv,
-                        mode: CryptoJS.mode.CBC,
-                        padding: CryptoJS.pad.Pkcs7
-                    });
-                    
-                    obfuscated = salt.toString() + iv.toString() + encrypted.toString();
-                }
-                
-                let base64Encoded = btoa(unescape(encodeURIComponent(obfuscated)));
-                
-                for (let i = 0; i < (selectedAlgorithm === 'military' ? 3 : 2); i++) {
-                    base64Encoded = btoa(base64Encoded);
-                }
-                
-                const varNames = [];
-                const chunks = [];
-                const chunkSize = selectedAlgorithm === 'military' ? 50 : 100;
-                
-                for (let i = 0; i < base64Encoded.length; i += chunkSize) {
-                    chunks.push(base64Encoded.substring(i, i + chunkSize));
-                }
-                
-                chunks.forEach((chunk, index) => {
-                    varNames.push(`_0x${generateRandomString(6)}`);
-                });
-                
-                let result = `(function(){`;
-                result += `var ${varNames.join(',')}='';\n`;
-                
-                chunks.forEach((chunk, index) => {
-                    const reversed = chunk.split('').reverse().join('');
-                    const encoded = btoa(reversed);
-                    result += `${varNames[index]}='${encoded}';\n`;
-                });
-                
-                result += `var _result='';\n`;
-                varNames.forEach(varName => {
-                    result += `_result+=atob(${varName}).split('').reverse().join('');\n`;
-                });
-                
-                for (let i = 0; i < (selectedAlgorithm === 'military' ? 3 : 2); i++) {
-                    result += `_result=atob(_result);\n`;
-                }
-                
-                if (password && (selectedAlgorithm === 'advanced' || selectedAlgorithm === 'military')) {
-                    result += `try{`;
-                    result += `var _salt=CryptoJS.enc.Hex.parse(_result.substr(0,32));`;
-                    result += `var _iv=CryptoJS.enc.Hex.parse(_result.substr(32,32));`;
-                    result += `var _encrypted=_result.substr(64);`;
-                    result += `var _key=CryptoJS.PBKDF2('${password}', _salt, {keySize:256/32, iterations:${selectedAlgorithm === 'military' ? 10000 : 5000}});`;
-                    result += `var _decrypted=CryptoJS.AES.decrypt(_encrypted, _key, {iv:_iv, mode:CryptoJS.mode.CBC, padding:CryptoJS.pad.Pkcs7});`;
-                    result += `_result=_decrypted.toString(CryptoJS.enc.Utf8);`;
-                    result += `}catch(e){_result='ERROR: Wrong password or corrupted data';}`;
-                } else {
-                    result += `_result=decodeURIComponent(escape(atob(_result)));`;
-                }
-                
-                result += `return _result;})()`;
-                
-                return result;
-            }
+            $('output').value = STAR_WATERMARK + payload;
+            log("Build successful. Payload encrypted.", "success");
 
-            obfuscateBtn.addEventListener('click', function() {
-                const code = inputCode.value.trim();
-                if (!code) {
-                    alert('Masukkan kode terlebih dahulu!');
-                    return;
-                }
+        } catch (e) {
+            log("Critical Kernel Failure: " + e.message, "error");
+        }
 
-                try {
-                    const password = encryptionPassword.value;
-                    const obfuscatedCode = obfuscateString(code, password);
-                    outputCode.value = obfuscatedCode;
-                    updateStats();
-                } catch (error) {
-                    outputCode.value = `// Error: ${error.message}`;
-                }
-            });
+        btn.disabled = false;
+        btn.innerText = "do the thing";
+    }
 
-            clearBtn.addEventListener('click', function() {
-                inputCode.value = '';
-                outputCode.value = '';
-                encryptionPassword.value = '';
-                updateStats();
-            });
+    function copyResult() {
+        $('output').select();
+        document.execCommand('copy');
+        log("Copied payload to clipboard.", "success");
+    }
 
-            copyBtn.addEventListener('click', function() {
-                if (!outputCode.value) {
-                    alert('Tidak ada kode untuk disalin!');
-                    return;
-                }
-                
-                outputCode.select();
-                outputCode.setSelectionRange(0, 99999);
-                
-                try {
-                    navigator.clipboard.writeText(outputCode.value);
-                    const originalText = copyBtn.innerHTML;
-                    copyBtn.innerHTML = '<i class="fas fa-check"></i> TERSALIN!';
-                    setTimeout(() => {
-                        copyBtn.innerHTML = originalText;
-                    }, 2000);
-                } catch (err) {
-                    alert('Gagal menyalin ke clipboard');
-                }
-            });
-
-            downloadBtn.addEventListener('click', function() {
-                if (!outputCode.value) {
-                    alert('Tidak ada kode untuk diunduh!');
-                    return;
-                }
-                
-                const blob = new Blob([outputCode.value], { type: 'text/javascript' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `obfuscated_code_${Date.now()}.js`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-            });
-
-            testBtn.addEventListener('click', function() {
-                if (!outputCode.value) {
-                    alert('Tidak ada kode untuk diuji!');
-                    return;
-                }
-                
-                try {
-                    const result = eval(outputCode.value);
-                    if (typeof result === 'string') {
-                        alert('Kode berhasil dijalankan! Hasil:\n\n' + result.substring(0, 500) + (result.length > 500 ? '...' : ''));
-                    } else {
-                        alert('Kode berhasil dijalankan!');
-                    }
-                } catch (error) {
-                    alert('Error saat menjalankan kode:\n\n' + error.message);
-                }
-            });
-
-            exampleBtn.addEventListener('click', function() {
-                const exampleCode = `function contohFungsi() {
-    var pesan = "Halo, ini kode contoh!";
-    var angkaRahasia = 42;
-    var hasil = pesan + " Angka rahasia: " + angkaRahasia;
-    console.log(hasil);
-    return hasil;
-}
-
-contohFungsi();`;
-                
-                inputCode.value = exampleCode;
-                updateStats();
-            });
-
-            updateStats();
-        });
-    </script>
+    $('input').value = `print("Star Obfuscator v3.8 Active")\nlocal security = "MAX"\nprint("Current Protection: " .. security)`;
+</script>
 </body>
 </html>
