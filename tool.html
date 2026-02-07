@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>STAR OBFUSCATOR v4.0</title>
+    <title>NEXA OBFUSCATOR v4.0</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,12 +11,12 @@
         :root {
             --bg-deep: #020205;
             --bg-panel: #08080e;
-            --primary: #fcd34d; /* Star Yellow */
+            --primary: #8b5cf6; /* Nexa Purple */
             --accent: #6366f1;
             --text-main: #f8fafc;
             --text-muted: #64748b;
             --border: #1e293b;
-            --success: #fbbf24;
+            --success: #10b981;
             --error: #ef4444;
             --font-code: 'JetBrains Mono', monospace;
         }
@@ -42,30 +42,30 @@
             transition: background-color 0.3s ease;
         }
 
-        /* Starfield Background Effect */
-        .starfield {
+        /* Quantum Field Background Effect */
+        .quantum-field {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
             background-image: 
-                radial-gradient(1px 1px at 20px 30px, #eee, rgba(0,0,0,0)),
-                radial-gradient(1px 1px at 40px 70px, #fff, rgba(0,0,0,0)),
-                radial-gradient(2px 2px at 50px 160px, #ddd, rgba(0,0,0,0)),
-                radial-gradient(1px 1px at 90px 40px, #fff, rgba(0,0,0,0)),
-                radial-gradient(1px 1px at 130px 80px, #fff, rgba(0,0,0,0)),
-                radial-gradient(1px 1px at 160px 120px, #ddd, rgba(0,0,0,0));
+                radial-gradient(1px 1px at 20px 30px, #8b5cf6, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 40px 70px, #a78bfa, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 50px 160px, #c4b5fd, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 90px 40px, #a78bfa, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 130px 80px, #8b5cf6, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 160px 120px, #7c3aed, rgba(0,0,0,0));
             background-repeat: repeat;
             background-size: 200px 200px;
-            opacity: 0.3;
-            animation: starfieldMove 100s linear infinite;
+            opacity: 0.2;
+            animation: quantumMove 120s linear infinite;
         }
 
-        @keyframes starfieldMove {
+        @keyframes quantumMove {
             0% { background-position: 0 0; }
             100% { background-position: 200px 200px; }
         }
 
         .bg-glow {
             position: fixed; top: 0; left: 50%; width: 50%; height: 50%; z-index: -1;
-            background: radial-gradient(circle at 50% 0%, rgba(252, 211, 77, 0.05) 0%, transparent 70%);
+            background: radial-gradient(circle at 50% 0%, rgba(139, 92, 246, 0.1) 0%, transparent 70%);
             transform: translateX(-50%);
             animation: pulseGlow 8s ease-in-out infinite;
         }
@@ -83,12 +83,22 @@
             z-index: 100;
         }
 
-        .logo { font-weight: 800; letter-spacing: 0.1em; font-size: 1.2rem; display: flex; align-items: center; gap: 8px;}
-        .logo span { color: var(--primary); text-shadow: 0 0 10px var(--primary); animation: logoGlow 2s ease-in-out infinite; }
+        .logo { 
+            font-weight: 800; 
+            letter-spacing: 0.1em; 
+            font-size: 1.2rem; 
+            display: flex; 
+            align-items: center; 
+            gap: 8px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: logoGlow 2s ease-in-out infinite;
+        }
 
         @keyframes logoGlow {
-            0%, 100% { text-shadow: 0 0 10px var(--primary); }
-            50% { text-shadow: 0 0 20px var(--primary), 0 0 30px rgba(252, 211, 77, 0.3); }
+            0%, 100% { filter: drop-shadow(0 0 10px rgba(139, 92, 246, 0.5)); }
+            50% { filter: drop-shadow(0 0 20px rgba(139, 92, 246, 0.8)); }
         }
 
         .nav-controls {
@@ -214,16 +224,23 @@
         }
 
         .btn-primary {
-            background: var(--primary); color: var(--bg-deep); border: none; padding: 14px;
-            border-radius: 8px; font-weight: 800; cursor: pointer; transition: all 0.3s;
-            text-transform: uppercase; letter-spacing: 0.05em;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white; 
+            border: none; 
+            padding: 14px;
+            border-radius: 8px; 
+            font-weight: 800; 
+            cursor: pointer; 
+            transition: all 0.3s;
+            text-transform: uppercase; 
+            letter-spacing: 0.05em;
             position: relative;
             overflow: hidden;
         }
         .btn-primary:hover { 
             transform: translateY(-1px); 
             filter: brightness(1.1); 
-            box-shadow: 0 0 15px rgba(252, 211, 77, 0.4); 
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.4); 
         }
         .btn-primary:active { transform: translateY(0); }
         .btn-primary:disabled { opacity: 0.3; cursor: not-allowed; }
@@ -232,7 +249,7 @@
             display: none;
             width: 16px;
             height: 16px;
-            border: 2px solid var(--bg-deep);
+            border: 2px solid white;
             border-top-color: transparent;
             border-radius: 50%;
             animation: spin 1s linear infinite;
@@ -256,7 +273,7 @@
 
         .editor-wrap.focused {
             border-color: var(--primary);
-            box-shadow: 0 0 15px rgba(252, 211, 77, 0.1);
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.15);
         }
         
         .editor-label { 
@@ -287,8 +304,15 @@
         }
 
         .terminal {
-            height: 140px; background: rgba(0,0,0,0.8); border-radius: 8px; border: 1px solid var(--border);
-            padding: 12px; font-family: var(--font-code); font-size: 11px; overflow-y: auto; color: #94a3b8;
+            height: 140px; 
+            background: rgba(0,0,0,0.8); 
+            border-radius: 8px; 
+            border: 1px solid var(--border);
+            padding: 12px; 
+            font-family: var(--font-code); 
+            font-size: 11px; 
+            overflow-y: auto; 
+            color: #94a3b8;
             display: flex;
             flex-direction: column;
         }
@@ -395,11 +419,11 @@
 </head>
 <body>
 
-    <div class="starfield"></div>
+    <div class="quantum-field"></div>
     <div class="bg-glow"></div>
     <nav>
-        <div class="logo"><span>STAR</span> OBFUSCATOR</div>
-        <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 700;">GALAXY-BUILD 4.0</div>
+        <div class="logo">NEXA OBFUSCATOR</div>
+        <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 700;">QUANTUM-BUILD 4.0</div>
         <div class="nav-controls">
             <button class="theme-toggle" id="themeToggle">DARK MODE</button>
         </div>
@@ -408,7 +432,7 @@
     <div class="app-container">
         <aside>
             <div class="setting-card">
-                <h3>Star System</h3>
+                <h3>Quantum System</h3>
                 <div class="control tooltip" data-tooltip="Virtual Machine protection layer">
                     <span>Bytecode VM</span>
                     <label class="toggle"><input type="checkbox" checked disabled><span class="slider"></span></label>
@@ -420,7 +444,7 @@
             </div>
 
             <div class="setting-card">
-                <h3>Atmospheric Layers</h3>
+                <h3>Quantum Layers</h3>
                 <div class="control tooltip" data-tooltip="Rotates character codes">
                     <span>Rotation Flow</span>
                     <label class="toggle"><input type="checkbox" id="opt-rot" checked><span class="slider"></span></label>
@@ -449,9 +473,9 @@
                 <div class="progress-bar" id="progressBar"></div>
             </div>
 
-            <button class="btn-primary" id="buildBtn" onclick="runHybridBuild()">
+            <button class="btn-primary" id="buildBtn" onclick="runNexaBuild()">
                 <span class="spinner" id="buildSpinner"></span>
-                <span id="buildText">do the thing</span>
+                <span id="buildText">QUANTUM ENCRYPT</span>
             </button>
         </aside>
 
@@ -464,7 +488,7 @@
                     <textarea id="input" spellcheck="false" placeholder="-- Paste Lua script here..."></textarea>
                 </div>
                 <div class="editor-wrap" id="outputEditor">
-                    <div class="editor-label">STAR_PAYLOAD.LUA 
+                    <div class="editor-label">NEXA_PAYLOAD.LUA 
                         <span style="cursor:pointer; color: var(--primary);" onclick="copyResult()">[COPY]</span>
                         <span class="char-count">Size: <span id="outputSize">0</span> chars</span>
                     </div>
@@ -484,7 +508,7 @@
                     </div>
                 </div>
                 <div id="logs">
-                    <div class="log-entry info">STAR Kernel online. All systems nominal.</div>
+                    <div class="log-entry info">NEXA Kernel online. Quantum systems engaged.</div>
                     <div class="log-entry info">Ready to obfuscate Lua scripts.</div>
                 </div>
             </div>
@@ -543,7 +567,7 @@
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = 'star-obfuscator-log.txt';
+        a.download = 'nexa-obfuscator-log.txt';
         a.click();
         URL.revokeObjectURL(url);
         log('Logs exported to file.', 'success');
@@ -558,8 +582,8 @@
         return "_" + Math.random().toString(36).slice(2, 11).toUpperCase();
     }
 
-    // Star watermark with animation
-    const STAR_WATERMARK = `
+    // Nexa watermark
+    const NEXA_WATERMARK = `
 --[[ 
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⣰⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣴⡾
@@ -574,8 +598,8 @@
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⣿⢩⡿⠘⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⣽⡃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-        STAR OBFUSCATOR v4.0
-        Secure Lua Protection
+        NEXA OBFUSCATOR v4.0
+        Quantum Lua Protection
         Generated: ${new Date().toLocaleString()}
 ]]\n`;
 
@@ -610,12 +634,12 @@
 
     // Preset scripts
     const presets = {
-        simple: `print("Hello from Star Obfuscator!")
-local security = "MAXIMUM"
+        simple: `print("Hello from Nexa Obfuscator!")
+local security = "QUANTUM_ENCRYPTED"
 print("Security Level: " .. security)`,
         
         loop: `for i = 1, 10 do
-    print("Iteration: " .. i)
+    print("Nexa Iteration: " .. i)
 end
 
 local items = {"A", "B", "C", "D"}
@@ -623,26 +647,27 @@ for _, item in ipairs(items) do
     print("Item: " .. item)
 end`,
         
-        function: `function calculate(x, y)
+        function: `function quantumCalculate(x, y)
     local sum = x + y
     local product = x * y
     return sum, product
 end
 
-local a, b = calculate(5, 3)
+local a, b = quantumCalculate(5, 3)
 print("Sum: " .. a .. ", Product: " .. b)`,
         
-        game: `-- Simple game script example
+        game: `-- Nexa Game Script Example
 local player = {
     health = 100,
     score = 0,
-    level = 1
+    level = 1,
+    encrypted = true
 }
 
 function player:takeDamage(amount)
     self.health = self.health - amount
     if self.health <= 0 then
-        print("Game Over!")
+        print("Game Over - Quantum Core Breached!")
     end
 end
 
@@ -654,7 +679,7 @@ function player:addScore(points)
     end
 end
 
--- Game loop example
+-- Quantum game loop
 for i = 1, 5 do
     player:addScore(250)
     player:takeDamage(10)
@@ -670,7 +695,7 @@ end`
     }
 
     // Main obfuscation function
-    async function runHybridBuild() {
+    async function runNexaBuild() {
         if (buildInProgress) return;
         
         const source = $('input').value.trim();
@@ -688,22 +713,22 @@ end`
         
         btn.disabled = true;
         spinner.style.display = 'inline-block';
-        buildText.textContent = "PROCESSING...";
+        buildText.textContent = "QUANTUM PROCESSING...";
         progressContainer.style.display = 'block';
         
         $('logs').innerHTML = '';
-        log("STAR OBFUSCATOR v4.0 - Initializing obfuscation protocol...", "process");
+        log("NEXA OBFUSCATOR v4.0 - Initializing quantum encryption...", "process");
         
         await new Promise(r => setTimeout(r, 500));
 
         try {
             // Progress update
             progressBar.style.width = '20%';
-            log("Analyzing source code structure...", "process");
+            log("Analyzing source code quantum structure...", "process");
             
             await new Promise(r => setTimeout(r, 300));
             progressBar.style.width = '40%';
-            log("Generating Bytecode VM Matrix...", "process");
+            log("Generating Quantum Bytecode Matrix...", "process");
 
             // Core obfuscation logic
             const masterKey = Math.floor(Math.random() * 255);
@@ -723,13 +748,13 @@ end`
 
             let payload = `local ${v_ops} = {${opcodes.join(',')}} local function ${v_run}() local ${v_stk} = {} local ${v_ip} = ${masterKey} for i=1, #${v_ops} do local v = (${v_ops}[i] - ((i-1)%7)) ${v_stk}[#${v_stk}+1] = string.char(bit32.bxor(v, ${v_ip})) ${v_ip} = (${v_ip} + 13) % 255 end local f, e = (loadstring or load)(table.concat(${v_stk})) if f then pcall(f) end end ${v_run}()`.replace(/\s+/g, ' ');
 
-            // Apply layers
+            // Apply quantum layers
             const layers = [];
             if ($('opt-rot').checked) layers.push("rotation");
             if ($('opt-xor').checked) layers.push("xor");
             if ($('opt-inv').checked) layers.push("inversion");
 
-            log(`Applying ${layers.length} security layers...`, "process");
+            log(`Applying ${layers.length} quantum encryption layers...`, "process");
             progressBar.style.width = '60%';
 
             // Randomize layer order
@@ -737,7 +762,7 @@ end`
 
             for(let i = 0; i < layers.length; i++) {
                 const layer = layers[i];
-                log(`Applying ${layer.toUpperCase()} encryption (${i+1}/${layers.length})...`, "process");
+                log(`Applying ${layer.toUpperCase()} quantum encryption (${i+1}/${layers.length})...`, "process");
                 payload = wrapLayer(payload, layer).replace(/\s+/g, ' ');
                 
                 // Update progress
@@ -747,7 +772,7 @@ end`
 
             // Finalize output
             progressBar.style.width = '95%';
-            const finalOutput = STAR_WATERMARK + payload;
+            const finalOutput = NEXA_WATERMARK + payload;
             $('output').value = finalOutput;
             $('outputSize').textContent = finalOutput.length;
             
@@ -759,20 +784,20 @@ end`
             const obfuscatedSize = payload.length;
             const efficiency = Math.round((obfuscatedSize / originalSize) * 100);
             
-            log("✓ Obfuscation complete!", "success");
-            log(`Original: ${originalSize} chars → Obfuscated: ${obfuscatedSize} chars (${efficiency}% size)`, "info");
-            log(`Layers applied: ${layers.length}`, "info");
-            log("Payload ready for deployment.", "success");
+            log("✓ Quantum encryption complete!", "success");
+            log(`Original: ${originalSize} chars → Encrypted: ${obfuscatedSize} chars (${efficiency}% size)`, "info");
+            log(`Quantum layers applied: ${layers.length}`, "info");
+            log("Nexa payload ready for deployment.", "success");
 
         } catch (e) {
-            log("✗ Critical error during obfuscation: " + e.message, "error");
+            log("✗ Quantum encryption error: " + e.message, "error");
             console.error(e);
         } finally {
             // Reset UI
             buildInProgress = false;
             btn.disabled = false;
             spinner.style.display = 'none';
-            buildText.textContent = "do the thing";
+            buildText.textContent = "QUANTUM ENCRYPT";
             
             setTimeout(() => {
                 progressBar.style.width = '0%';
@@ -788,20 +813,20 @@ end`
         }
         
         navigator.clipboard.writeText($('output').value).then(() => {
-            log("✓ Payload copied to clipboard", "success");
+            log("✓ Nexa payload copied to clipboard", "success");
         }).catch(err => {
             // Fallback method
             $('output').select();
             document.execCommand('copy');
-            log("✓ Payload copied to clipboard (fallback)", "success");
+            log("✓ Nexa payload copied to clipboard (fallback)", "success");
         });
     }
 
     // Initialize with example
     $('input').value = presets.simple;
     $('input').dispatchEvent(new Event('input'));
-    log("Welcome to Star Obfuscator v4.0", "info");
-    log("Ready to secure your Lua scripts", "info");
+    log("Welcome to Nexa Obfuscator v4.0", "info");
+    log("Quantum encryption systems ready", "info");
 </script>
 </body>
 </html>
