@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>NEXA OBFUSCATOR v5.0 - Executor Detector</title>
+    <title>NEXA OBFUSCATOR v4.0</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,17 +11,13 @@
         :root {
             --bg-deep: #020205;
             --bg-panel: #08080e;
-            --primary: #8b5cf6;
-            --primary-light: #a78bfa;
-            --primary-dark: #7c3aed;
+            --primary: #8b5cf6; /* Nexa Purple */
             --accent: #6366f1;
             --text-main: #f8fafc;
             --text-muted: #64748b;
             --border: #1e293b;
             --success: #10b981;
-            --warning: #f59e0b;
             --error: #ef4444;
-            --info: #3b82f6;
             --font-code: 'JetBrains Mono', monospace;
         }
 
@@ -46,6 +42,7 @@
             transition: background-color 0.3s ease;
         }
 
+        /* Quantum Field Background Effect */
         .quantum-field {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
             background-image: 
@@ -127,7 +124,7 @@
         }
 
         .app-container {
-            display: grid; grid-template-columns: 320px 1fr;
+            display: grid; grid-template-columns: 280px 1fr;
             height: calc(100vh - 60px);
         }
 
@@ -160,19 +157,6 @@
             align-items: center;
             gap: 6px;
         }
-
-        .level-indicator {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            margin-left: 4px;
-        }
-
-        .level-easy { background-color: var(--success); }
-        .level-medium { background-color: var(--warning); }
-        .level-hard { background-color: var(--error); }
-        .level-expert { background-color: var(--primary); }
         
         .control { 
             display: flex; 
@@ -196,171 +180,6 @@
         input:checked + .slider { background-color: var(--primary); }
         input:checked + .slider:before { transform: translateX(20px); background-color: var(--bg-deep); }
 
-        /* Executor Detection */
-        .executor-selector {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            margin-bottom: 12px;
-        }
-
-        .executor-btn {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid var(--border);
-            color: var(--text-muted);
-            padding: 8px 4px;
-            border-radius: 6px;
-            font-size: 0.7rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .executor-btn:hover {
-            background: rgba(255,255,255,0.1);
-            border-color: var(--primary);
-        }
-
-        .executor-btn.active {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-            font-weight: 600;
-        }
-
-        .executor-btn .exec-icon {
-            font-size: 0.9rem;
-        }
-
-        /* Anti-Debug Level */
-        .anti-debug-selector {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            margin-bottom: 12px;
-        }
-
-        .anti-debug-btn {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid var(--border);
-            color: var(--text-muted);
-            padding: 8px 4px;
-            border-radius: 6px;
-            font-size: 0.7rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .anti-debug-btn:hover {
-            background: rgba(255,255,255,0.1);
-            border-color: var(--primary);
-        }
-
-        .anti-debug-btn.active {
-            background: var(--error);
-            color: white;
-            border-color: var(--error);
-            font-weight: 600;
-        }
-
-        .anti-debug-btn .anti-icon {
-            font-size: 0.9rem;
-        }
-
-        /* Level Selection */
-        .level-selector {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
-            margin-bottom: 16px;
-        }
-
-        .level-btn {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid var(--border);
-            color: var(--text-muted);
-            padding: 8px 4px;
-            border-radius: 6px;
-            font-size: 0.7rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .level-btn:hover {
-            background: rgba(255,255,255,0.1);
-            border-color: var(--primary);
-        }
-
-        .level-btn.active {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-            font-weight: 600;
-        }
-
-        .level-btn .level-icon {
-            font-size: 0.9rem;
-        }
-
-        /* Performance Mode */
-        .perf-mode-selector {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-top: 12px;
-        }
-
-        .perf-btn {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid var(--border);
-            color: var(--text-muted);
-            padding: 10px;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-align: center;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .perf-btn:hover {
-            background: rgba(255,255,255,0.1);
-        }
-
-        .perf-btn.active {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-            font-weight: 600;
-        }
-
-        .perf-btn .perf-icon {
-            font-size: 1rem;
-        }
-
-        .perf-info {
-            font-size: 0.65rem;
-            color: var(--text-muted);
-            margin-top: 4px;
-            text-align: center;
-        }
-
         .progress-container {
             width: 100%;
             background: rgba(255,255,255,0.05);
@@ -377,6 +196,31 @@
             width: 0%;
             transition: width 0.3s ease;
             border-radius: 3px;
+        }
+
+        .preset-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .preset-btn {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 8px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .preset-btn:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: var(--primary);
+            color: var(--text-main);
         }
 
         .btn-primary {
@@ -516,7 +360,6 @@
 
         .log-entry.success { color: var(--success); }
         .log-entry.error { color: var(--error); }
-        .log-entry.warning { color: var(--warning); }
         .log-entry.process { color: var(--primary); }
         .log-entry.info { color: var(--text-muted); }
 
@@ -556,33 +399,6 @@
             color: var(--text-main);
         }
 
-        .stats-panel {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            margin-top: 12px;
-            padding: 12px;
-            background: rgba(255,255,255,0.02);
-            border-radius: 8px;
-            border: 1px solid var(--border);
-        }
-
-        .stat-item {
-            text-align: center;
-        }
-
-        .stat-value {
-            font-size: 1.2rem;
-            font-weight: 800;
-            color: var(--primary);
-        }
-
-        .stat-label {
-            font-size: 0.65rem;
-            color: var(--text-muted);
-            margin-top: 2px;
-        }
-
         @media (max-width: 1024px) {
             .app-container {
                 grid-template-columns: 1fr;
@@ -598,14 +414,6 @@
             .editors {
                 grid-template-columns: 1fr;
             }
-            
-            .level-selector {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .executor-selector, .anti-debug-selector {
-                grid-template-columns: repeat(2, 1fr);
-            }
         }
     </style>
 </head>
@@ -615,7 +423,7 @@
     <div class="bg-glow"></div>
     <nav>
         <div class="logo">NEXA OBFUSCATOR</div>
-        <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 700;">QUANTUM-BUILD 5.0</div>
+        <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 700;">QUANTUM-BUILD 4.0</div>
         <div class="nav-controls">
             <button class="theme-toggle" id="themeToggle">DARK MODE</button>
         </div>
@@ -624,83 +432,15 @@
     <div class="app-container">
         <aside>
             <div class="setting-card">
-                <h3>Executor Detection <span class="level-indicator level-medium" id="executorIndicator"></span></h3>
-                <div class="executor-selector">
-                    <button class="executor-btn" data-exec="disabled" onclick="setExecutorDetection('disabled')">
-                        <span class="exec-icon">❌</span>
-                        Disabled
-                    </button>
-                    <button class="executor-btn active" data-exec="normal" onclick="setExecutorDetection('normal')">
-                        <span class="exec-icon">🛡️</span>
-                        Normal
-                    </button>
-                    <button class="executor-btn" data-exec="aggressive" onclick="setExecutorDetection('aggressive')">
-                        <span class="exec-icon">💀</span>
-                        Aggressive
-                    </button>
+                <h3>Quantum System</h3>
+                <div class="control tooltip" data-tooltip="Virtual Machine protection layer">
+                    <span>Bytecode VM</span>
+                    <label class="toggle"><input type="checkbox" checked disabled><span class="slider"></span></label>
                 </div>
-                <div class="perf-info" id="executorInfo">Detect popular executors, show message if not found</div>
-            </div>
-
-            <div class="setting-card">
-                <h3>Anti-Debugger/Tools <span class="level-indicator level-easy" id="antiDebugIndicator"></span></h3>
-                <div class="anti-debug-selector">
-                    <button class="anti-debug-btn" data-anti="none" onclick="setAntiDebug('none')">
-                        <span class="anti-icon">❌</span>
-                        Disabled
-                    </button>
-                    <button class="anti-debug-btn active" data-anti="basic" onclick="setAntiDebug('basic')">
-                        <span class="anti-icon">🛡️</span>
-                        Basic
-                    </button>
-                    <button class="anti-debug-btn" data-anti="aggressive" onclick="setAntiDebug('aggressive')">
-                        <span class="anti-icon">💀</span>
-                        Aggressive
-                    </button>
+                <div class="control tooltip" data-tooltip="Adds confusing variable names">
+                    <span>Barcode Meta</span>
+                    <label class="toggle"><input type="checkbox" id="opt-barcode" checked><span class="slider"></span></label>
                 </div>
-                <div class="perf-info" id="antiDebugInfo">Basic protection against common debuggers</div>
-            </div>
-
-            <div class="setting-card">
-                <h3>Obfuscation Level <span class="level-indicator level-medium" id="levelIndicator"></span></h3>
-                <div class="level-selector">
-                    <button class="level-btn" data-level="easy" onclick="setObfuscationLevel('easy')">
-                        <span class="level-icon">⚡</span>
-                        Easy
-                    </button>
-                    <button class="level-btn active" data-level="medium" onclick="setObfuscationLevel('medium')">
-                        <span class="level-icon">🛡️</span>
-                        Medium
-                    </button>
-                    <button class="level-btn" data-level="hard" onclick="setObfuscationLevel('hard')">
-                        <span class="level-icon">🔒</span>
-                        Hard
-                    </button>
-                    <button class="level-btn" data-level="expert" onclick="setObfuscationLevel('expert')">
-                        <span class="level-icon">💀</span>
-                        Expert
-                    </button>
-                </div>
-                <div class="perf-info" id="levelInfo">Balanced protection with good performance</div>
-            </div>
-
-            <div class="setting-card">
-                <h3>Performance Mode</h3>
-                <div class="perf-mode-selector">
-                    <button class="perf-btn active" data-perf="balanced" onclick="setPerformanceMode('balanced')">
-                        <span class="perf-icon">⚖️</span>
-                        Balanced
-                    </button>
-                    <button class="perf-btn" data-perf="fast" onclick="setPerformanceMode('fast')">
-                        <span class="perf-icon">🚀</span>
-                        Fast
-                    </button>
-                    <button class="perf-btn" data-perf="maximum" onclick="setPerformanceMode('maximum')">
-                        <span class="perf-icon">🛡️</span>
-                        Maximum
-                    </button>
-                </div>
-                <div class="perf-info" id="perfInfo">Optimized for speed and security balance</div>
             </div>
 
             <div class="setting-card">
@@ -717,40 +457,15 @@
                     <span>Inverse Binary</span>
                     <label class="toggle"><input type="checkbox" id="opt-inv" checked><span class="slider"></span></label>
                 </div>
-                <div class="control tooltip" data-tooltip="Adds confusing variable names">
-                    <span>Barcode Meta</span>
-                    <label class="toggle"><input type="checkbox" id="opt-barcode" checked><span class="slider"></span></label>
-                </div>
             </div>
 
             <div class="setting-card">
-                <h3>Advanced Options</h3>
-                <div class="control tooltip" data-tooltip="Add junk code to confuse decompilers">
-                    <span>Junk Code Injection</span>
-                    <label class="toggle"><input type="checkbox" id="opt-junk"><span class="slider"></span></label>
-                </div>
-                <div class="control tooltip" data-tooltip="String encryption for additional protection">
-                    <span>String Encryption</span>
-                    <label class="toggle"><input type="checkbox" id="opt-string"><span class="slider"></span></label>
-                </div>
-                <div class="control tooltip" data-tooltip="Control flow flattening (experimental)">
-                    <span>Flow Flattening</span>
-                    <label class="toggle"><input type="checkbox" id="opt-flow"><span class="slider"></span></label>
-                </div>
-            </div>
-
-            <div class="stats-panel" id="statsPanel" style="display: none;">
-                <div class="stat-item">
-                    <div class="stat-value" id="statLayers">0</div>
-                    <div class="stat-label">Layers</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value" id="statTime">0ms</div>
-                    <div class="stat-label">Time</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value" id="statSize">0%</div>
-                    <div class="stat-label">Size Inc</div>
+                <h3>Preset Scripts</h3>
+                <div class="preset-buttons">
+                    <button class="preset-btn" onclick="loadPreset('simple')">Simple Print</button>
+                    <button class="preset-btn" onclick="loadPreset('loop')">Loop Example</button>
+                    <button class="preset-btn" onclick="loadPreset('function')">Function Demo</button>
+                    <button class="preset-btn" onclick="loadPreset('game')">Game Script</button>
                 </div>
             </div>
 
@@ -790,14 +505,11 @@
                     <div class="terminal-controls">
                         <button onclick="clearLogs()">CLEAR</button>
                         <button onclick="exportLogs()">EXPORT</button>
-                        <button onclick="toggleStats()">STATS</button>
                     </div>
                 </div>
                 <div id="logs">
-                    <div class="log-entry info">NEXA OBFUSCATOR v5.0 - Quantum systems engaged</div>
-                    <div class="log-entry info">Executor Detection system loaded</div>
-                    <div class="log-entry info">Anti-Debugger system loaded</div>
-                    <div class="log-entry info">Select executor detection mode</div>
+                    <div class="log-entry info">NEXA Kernel online. Quantum systems engaged.</div>
+                    <div class="log-entry info">Ready to obfuscate Lua scripts.</div>
                 </div>
             </div>
         </main>
@@ -807,133 +519,6 @@
     const $ = id => document.getElementById(id);
     let isDarkMode = false;
     let buildInProgress = false;
-    let obfuscationLevel = 'medium';
-    let performanceMode = 'balanced';
-    let antiDebugMode = 'basic';
-    let executorDetection = 'normal';
-    let startTime = 0;
-
-    // Configuration for executor detection
-    const executorConfigs = {
-        disabled: {
-            name: 'Disabled',
-            description: 'No executor detection',
-            techniques: [],
-            color: 'level-easy',
-            icon: '❌'
-        },
-        normal: {
-            name: 'Normal',
-            description: 'Detect popular executors, show message if not found',
-            techniques: ['detect_executors', 'print_message', 'check_http'],
-            color: 'level-medium',
-            icon: '🛡️'
-        },
-        aggressive: {
-            name: 'Aggressive',
-            description: 'Enhanced detection with fallback protection',
-            techniques: ['detect_executors', 'print_message', 'check_http', 'hook_check', 'environment_check', 'graceful_fallback'],
-            color: 'level-hard',
-            icon: '💀'
-        }
-    };
-
-    // Configuration for anti-debugger levels
-    const antiDebugConfigs = {
-        none: {
-            name: 'Disabled',
-            description: 'No anti-debug protection',
-            techniques: [],
-            color: 'level-easy',
-            icon: '❌'
-        },
-        basic: {
-            name: 'Basic',
-            description: 'Basic protection against common debuggers',
-            techniques: ['detect_debug', 'hook_prevention', 'time_check'],
-            color: 'level-medium',
-            icon: '🛡️'
-        },
-        aggressive: {
-            name: 'Aggressive',
-            description: 'Aggressive anti-debug and anti-tampering',
-            techniques: ['detect_debug', 'hook_prevention', 'time_check', 'sandbox_detection', 'bytecode_check', 'crash_on_debug'],
-            color: 'level-hard',
-            icon: '💀'
-        }
-    };
-
-    // Configuration for different levels
-    const levelConfigs = {
-        easy: {
-            name: 'Easy',
-            description: 'Basic protection, fast processing',
-            layers: ['xor'],
-            iterations: 1,
-            junkCode: false,
-            stringEncryption: false,
-            flowFlattening: false,
-            color: 'level-easy'
-        },
-        medium: {
-            name: 'Medium',
-            description: 'Balanced protection with good performance',
-            layers: ['rotation', 'xor'],
-            iterations: 2,
-            junkCode: true,
-            stringEncryption: false,
-            flowFlattening: false,
-            color: 'level-medium'
-        },
-        hard: {
-            name: 'Hard',
-            description: 'Strong protection, moderate processing time',
-            layers: ['rotation', 'xor', 'inversion'],
-            iterations: 3,
-            junkCode: true,
-            stringEncryption: true,
-            flowFlattening: false,
-            color: 'level-hard'
-        },
-        expert: {
-            name: 'Expert',
-            description: 'Maximum protection, slower processing',
-            layers: ['rotation', 'xor', 'inversion'],
-            iterations: 5,
-            junkCode: true,
-            stringEncryption: true,
-            flowFlattening: true,
-            color: 'level-expert'
-        }
-    };
-
-    // Performance mode configurations
-    const perfConfigs = {
-        fast: {
-            name: 'Fast',
-            description: 'Prioritize speed over complexity',
-            delay: 50,
-            maxLayers: 3,
-            optimizeForSize: true,
-            icon: '🚀'
-        },
-        balanced: {
-            name: 'Balanced',
-            description: 'Optimized for speed and security balance',
-            delay: 100,
-            maxLayers: 5,
-            optimizeForSize: false,
-            icon: '⚖️'
-        },
-        maximum: {
-            name: 'Maximum',
-            description: 'Maximum security, slower processing',
-            delay: 200,
-            maxLayers: 8,
-            optimizeForSize: false,
-            icon: '🛡️'
-        }
-    };
 
     // Theme toggle
     $('themeToggle').addEventListener('click', () => {
@@ -988,89 +573,6 @@
         log('Logs exported to file.', 'success');
     }
 
-    // Toggle stats panel
-    function toggleStats() {
-        const statsPanel = $('statsPanel');
-        statsPanel.style.display = statsPanel.style.display === 'none' ? 'grid' : 'none';
-    }
-
-    // Set executor detection mode
-    function setExecutorDetection(mode) {
-        executorDetection = mode;
-        const config = executorConfigs[mode];
-        
-        // Update UI
-        document.querySelectorAll('.executor-btn').forEach(btn => {
-            btn.classList.remove('active');
-        });
-        document.querySelector(`.executor-btn[data-exec="${mode}"]`).classList.add('active');
-        
-        // Update indicator
-        $('executorIndicator').className = `level-indicator ${config.color}`;
-        $('executorInfo').textContent = config.description;
-        
-        log(`Executor Detection mode set to: ${config.name}`, 'info');
-    }
-
-    // Set anti-debug mode
-    function setAntiDebug(mode) {
-        antiDebugMode = mode;
-        const config = antiDebugConfigs[mode];
-        
-        // Update UI
-        document.querySelectorAll('.anti-debug-btn').forEach(btn => {
-            btn.classList.remove('active');
-        });
-        document.querySelector(`.anti-debug-btn[data-anti="${mode}"]`).classList.add('active');
-        
-        // Update indicator
-        $('antiDebugIndicator').className = `level-indicator ${config.color}`;
-        $('antiDebugInfo').textContent = config.description;
-        
-        log(`Anti-Debug mode set to: ${config.name}`, 'info');
-    }
-
-    // Set obfuscation level
-    function setObfuscationLevel(level) {
-        obfuscationLevel = level;
-        const config = levelConfigs[level];
-        
-        // Update UI
-        document.querySelectorAll('.level-btn').forEach(btn => {
-            btn.classList.remove('active');
-        });
-        document.querySelector(`.level-btn[data-level="${level}"]`).classList.add('active');
-        
-        // Update level indicator
-        $('levelIndicator').className = `level-indicator ${config.color}`;
-        $('levelInfo').textContent = config.description;
-        
-        // Update checkboxes based on level
-        $('opt-rot').checked = config.layers.includes('rotation');
-        $('opt-xor').checked = config.layers.includes('xor');
-        $('opt-inv').checked = config.layers.includes('inversion');
-        $('opt-junk').checked = config.junkCode;
-        $('opt-string').checked = config.stringEncryption;
-        $('opt-flow').checked = config.flowFlattening;
-        
-        log(`Obfuscation level set to: ${config.name}`, 'info');
-    }
-
-    // Set performance mode
-    function setPerformanceMode(mode) {
-        performanceMode = mode;
-        const config = perfConfigs[mode];
-        
-        // Update UI
-        document.querySelectorAll('.perf-btn').forEach(btn => {
-            btn.classList.remove('active');
-        });
-        document.querySelector(`.perf-btn[data-perf="${mode}"]`).classList.add('active');
-        
-        $('perfInfo').textContent = config.description;
-        log(`Performance mode set to: ${config.name}`, 'info');
-    }
-
     // Random name generator
     function randName(l = 14) {
         if ($('opt-barcode').checked) {
@@ -1081,408 +583,25 @@
     }
 
     // Nexa watermark
-    const NEXA_WATERMARK = `--[[ NEXA OBFUSCATOR v5.0 - Quantum Lua Protection ]]`;
-
-    // Executor detection code generator
-    function generateExecutorDetectionCode() {
-        const config = executorConfigs[executorDetection];
-        if (config.techniques.length === 0) return '';
-        
-        const detectCode = [];
-        
-        // Main executor detection logic
-        if (config.techniques.includes('detect_executors')) {
-            const execName = randName();
-            const execResult = randName();
-            const execFound = randName();
-            const execMsg = randName();
-            
-            detectCode.push(`
--- Smart Executor Detection System
-local ${execName} = function()
-    -- Check for popular executors
-    local ${execResult} = false
-    local ${execFound} = ""
-    
-    -- Synapse X
-    if type(syn) == "table" and type(syn.request) == "function" then
-        ${execResult} = true
-        ${execFound} = "Synapse X"
-    end
-    
-    -- HTTP Request (common in executors)
-    if not ${execResult} and type(http_request) == "function" then
-        ${execResult} = true
-        ${execFound} = "HTTP Supported Executor"
-    end
-    
-    -- Fluxus
-    if not ${execResult} and type(fluxus) == "table" and type(fluxus.request) == "function" then
-        ${execResult} = true
-        ${execFound} = "Fluxus"
-    end
-    
-    -- KRNL
-    if not ${execResult} and type(krnl) == "table" and type(request) == "function" then
-        ${execResult} = true
-        ${execFound} = "KRNL"
-    end
-    
-    -- Other common executors
-    if not ${execResult} and type(getexecutorname) == "function" then
-        ${execResult} = true
-        ${execFound} = "Unknown Executor"
-    end
-    
-    -- Check for executor environment
-    if not ${execResult} and type(identifyexecutor) == "function" then
-        ${execResult} = true
-        ${execFound} = "Generic Executor"
-    end
-    
-    -- Check for loadstring support (essential for executors)
-    if not ${execResult} and type(loadstring) == "function" then
-        local ${execMsg}, ${randName()} = pcall(loadstring, "return true")
-        if ${execMsg} then
-            ${execResult} = true
-            ${execFound} = "Loadstring Supported"
-        end
-    end
-    
-    -- If no executor found, show message but don't block
-    if not ${execResult} then
-        print("⚠️ NEXA OBFUSCATOR: Script designed for Roblox executors")
-        print("⚠️ Please run this script with Synapse X, KRNL, Fluxus, or similar")
-        print("⚠️ Script will continue but some features may not work properly")
-        print("")
-    else
-        -- Optional: Print executor name in debug mode
-        if false then -- Set to true for debugging
-            print("✓ NEXA: Running on " .. ${execFound})
-        end
-    end
-    
-    return ${execResult}, ${execFound}
-end
-
--- Execute detection and store result
-local ${randName()}, ${randName()} = ${execName}()`);
-        }
-        
-        // HTTP request check (for enhanced detection)
-        if (config.techniques.includes('check_http')) {
-            detectCode.push(`
--- HTTP Request availability check
-local ${randName()} = function()
-    -- Try to get Request function safely
-    local ${randName()} = (syn and syn.request)
-        or http_request
-        or (fluxus and fluxus.request)
-        or (krnl and request)
-        or nil
-    
-    -- Check if request function exists
-    if ${randName()} and type(${randName()}) == "function" then
-        return true, "HTTP Request available"
-    end
-    
-    return false, "HTTP Request not available"
-end
-
-local ${randName()}, ${randName()} = ${randName()}()
-`);
-        }
-        
-        // Hook check (aggressive mode)
-        if (config.techniques.includes('hook_check')) {
-            detectCode.push(`
--- Hook function check (prevent tampering)
-local ${randName()} = function()
-    if debug and type(debug.sethook) == "function" then
-        local ${randName()}, ${randName()} = pcall(debug.sethook)
-        if ${randName()} then
-            debug.sethook() -- Clear any existing hooks
-        end
-    end
-end
-
-pcall(${randName()})`);
-        }
-        
-        // Environment check
-        if (config.techniques.includes('environment_check')) {
-            detectCode.push(`
--- Environment safety check
-local ${randName()} = function()
-    local ${randName()} = {}
-    
-    -- Check for Roblox-specific objects
-    if game and type(game) == "table" then
-        ${randName()}.roblox = true
-    end
-    
-    -- Check for workspace
-    if workspace and type(workspace) == "table" then
-        ${randName()}.workspace = true
-    end
-    
-    -- Check for Player object
-    if game and game.Players and game.Players.LocalPlayer then
-        ${randName()}.player = true
-    end
-    
-    -- If no Roblox environment detected
-    if not ${randName()}.roblox then
-        print("⚠️ NEXA: Script appears to be outside Roblox environment")
-        print("⚠️ This script is designed for Roblox Lua")
-    end
-    
-    return ${randName()}
-end
-
-local ${randName()} = ${randName()}()`);
-        }
-        
-        // Graceful fallback system
-        if (config.techniques.includes('graceful_fallback')) {
-            detectCode.push(`
--- Graceful fallback for missing functions
-local ${randName()} = function()
-    -- Create safe wrapper for loadstring
-    local ${randName()} = loadstring or function(code)
-        local ${randName()}, ${randName()} = pcall(load, code)
-        if ${randName()} then
-            return ${randName()}
-        end
-        return nil, ${randName()}
-    end
-    
-    -- Create safe wrapper for require
-    local ${randName()} = function(module)
-        local ${randName()}, ${randName()} = pcall(require, module)
-        if ${randName()} then
-            return ${randName()}
-        end
-        return nil
-    end
-    
-    -- Create safe print function
-    local ${randName()} = print or function(...)
-        local ${randName()} = {...}
-        local ${randName()} = ""
-        for i, v in ipairs(${randName()}) do
-            ${randName()} = ${randName()} .. tostring(v) .. "\\t"
-        end
-        warn(${randName()})
-    end
-    
-    return {
-        loadstring = ${randName()},
-        require = ${randName()},
-        print = ${randName()}
-    }
-end
-
-local ${randName()} = ${randName()}()
--- Override unsafe functions
-if not loadstring and ${randName()}.loadstring then
-    loadstring = ${randName()}.loadstring
-end
-`);
-        }
-        
-        return detectCode.join('\n');
-    }
-
-    // Advanced anti-debug functions
-    function generateAntiDebugCode() {
-        const config = antiDebugConfigs[antiDebugMode];
-        if (config.techniques.length === 0) return '';
-        
-        const antiDebugCode = [];
-        
-        // Basic debug detection
-        if (config.techniques.includes('detect_debug')) {
-            antiDebugCode.push(`
-local ${randName()}, ${randName()} = pcall(function()
-    local ${randName()} = debug.getinfo
-    if type(${randName()}) == "function" then
-        local ${randName()} = {}
-        for i = 1, 10 do
-            local ${randName()} = debug.getinfo(i)
-            if ${randName()} and ${randName()}.what ~= "C" then
-                ${randName()}[#${randName()}+1] = true
-            end
-        end
-        if #${randName()} > 3 then
-            while true do end
-        end
-    end
-end)`);
-        }
-        
-        // Hook prevention
-        if (config.techniques.includes('hook_prevention')) {
-            antiDebugCode.push(`
-local ${randName()} = function()
-    if setfenv and getfenv then
-        local ${randName()} = setfenv
-        local ${randName()} = getfenv
-        if type(${randName()}) == "function" and type(${randName()}) == "function" then
-            for ${randName()} = 1, 100 do
-                local ${randName()} = getfenv(${randName()})
-                if ${randName()} and ${randName()}.debug then
-                    for ${randName()} in pairs(${randName()}.debug) do
-                        ${randName()}.debug[${randName()}] = nil
-                    end
-                end
-            end
-        end
-    end
-end
-${randName()}()`);
-        }
-        
-        // Time check for debugger breakpoints
-        if (config.techniques.includes('time_check')) {
-            antiDebugCode.push(`
-local ${randName()} = function()
-    local ${randName()} = os.clock()
-    local ${randName()} = 0
-    for ${randName()} = 1, 1000000 do
-        ${randName()} = ${randName()} + 1
-    end
-    local ${randName()} = os.clock()
-    if ${randName()} - ${randName()} > 0.5 then
-        return true
-    end
-    return false
-end
-local ${randName()} = ${randName()}()
-if ${randName()} then
-    local ${randName()} = function()
-        while true do end
-    end
-    pcall(${randName()})
-end`);
-        }
-        
-        // Sandbox detection
-        if (config.techniques.includes('sandbox_detection')) {
-            antiDebugCode.push(`
-local ${randName()} = function()
-    local ${randName()} = {}
-    local ${randName()} = {"debug", "io", "os", "package", "string", "table", "math"}
-    for _, ${randName()} in ipairs(${randName()}) do
-        if not _G[${randName()}] then
-            ${randName()}[#${randName()}+1] = ${randName()}
-        end
-    end
-    return #${randName()} > 2
-end
-if ${randName()}() then
-    local ${randName()} = function() end
-    for i = 1, 100 do
-        ${randName()} = ${randName()} .. " "
-    end
-    error(${randName()})
-end`);
-        }
-        
-        // Bytecode check
-        if (config.techniques.includes('bytecode_check')) {
-            antiDebugCode.push(`
-local ${randName()} = function()
-    local ${randName()} = string.dump
-    if type(${randName()}) == "function" then
-        local ${randName()} = ${randName()}(function() end)
-        local ${randName()} = ${randName()}:sub(1, 4)
-        if ${randName()} ~= "\\27Lua" then
-            return true
-        end
-    end
-    return false
-end
-if ${randName()}() then
-    local ${randName()} = collectgarbage
-    if type(${randName()}) == "function" then
-        for i = 1, 100 do
-            ${randName()}("collect")
-        end
-    end
-end`);
-        }
-        
-        // Crash on debug (aggressive)
-        if (config.techniques.includes('crash_on_debug')) {
-            antiDebugCode.push(`
-local ${randName()} = function()
-    local ${randName()} = function()
-        local ${randName()} = {}
-        for i = 1, math.huge do
-            ${randName()}[i] = string.rep("X", 1000000)
-        end
-    end
-    local ${randName()} = function()
-        while true do
-            local ${randName()} = loadstring("os.exit()")
-            if ${randName()} then pcall(${randName()}) end
-        end
-    end
-    local ${randName()}, ${randName()} = pcall(debug.sethook, ${randName()}, "line")
-    if ${randName()} then
-        ${randName()} = function() error("NEXA_ANTI_DEBUG") end
-        setmetatable(_G, {
-            __index = function() error("NEXA_ANTI_DEBUG") end,
-            __newindex = function() error("NEXA_ANTI_DEBUG") end
-        })
-    end
-end
-pcall(${randName()})`);
-        }
-        
-        return antiDebugCode.join('\n');
-    }
-
-    // Advanced obfuscation functions
-    function addJunkCode(code) {
-        if (!$('opt-junk').checked) return code;
-        
-        const junkFuncs = [
-            `local ${randName()} = function() return math.random(1000) end`,
-            `local ${randName()} = {"a","b","c","d","e"}`,
-            `local ${randName()} = os.time() * math.random()`,
-            `local function ${randName()}() if false then print("never") end end`,
-            `local ${randName()} = bit32.bxor(1, 2, 3, 4)`
-        ];
-        
-        const junkCount = Math.floor(Math.random() * 3) + 2;
-        let junk = '';
-        for (let i = 0; i < junkCount; i++) {
-            junk += junkFuncs[Math.floor(Math.random() * junkFuncs.length)] + ';\n';
-        }
-        
-        return junk + code;
-    }
-
-    function encryptStrings(code) {
-        if (!$('opt-string').checked) return code;
-        
-        // Simple string encryption (base64-like)
-        return code.replace(/"[^"]*"/g, (match) => {
-            const str = match.slice(1, -1);
-            const encoded = btoa(unescape(encodeURIComponent(str)));
-            return `(function() local e="${encoded}"; return loadstring("return \\""..e.."\\""))()`;
-        });
-    }
-
-    function applyFlowFlattening(code) {
-        if (!$('opt-flow').checked) return code;
-        
-        // Simple flow flattening by adding redundant conditionals
-        const varName = randName();
-        return `local ${varName} = true\nif ${varName} then\n${code}\nend`;
-    }
+    const NEXA_WATERMARK = `
+--[[ 
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⣰⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣴⡾
+⠀⠀⣿⡍⠛⠲⣶⣄⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣠⡴⠞⠉⣠⡞⠀⠀
+⠀⠀⠘⣽⢷⣦⣌⣈⠋⡚⠿⣦⡀⠀⠀⣴⣶⡄⠀⠀⣠⡶⠚⠛⣙⣭⠠⣤⣶⣯⠆⠀⠀⠀
+⠀⠀⠀⣼⣷⣀⠀⠀⠈⠀⠀⠀⢻⡇⠺⡿⠛⣿⡅⠀⢿⠀⠀⣼⠿⣫⣭⣠⣤⡶⠂⠀⠀⠀
+⠀⠀⠀⠀⠉⠛⠿⣹⣾⠔⠃⠀⠈⠳⠾⠏⠀⠻⣷⡺⠋⠀⣤⣸⣷⣶⡾⠖⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠈⠒⠷⣿⡻⣞⣀⣄⣀⣀⡄⠀⠀⣠⣄⣸⡿⣾⣿⡽⡄⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠛⠟⠯⣽⢿⡿⠃⠀⢀⣿⡙⠑⠙⠛⠉⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢰⣯⣦⣾⣿⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣼⣿⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⣿⢩⡿⠘⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⣽⡃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+        NEXA OBFUSCATOR v4.0
+        Quantum Lua Protection
+        Generated: ${new Date().toLocaleString()}
+]]\n`;
 
     // Layer wrapping functions
     function wrapLayer(code, type) {
@@ -1515,7 +634,7 @@ pcall(${randName()})`);
 
     // Preset scripts
     const presets = {
-        simple: `print("Hello from Nexa Obfuscator v5.0!")
+        simple: `print("Hello from Nexa Obfuscator!")
 local security = "QUANTUM_ENCRYPTED"
 print("Security Level: " .. security)`,
         
@@ -1535,7 +654,36 @@ end`,
 end
 
 local a, b = quantumCalculate(5, 3)
-print("Sum: " .. a .. ", Product: " .. b)`
+print("Sum: " .. a .. ", Product: " .. b)`,
+        
+        game: `-- Nexa Game Script Example
+local player = {
+    health = 100,
+    score = 0,
+    level = 1,
+    encrypted = true
+}
+
+function player:takeDamage(amount)
+    self.health = self.health - amount
+    if self.health <= 0 then
+        print("Game Over - Quantum Core Breached!")
+    end
+end
+
+function player:addScore(points)
+    self.score = self.score + points
+    if self.score > 1000 then
+        self.level = self.level + 1
+        print("Level Up! Now level " .. self.level)
+    end
+end
+
+-- Quantum game loop
+for i = 1, 5 do
+    player:addScore(250)
+    player:takeDamage(10)
+end`
     };
 
     function loadPreset(name) {
@@ -1557,141 +705,88 @@ print("Sum: " .. a .. ", Product: " .. b)`
         }
 
         buildInProgress = true;
-        startTime = Date.now();
-        
         const btn = $('buildBtn');
         const spinner = $('buildSpinner');
         const buildText = $('buildText');
         const progressBar = $('progressBar');
         const progressContainer = $('progressContainer');
-        const statsPanel = $('statsPanel');
         
         btn.disabled = true;
         spinner.style.display = 'inline-block';
         buildText.textContent = "QUANTUM PROCESSING...";
         progressContainer.style.display = 'block';
-        statsPanel.style.display = 'grid';
         
         $('logs').innerHTML = '';
+        log("NEXA OBFUSCATOR v4.0 - Initializing quantum encryption...", "process");
         
-        const levelConfig = levelConfigs[obfuscationLevel];
-        const perfConfig = perfConfigs[performanceMode];
-        const antiConfig = antiDebugConfigs[antiDebugMode];
-        const execConfig = executorConfigs[executorDetection];
-        
-        log(`NEXA OBFUSCATOR v5.0 - Starting ${levelConfig.name} level encryption`, "process");
-        log(`Executor Detection: ${execConfig.name}`, "info");
-        log(`Anti-Debug mode: ${antiConfig.name}`, "info");
-        log(`Performance mode: ${perfConfig.name}`, "info");
-        
+        await new Promise(r => setTimeout(r, 500));
+
         try {
             // Progress update
-            progressBar.style.width = '10%';
-            await new Promise(r => setTimeout(r, perfConfig.delay));
-            
             progressBar.style.width = '20%';
-            log("Analyzing source code structure...", "process");
+            log("Analyzing source code quantum structure...", "process");
             
-            let payload = source;
-            const layersApplied = [];
-            
-            // Apply executor detection code if enabled
-            if (execConfig.techniques.length > 0) {
-                log("Generating executor detection system...", "process");
-                const execDetectionCode = generateExecutorDetectionCode();
-                payload = execDetectionCode + '\n' + payload;
-                layersApplied.push("Executor Detection");
-            }
-            
-            // Apply anti-debug code if enabled
-            if (antiConfig.techniques.length > 0) {
-                log("Generating anti-debug protection...", "process");
-                const antiDebugCode = generateAntiDebugCode();
-                payload = antiDebugCode + '\n' + payload;
-                layersApplied.push("Anti-Debug");
-            }
-            
-            // Apply advanced techniques based on level
-            if (levelConfig.stringEncryption && $('opt-string').checked) {
-                log("Applying string encryption...", "process");
-                payload = encryptStrings(payload);
-                layersApplied.push("String Encryption");
-            }
-            
-            if (levelConfig.junkCode && $('opt-junk').checked) {
-                log("Injecting junk code...", "process");
-                payload = addJunkCode(payload);
-                layersApplied.push("Junk Code");
-            }
-            
-            if (levelConfig.flowFlattening && $('opt-flow').checked) {
-                log("Applying control flow flattening...", "process");
-                payload = applyFlowFlattening(payload);
-                layersApplied.push("Flow Flattening");
-            }
-            
+            await new Promise(r => setTimeout(r, 300));
             progressBar.style.width = '40%';
+            log("Generating Quantum Bytecode Matrix...", "process");
+
+            // Core obfuscation logic
+            const masterKey = Math.floor(Math.random() * 255);
+            const bytes = new TextEncoder().encode(source);
+            let rollingKey = masterKey;
+            let opcodes = [];
             
-            // Apply encryption layers
-            const layerTypes = [];
-            if ($('opt-rot').checked) layerTypes.push("rotation");
-            if ($('opt-xor').checked) layerTypes.push("xor");
-            if ($('opt-inv').checked) layerTypes.push("inversion");
-            
-            // Limit layers based on performance mode
-            const maxLayers = Math.min(layerTypes.length, perfConfig.maxLayers);
-            const selectedLayers = layerTypes.slice(0, maxLayers);
-            
-            log(`Applying ${selectedLayers.length} quantum encryption layers...`, "process");
-            
-            // Apply layers multiple times based on level
-            const iterations = Math.min(levelConfig.iterations, perfConfig.maxLayers);
-            
-            for(let iter = 0; iter < iterations; iter++) {
-                progressBar.style.width = `${40 + (iter * 40 / iterations)}%`;
-                
-                // Randomize layer order each iteration
-                selectedLayers.sort(() => Math.random() - 0.5);
-                
-                for(let i = 0; i < selectedLayers.length; i++) {
-                    const layer = selectedLayers[i];
-                    const layerName = layer.charAt(0).toUpperCase() + layer.slice(1);
-                    log(`Applying ${layerName} layer (Iteration ${iter+1}/${iterations})...`, "process");
-                    
-                    payload = wrapLayer(payload, layer).replace(/\s+/g, ' ');
-                    layersApplied.push(`${layerName} Layer`);
-                    
-                    await new Promise(r => setTimeout(r, perfConfig.delay / 2));
-                }
+            for (let i = 0; i < bytes.length; i++) {
+                opcodes.push((bytes[i] ^ rollingKey) + (i % 7));
+                rollingKey = (rollingKey + 13) % 255;
             }
-            
+
+            const v_ops = randName();
+            const v_stk = randName();
+            const v_ip = randName();
+            const v_run = randName();
+
+            let payload = `local ${v_ops} = {${opcodes.join(',')}} local function ${v_run}() local ${v_stk} = {} local ${v_ip} = ${masterKey} for i=1, #${v_ops} do local v = (${v_ops}[i] - ((i-1)%7)) ${v_stk}[#${v_stk}+1] = string.char(bit32.bxor(v, ${v_ip})) ${v_ip} = (${v_ip} + 13) % 255 end local f, e = (loadstring or load)(table.concat(${v_stk})) if f then pcall(f) end end ${v_run}()`.replace(/\s+/g, ' ');
+
+            // Apply quantum layers
+            const layers = [];
+            if ($('opt-rot').checked) layers.push("rotation");
+            if ($('opt-xor').checked) layers.push("xor");
+            if ($('opt-inv').checked) layers.push("inversion");
+
+            log(`Applying ${layers.length} quantum encryption layers...`, "process");
+            progressBar.style.width = '60%';
+
+            // Randomize layer order
+            layers.sort(() => Math.random() - 0.5);
+
+            for(let i = 0; i < layers.length; i++) {
+                const layer = layers[i];
+                log(`Applying ${layer.toUpperCase()} quantum encryption (${i+1}/${layers.length})...`, "process");
+                payload = wrapLayer(payload, layer).replace(/\s+/g, ' ');
+                
+                // Update progress
+                progressBar.style.width = `${60 + ((i+1) * 30 / layers.length)}%`;
+                await new Promise(r => setTimeout(r, 200));
+            }
+
             // Finalize output
             progressBar.style.width = '95%';
-            const finalOutput = NEXA_WATERMARK + '\n' + payload;
+            const finalOutput = NEXA_WATERMARK + payload;
             $('output').value = finalOutput;
             $('outputSize').textContent = finalOutput.length;
             
-            await new Promise(r => setTimeout(r, perfConfig.delay));
+            await new Promise(r => setTimeout(r, 200));
             progressBar.style.width = '100%';
             
-            // Calculate statistics
-            const endTime = Date.now();
-            const processTime = endTime - startTime;
+            // Stats
             const originalSize = source.length;
             const obfuscatedSize = payload.length;
-            const sizeIncrease = Math.round(((obfuscatedSize - originalSize) / originalSize) * 100);
-            const uniqueLayers = [...new Set(layersApplied)].length;
+            const efficiency = Math.round((obfuscatedSize / originalSize) * 100);
             
-            // Update stats panel
-            $('statLayers').textContent = uniqueLayers;
-            $('statTime').textContent = `${processTime}ms`;
-            $('statSize').textContent = `${sizeIncrease}%`;
-            
-            // Final log
             log("✓ Quantum encryption complete!", "success");
-            log(`Level: ${levelConfig.name} | Executor: ${execConfig.name} | Anti-Debug: ${antiConfig.name}`, "info");
-            log(`Time: ${processTime}ms | Size: ${originalSize} → ${obfuscatedSize} chars (+${sizeIncrease}%)`, "info");
-            log(`Layers applied: ${layersApplied.length}`, "info");
+            log(`Original: ${originalSize} chars → Encrypted: ${obfuscatedSize} chars (${efficiency}% size)`, "info");
+            log(`Quantum layers applied: ${layers.length}`, "info");
             log("Nexa payload ready for deployment.", "success");
 
         } catch (e) {
@@ -1720,24 +815,18 @@ print("Sum: " .. a .. ", Product: " .. b)`
         navigator.clipboard.writeText($('output').value).then(() => {
             log("✓ Nexa payload copied to clipboard", "success");
         }).catch(err => {
+            // Fallback method
             $('output').select();
             document.execCommand('copy');
             log("✓ Nexa payload copied to clipboard (fallback)", "success");
         });
     }
 
-    // Initialize
+    // Initialize with example
     $('input').value = presets.simple;
     $('input').dispatchEvent(new Event('input'));
-    setExecutorDetection('normal');
-    setAntiDebug('basic');
-    setObfuscationLevel('medium');
-    setPerformanceMode('balanced');
-    
-    log("Welcome to Nexa Obfuscator v5.0", "info");
-    log("Executor Detection system loaded", "info");
-    log("Anti-Debugger system loaded", "info");
-    log("Select executor detection mode and obfuscation level", "info");
+    log("Welcome to Nexa Obfuscator v4.0", "info");
+    log("Quantum encryption systems ready", "info");
 </script>
 </body>
 </html>
