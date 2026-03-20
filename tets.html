@@ -1,45 +1,214 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <title>Test Tombol Donasi</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding: 50px;
-            background-color: #f4f4f4;
-        }
-        h1 {
-            color: #333;
-        }
-        p {
-            color: #666;
-            font-size: 18px;
-        }
-        .box {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            max-width: 500px;
-            margin: auto;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-    </style>
-</head>
-<body>
+<!doctype html>
+<html lang="en" class="h-full">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+        <title>MoonVeil</title>
+        <link rel="icon" type="image/x-icon" href="/dist/favicons/favicon.ico">
+        <link rel="icon" type="image/png" sizes="16x16" href="/dist/favicons/favicon-16x16.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/dist/favicons/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="48x48" href="/dist/favicons/favicon-48x48.png">
+        <link rel="manifest" href="/dist/favicons/manifest.webmanifest">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="theme-color" content="#fff">
+        <meta name="application-name" content="Moonveil">
+        <link rel="apple-touch-icon" sizes="57x57" href="/dist/favicons/apple-touch-icon-57x57.png">
+        <link rel="apple-touch-icon" sizes="60x60" href="/dist/favicons/apple-touch-icon-60x60.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="/dist/favicons/apple-touch-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="76x76" href="/dist/favicons/apple-touch-icon-76x76.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="/dist/favicons/apple-touch-icon-114x114.png">
+        <link rel="apple-touch-icon" sizes="120x120" href="/dist/favicons/apple-touch-icon-120x120.png">
+        <link rel="apple-touch-icon" sizes="144x144" href="/dist/favicons/apple-touch-icon-144x144.png">
+        <link rel="apple-touch-icon" sizes="152x152" href="/dist/favicons/apple-touch-icon-152x152.png">
+        <link rel="apple-touch-icon" sizes="167x167" href="/dist/favicons/apple-touch-icon-167x167.png">
+        <link rel="apple-touch-icon" sizes="180x180" href="/dist/favicons/apple-touch-icon-180x180.png">
+        <link rel="apple-touch-icon" sizes="1024x1024" href="/dist/favicons/apple-touch-icon-1024x1024.png">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <meta name="apple-mobile-web-app-title" content="Moonveil">
+        <link rel="apple-touch-startup-image" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="/dist/favicons/apple-touch-startup-image-640x1136.png">
+        <link rel="apple-touch-startup-image" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" href="/dist/favicons/apple-touch-startup-image-1136x640.png">
+        <link rel="apple-touch-startup-image" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="/dist/favicons/apple-touch-startup-image-750x1334.png">
+        <link rel="apple-touch-startup-image" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" href="/dist/favicons/apple-touch-startup-image-1334x750.png">
+        <link rel="apple-touch-startup-image" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="/dist/favicons/apple-touch-startup-image-1125x2436.png">
+        <link rel="apple-touch-startup-image" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)" href="/dist/favicons/apple-touch-startup-image-2436x1125.png">
+        <link rel="apple-touch-startup-image" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="/dist/favicons/apple-touch-startup-image-1170x2532.png">
+        <link rel="apple-touch-startup-image" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)" href="/dist/favicons/apple-touch-startup-image-2532x1170.png">
+        <link rel="apple-touch-startup-image" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="/dist/favicons/apple-touch-startup-image-1179x2556.png">
+        <link rel="apple-touch-startup-image" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)" href="/dist/favicons/apple-touch-startup-image-2556x1179.png">
+        <link rel="apple-touch-startup-image" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="/dist/favicons/apple-touch-startup-image-828x1792.png">
+        <link rel="apple-touch-startup-image" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" href="/dist/favicons/apple-touch-startup-image-1792x828.png">
+        <link rel="apple-touch-startup-image" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="/dist/favicons/apple-touch-startup-image-1242x2688.png">
+        <link rel="apple-touch-startup-image" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)" href="/dist/favicons/apple-touch-startup-image-2688x1242.png">
+        <link rel="apple-touch-startup-image" media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="/dist/favicons/apple-touch-startup-image-1242x2208.png">
+        <link rel="apple-touch-startup-image" media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)" href="/dist/favicons/apple-touch-startup-image-2208x1242.png">
+        <link rel="apple-touch-startup-image" media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="/dist/favicons/apple-touch-startup-image-1284x2778.png">
+        <link rel="apple-touch-startup-image" media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)" href="/dist/favicons/apple-touch-startup-image-2778x1284.png">
+        <link rel="apple-touch-startup-image" media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="/dist/favicons/apple-touch-startup-image-1290x2796.png">
+        <link rel="apple-touch-startup-image" media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)" href="/dist/favicons/apple-touch-startup-image-2796x1290.png">
+        <link rel="apple-touch-startup-image" media="(device-width: 744px) and (device-height: 1133px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="/dist/favicons/apple-touch-startup-image-1488x2266.png">
+        <link rel="apple-touch-startup-image" media="(device-width: 744px) and (device-height: 1133px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" href="/dist/favicons/apple-touch-startup-image-2266x1488.png">
+        <link rel="apple-touch-startup-image" media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="/dist/favicons/apple-touch-startup-image-1536x2048.png">
+        <link rel="apple-touch-startup-image" media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" href="/dist/favicons/apple-touch-startup-image-2048x1536.png">
+        <link rel="apple-touch-startup-image" media="(device-width: 810px) and (device-height: 1080px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="/dist/favicons/apple-touch-startup-image-1620x2160.png">
+        <link rel="apple-touch-startup-image" media="(device-width: 810px) and (device-height: 1080px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" href="/dist/favicons/apple-touch-startup-image-2160x1620.png">
+        <link rel="apple-touch-startup-image" media="(device-width: 820px) and (device-height: 1080px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="/dist/favicons/apple-touch-startup-image-1640x2160.png">
+        <link rel="apple-touch-startup-image" media="(device-width: 820px) and (device-height: 1080px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" href="/dist/favicons/apple-touch-startup-image-2160x1640.png">
+        <link rel="apple-touch-startup-image" media="(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="/dist/favicons/apple-touch-startup-image-1668x2388.png">
+        <link rel="apple-touch-startup-image" media="(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" href="/dist/favicons/apple-touch-startup-image-2388x1668.png">
+        <link rel="apple-touch-startup-image" media="(device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="/dist/favicons/apple-touch-startup-image-1668x2224.png">
+        <link rel="apple-touch-startup-image" media="(device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" href="/dist/favicons/apple-touch-startup-image-2224x1668.png">
+        <link rel="apple-touch-startup-image" media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="/dist/favicons/apple-touch-startup-image-2048x2732.png">
+        <link rel="apple-touch-startup-image" media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" href="/dist/favicons/apple-touch-startup-image-2732x2048.png">
+        <meta name="msapplication-TileColor" content="#fff">
+        <meta name="msapplication-TileImage" content="/dist/favicons/mstile-144x144.png">
+        <meta name="msapplication-config" content="/dist/favicons/browserconfig.xml">
+        <link rel="yandex-tableau-widget" href="/dist/favicons/yandex-browser-manifest.json">
+        <script src="https://unpkg.com/htmx.org@2.0.6" integrity="sha384-Akqfrbj/HpNVo8k11SXBb6TlBWmXXlYQrCSqEWmyKJe+hDm3Z/B2WVG4smwBkRVm" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="/dist/styles.css?v=5781326">
+        <style>
+            html {
+                scroll-behavior: smooth;
+            }
+        </style>
+    </head>
+    <body class="w-full bg-zinc-900 min-h-screen">
+        <script src="/dist/studio.js?v=5781326"></script>
+        <div class="w-full h-full">
+            <nav class="bg-zinc-800 border-gray-200 px-4 lg:px-6 py-2.5 z-50 h-[80px]">
+                <div class="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl h-full">
+                    <a class="flex items-center">
+                        <div class="w-11 pr-1 flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="56 56 368 368" xmlns:bx="https://boxy-svg.com">
+                                <defs>
+                                    <bx:grid x="0" y="0" width="32" height="32" divisions="4"></bx:grid>
+                                    <linearGradient gradientUnits="userSpaceOnUse" x1="273.624" y1="478.726" x2="273.624" y2="782.752" id="gradient-0" spreadMethod="pad" gradientTransform="matrix(0.6585, -0.740213, 0.239028, 0.368389, -20.970117, 290.182587)">
+                                        <stop offset="0" style="stop-color: rgb(19.608% 19.608% 19.608%)"></stop>
+                                        <stop offset="1" style="stop-color: rgb(16, 16, 16);"></stop>
+                                    </linearGradient>
+                                    <bx:export>
+                                        <bx:file format="svg" href="#object-0" excluded="true"></bx:file>
+                                        <bx:file format="svg" href="#object-0" path="Untitled 2.svg" excluded="true"></bx:file>
+                                        <bx:file format="svg" href="#object-1" path="Untitled 3.svg"></bx:file>
+                                    </bx:export>
+                                    <radialGradient gradientUnits="userSpaceOnUse" cx="-122.846" cy="182.09" r="176.849" id="gradient-1" gradientTransform="matrix(0.557382, 0.674632, -0.839369, 0.69349, 365.313098, 116.598059)">
+                                        <stop offset="0" style="stop-color: rgb(96.078% 96.078% 96.078%)"></stop>
+                                        <stop offset="1" style="stop-color: rgb(193, 193, 193);"></stop>
+                                    </radialGradient>
+                                    <filter id="drop-shadow-filter-0" bx:preset="drop-shadow 1 -6 -6 4 0.5 rgba(0,0,0,0.3)" color-interpolation-filters="sRGB" x="-50%" y="-50%" width="200%" height="200%">
+                                        <feGaussianBlur in="SourceAlpha" stdDeviation="4"></feGaussianBlur>
+                                        <feOffset dx="-6" dy="-6"></feOffset>
+                                        <feComponentTransfer result="offsetblur">
+                                            <feFuncA id="spread-ctrl" type="linear" slope="1"></feFuncA>
+                                        </feComponentTransfer>
+                                        <feFlood flood-color="rgba(0,0,0,0.3)"></feFlood>
+                                        <feComposite in2="offsetblur" operator="in"></feComposite>
+                                        <feMerge>
+                                            <feMergeNode></feMergeNode>
+                                            <feMergeNode in="SourceGraphic"></feMergeNode>
+                                        </feMerge>
+                                    </filter>
+                                </defs>
+                                <ellipse style="fill: url(#gradient-1);" cx="240" cy="240" rx="176.849" ry="176.849" id="object-1"></ellipse>
+                                <path style="stroke-linejoin: round; fill-rule: nonzero; fill: url(#gradient-0); paint-order: fill; filter: url(#drop-shadow-filter-0);" d="M 386.685 112 C 370.536 144 370.536 160 322.089 176 C 305.939 208 297.865 224 249.418 240 C 233.268 272 217.12 288 176.745 304 C 160.597 336 144.447 344 96 360 C 168.603 430.941 286.606 444.22 370.536 368 C 454.467 291.78 412.652 134.332 386.685 112 Z" id="object-0"></path>
+                            </svg>
+                        </div>
+                        <span class="self-center text-xl font-semibold whitespace-nowrap text-white hidden md:block">MoonVeil</span>
+                    </a>
+                    <div class="flex items-center lg:order-2">
+                        <div class="relative">
+                            <button type="button" onclick="ToggleUserMenu()" class="relative space-x-2 text-gray-200 flex items-center justify-center inline focus:ring-4 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 hover:bg-zinc-700 focus:outline-none focus:ring-zinc-800" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
+                                <div class="w-10 h-10 me-2 flex items-center justify-center">
+                                    <img src="https://cdn.discordapp.com/avatars/1427922006178926603/60449529470739bbf8b60869aedf877b" class="w-10 h-10 rounded-full">
+                                </div>
+                                vinza73 
+                                <span class="text-sm">
+                                    <span class="bg-gray-900 text-gray-300 font-medium py-0.5 px-2.5 rounded-lg">Skid</span>
+                                </span>
+                            </button>
+                            <div class="hidden absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-lg drop-shadow-xl bg-zinc-800 py-1 ring-1 shadow-lg ring-black/5 focus:outline-hidden" id="user-menu" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
+                                <a href="/account" class="space-x-2 flex items-left justify-left inline px-4 py-2 text-sm text-gray-200 hover:bg-zinc-700 hover:text-white" role="menuitem" tabindex="-1" id="user-menu-item-1">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"></path>
+                                    </svg>
+                                    <span class="flex-1">Account</span>
+                                </a>
+                                <a href="/logout" class="space-x-2 flex items-left justify-left inline px-4 py-2 text-sm text-gray-200 hover:bg-zinc-700 hover:text-white" role="menuitem" tabindex="-1" id="user-menu-item-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15"></path>
+                                    </svg>
+                                    <span class="flex-1">Logout</span>
+                                </a>
+                            </div>
+                        </div>
+                        <button type="button" onclick="ToggleMenu()" class="inline-flex items-center p-2 ml-1 text-sm rounded-lg lg:hidden focus:outline-none focus:ring-2 text-gray-400 hover:bg-gray-700 focus:ring-gray-600" aria-controls="mobile-menu-2" aria-expanded="false">
+                            <span class="sr-only">Open main menu</span>
+                            <svg id="navbar-hamburger-icon" class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path>
+                            </svg>
+                            <svg id="navbar-x-icon" class="hidden w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="hidden justify-between items-center w-full lg:flex lg:w-auto lg:order-1 bg-zinc-800 z-20" id="navbar-menu">
+                        <ul class="flex flex-col mt-4 font-medium lg:flex-row lg:space-x-8 lg:mt-0">
+                            <li>
+                                <a href="/" class="block py-2 pr-4 pl-3 border-b border-gray-100 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 text-gray-400 hover:text-white border-gray-700">Home</a>
+                            </li>
+                            <li>
+                                <a href="/#pricing" class="block py-2 pr-4 pl-3 border-b border-gray-100 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 text-gray-400 hover:text-white border-gray-700">Pricing</a>
+                            </li>
+                            <li>
+                                <a href="/docs" class="block py-2 pr-4 pl-3 border-b border-gray-100 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 text-gray-400 hover:text-white border-gray-700">Documentation</a>
+                            </li>
+                            <li>
+                                <a href="/dashboard" class="block py-2 pr-4 pl-3 rounded bg-primary-700 lg:bg-transparent lg:text-primary-700 lg:p-0 text-white" aria-current="page">Dashboard</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <script>
+                    const nbMenu = document.getElementById("navbar-menu");
+                    const nbHamburger = document.getElementById("navbar-hamburger-icon");
+                    const nbX = document.getElementById("navbar-x-icon");
+                    const umButton = document.getElementById("user-menu-button");
+                    const um = document.getElementById("user-menu");
+                    const ToggleMenu = () => {
+                        nbMenu.classList.toggle("hidden");
+                        nbHamburger.classList.toggle("hidden");
+                        nbX.classList.toggle("hidden");
+                    }
 
-    <div class="box">
-        <h1>Website Test Donasi</h1>
-        <p>Ini adalah website sederhana untuk mencoba tombol dukungan.</p>
-    </div>
+                    const ToggleUserMenu = () => {
+                        um.classList.toggle("hidden");
+                    }
+                </script>
+            </nav>
+            <div data-script="if false then
+    print(&#34;goodbye world!&#34;)
+end
 
-    <!-- Script Tombol Sociabuzz -->
-    <script type="text/javascript" src="https://storage.sociabuzz.com/storage/js/main/buttononwebsite/index.min.js"></script>
-    <script>
-        sbBoW.draw("roych","QmVyaSBEdWt1bmdhbg","position-bottom-right","#6aa84f","#FFFFFF")
-    </script>
+for i = 1, 10 do
+    print(i)
+end
 
-</body>
+for k, v in pairs({&#34;h&#34;, &#34;e&#34;, &#34;l&#34;, &#34;l&#34;, &#34;o&#34;}) do
+    print(k, v)
+end
+
+local a = true
+while a do
+    print(&#34;hello world!&#34;)
+    a = false
+end
+" data-enabled-options="{&#34;prettify&#34;:true,&#34;embedRuntime&#34;:true,&#34;mangleConstLift&#34;:100,&#34;mangleEnable&#34;:true,&#34;mangleNumbers&#34;:true,&#34;mangleStrings&#34;:true,&#34;mangleSelfCalls&#34;:true,&#34;mangleNamedIndex&#34;:true,&#34;mangleGlobals&#34;:true,&#34;cffEnable&#34;:true,&#34;cffDecomposeExpr&#34;:true,&#34;cffHoistLocals&#34;:true,&#34;vmWrapScript&#34;:true,&#34;vmSafeEnv&#34;:true,&#34;vmDebug&#34;:false}" class="w-full h-[calc(100vh-80px)]">
+                <script type="text/javascript">
+                    studio.renderStudio(document.currentScript.closest('div'));
+                </script>
+            </div>
+        </div>
+        <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v8c78df7c7c0f484497ecbca7046644da1771523124516" integrity="sha512-8DS7rgIrAmghBFwoOTujcf6D9rXvH8xm8JQ1Ja01h9QX8EzXldiszufYa4IFfKdLUKTTrnSFXLDkUEOTrZQ8Qg==" data-cf-beacon='{"version":"2024.11.0","token":"c8dbd39ac6854e9b8013af58dd6e26fd","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+    </body>
 </html>
