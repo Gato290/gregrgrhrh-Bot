@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Lua Roblox Syntax Checker PRO</title>
+  <title>Lua.check — Roblox Syntax Checker PRO</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23ff3d3d'/%3E%3Ctext x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-weight='900' font-size='36' fill='white'%3E%7B%7D%3C/text%3E%3C/svg%3E">
 
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@700;800;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -697,6 +698,42 @@
       color: var(--text2);
     }
 
+
+    .logo-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--accent) 0%, #c02020 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--mono);
+      font-size: 20px;
+      font-weight: 700;
+      color: white;
+      box-shadow: 0 4px 20px rgba(255,61,61,0.4);
+      flex-shrink: 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .logo-icon::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 50%;
+      background: rgba(255,255,255,0.12);
+      border-radius: 12px 12px 0 0;
+    }
+    .logo-group {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .logo-text-group {
+      display: flex;
+      flex-direction: column;
+    }
+
     /* ── FOOTER ── */
     footer {
       margin-top: 40px;
@@ -755,9 +792,12 @@
   <!-- HEADER -->
   <header>
     <div class="logo-group">
-      <div class="logo-eyebrow">Roblox Development Tool</div>
-      <div class="logo-title">Lua<span>.check</span></div>
-      <div class="logo-sub">Syntax checker & AI debugger untuk kode Roblox Lua</div>
+      <div class="logo-icon">{ }</div>
+      <div class="logo-text-group">
+        <div class="logo-eyebrow">Roblox Development Tool</div>
+        <div class="logo-title">Lua<span>.check</span></div>
+        <div class="logo-sub">Syntax checker & AI debugger untuk kode Roblox Lua</div>
+      </div>
     </div>
     <div class="header-badges">
       <div class="badge"><div class="badge-dot"></div> Engine aktif</div>
