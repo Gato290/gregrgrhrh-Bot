@@ -449,6 +449,33 @@
       padding: 8px 14px;
       border-bottom: 1px solid var(--border);
       background: rgba(0,0,0,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .copy-error-btn {
+      font-family: var(--mono);
+      font-size: 10px;
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      color: var(--text2);
+      padding: 3px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.2s;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+    .copy-error-btn:hover {
+      background: var(--bg3);
+      color: var(--text);
+    }
+    .copy-error-btn.copied {
+      color: var(--green);
+      border-color: rgba(35,209,139,0.3);
     }
     .error-detail-body {
       padding: 14px;
@@ -983,7 +1010,12 @@
           </div>
         </div>
         <div class="error-detail">
-          <div class="error-detail-header">Error Message</div>
+          <div class="error-detail-header">
+            <span>Error Message</span>
+            <button class="copy-error-btn" onclick="copyError(this, \`${escHtml(err.message)}\`)">
+              <i class="fas fa-copy"></i> Salin Error
+            </button>
+          </div>
           <div class="error-detail-body">${escHtml(err.message)}</div>
         </div>
       </div>
@@ -993,6 +1025,17 @@
     aiSection.style.display = 'block';
     aiBody.innerHTML = `<div class="ai-loading" id="aiLoading"><div class="ai-spinner"></div> Menganalisis error dengan AI...</div>`;
     getAISuggestions(err.message, code);
+  }
+
+  function copyError(btn, text) {
+    navigator.clipboard.writeText(text).then(() => {
+      btn.classList.add('copied');
+      btn.innerHTML = '<i class="fas fa-check"></i> Tersalin!';
+      setTimeout(() => {
+        btn.classList.remove('copied');
+        btn.innerHTML = '<i class="fas fa-copy"></i> Salin Error';
+      }, 2000);
+    });
   }
 
   function escHtml(s) {
