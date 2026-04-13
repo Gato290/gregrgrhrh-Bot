@@ -1,335 +1,1191 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Lua.check — Syntax Checker PRO</title>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700&family=Syne:wght@700;800;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <title>Lua.check — Roblox Syntax Checker PRO</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23ff3d3d'/%3E%3Ctext x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-weight='900' font-size='36' fill='white'%3E%7B%7D%3C/text%3E%3C/svg%3E">
+
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@700;800;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://unpkg.com/fengari-web/dist/fengari-web.js"></script>
+
   <style>
     :root {
-      --bg:#080c12;--bg3:#111d2b;--surface:#0f1c2a;--surface2:#152234;
-      --border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.12);
-      --accent:#ff3d3d;--accent-glow:rgba(255,61,61,0.35);
-      --green:#23d18b;--yellow:#f5c518;--blue:#4fc3f7;--blue-glow:rgba(79,195,247,0.3);
-      --text:#dde8f0;--text2:#8090a0;--text3:#4a5a6a;
-      --mono:'Space Mono',monospace;--sans:'DM Sans',sans-serif;--display:'Syne',sans-serif;
+      --bg: #080c12;
+      --bg2: #0d1520;
+      --bg3: #111d2b;
+      --surface: #0f1c2a;
+      --surface2: #152234;
+      --border: rgba(255,255,255,0.06);
+      --border2: rgba(255,255,255,0.12);
+      --accent: #ff3d3d;
+      --accent2: #ff7043;
+      --accent-glow: rgba(255, 61, 61, 0.35);
+      --green: #23d18b;
+      --green-glow: rgba(35, 209, 139, 0.3);
+      --yellow: #f5c518;
+      --text: #dde8f0;
+      --text2: #8090a0;
+      --text3: #4a5a6a;
+      --mono: 'Space Mono', monospace;
+      --sans: 'DM Sans', sans-serif;
+      --display: 'Syne', sans-serif;
     }
-    *{margin:0;padding:0;box-sizing:border-box}
-    body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
-    body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
-      background-image:linear-gradient(rgba(255,61,61,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,61,61,0.03) 1px,transparent 1px);
-      background-size:40px 40px}
-    body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;transition:background .6s;
-      background:radial-gradient(ellipse 60% 40% at 10% 90%,rgba(255,61,61,0.08) 0%,transparent 60%),
-                 radial-gradient(ellipse 40% 30% at 90% 10%,rgba(255,112,67,0.06) 0%,transparent 50%)}
-    body.py::after{background:radial-gradient(ellipse 60% 40% at 10% 90%,rgba(79,195,247,0.08) 0%,transparent 60%),
-                              radial-gradient(ellipse 40% 30% at 90% 10%,rgba(79,195,247,0.06) 0%,transparent 50%)}
-    .w{position:relative;z-index:1;max-width:1400px;margin:0 auto;padding:32px 24px}
 
-    header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:36px;gap:20px}
-    .logo-group{display:flex;align-items:center;gap:16px}
-    .logo-icon{width:52px;height:52px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#c02020);
-      display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:18px;font-weight:700;
-      color:#fff;box-shadow:0 4px 20px rgba(255,61,61,.4);flex-shrink:0;position:relative;overflow:hidden;transition:.5s}
-    .logo-icon::after{content:'';position:absolute;top:0;left:0;right:0;height:50%;background:rgba(255,255,255,.12);border-radius:12px 12px 0 0}
-    body.py .logo-icon{background:linear-gradient(135deg,#4fc3f7,#0288d1);box-shadow:0 4px 20px rgba(79,195,247,.4)}
-    .logo-text{display:flex;flex-direction:column}
-    .eyebrow{font-family:var(--mono);font-size:11px;color:var(--accent);letter-spacing:.2em;text-transform:uppercase;
-      margin-bottom:6px;display:flex;align-items:center;gap:8px;transition:color .4s}
-    .eyebrow::before{content:'';width:20px;height:1px;background:currentColor}
-    body.py .eyebrow{color:var(--blue)}
-    .logo-title{font-family:var(--display);font-size:clamp(26px,4vw,44px);font-weight:900;line-height:1;letter-spacing:-2px}
-    .logo-title span{color:var(--accent);transition:color .4s}
-    body.py .logo-title span{color:var(--blue)}
-    .logo-sub{font-size:13px;color:var(--text2);margin-top:8px}
-    .badges{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
-    .badge{font-family:var(--mono);font-size:11px;padding:5px 12px;border-radius:4px;background:var(--surface);
-      border:1px solid var(--border2);color:var(--text2);display:flex;align-items:center;gap:6px}
-    .dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);animation:pulse 2s infinite}
-    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
-    /* lang switcher */
-    .ls-wrap{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap}
-    .ls-label{font-family:var(--mono);font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.12em}
-    .ls-box{position:relative;display:inline-flex;align-items:center}
-    .ls-icon{position:absolute;left:12px;font-size:12px;pointer-events:none;z-index:2;color:var(--accent);transition:.3s}
-    body.py .ls-icon{color:var(--blue)}
-    #langSel{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--text);background:var(--surface);
-      border:1px solid rgba(255,61,61,.4);border-radius:8px;padding:8px 34px 8px 32px;cursor:pointer;
-      outline:none;appearance:none;-webkit-appearance:none;transition:.4s;box-shadow:0 0 0 3px rgba(255,61,61,.08);min-width:175px}
-    body.py #langSel{border-color:rgba(79,195,247,.4);box-shadow:0 0 0 3px rgba(79,195,247,.08)}
-    .ls-arr{position:absolute;right:11px;pointer-events:none;font-size:9px;color:var(--text3)}
-    .pill{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:11px;
-      padding:3px 10px;border-radius:20px;font-weight:700}
-    .pill.lua{background:rgba(255,61,61,.15);color:var(--accent);border:1px solid rgba(255,61,61,.3)}
-    .pill.py{background:rgba(79,195,247,.15);color:var(--blue);border:1px solid rgba(79,195,247,.3)}
-    .vtag{font-family:var(--mono);font-size:10px;color:var(--text3);background:var(--surface2);
-      border:1px solid var(--border);padding:3px 8px;border-radius:4px}
+    body {
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
 
-    /* python note */
-    .py-note{display:none;font-family:var(--mono);font-size:11px;color:var(--blue);
-      background:rgba(79,195,247,.07);border:1px solid rgba(79,195,247,.2);
-      padding:8px 14px;border-radius:6px;gap:8px;align-items:center;margin-bottom:14px}
-    body.py .py-note{display:flex}
+    /* ── BG GRID ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,61,61,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,61,61,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 40% at 10% 90%, rgba(255,61,61,0.08) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 30% at 90% 10%, rgba(255,112,67,0.06) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
 
-    /* toolbar */
-    .toolbar{display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap}
-    .tb-lbl{font-family:var(--mono);font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em}
-    .tb-stat{font-family:var(--mono);font-size:11px;color:var(--text2);background:var(--surface);
-      border:1px solid var(--border);padding:3px 9px;border-radius:4px}
+    .wrapper {
+      position: relative;
+      z-index: 1;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 32px 24px;
+    }
 
-    /* editor grid */
-    .grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px}
-    .panel{display:flex;flex-direction:column}
-    .plbl{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.15em;color:var(--text3);
-      margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
-    .plbl-l{display:flex;align-items:center;gap:8px}
-    .plbl-l i{color:var(--accent);font-size:10px;transition:.4s}
-    body.py .plbl-l i{color:var(--blue)}
-    .ebox{border-radius:10px;border:1px solid var(--border2);background:var(--surface);overflow:hidden;
-      height:480px;display:flex;flex-direction:column;transition:.3s}
-    .ebox:focus-within{border-color:rgba(255,61,61,.5);box-shadow:0 0 0 3px rgba(255,61,61,.1),0 8px 32px rgba(0,0,0,.4)}
-    body.py .ebox:focus-within{border-color:rgba(79,195,247,.5);box-shadow:0 0 0 3px rgba(79,195,247,.1),0 8px 32px rgba(0,0,0,.4)}
-    .tbar{display:flex;align-items:center;gap:8px;padding:10px 16px;background:var(--bg3);
-      border-bottom:1px solid var(--border);flex-shrink:0}
-    .td{width:10px;height:10px;border-radius:50%}
-    .dr{background:#ff5f57}.dy{background:#febc2e}.dg{background:#28c840}
-    .tname{font-family:var(--mono);font-size:12px;color:var(--text2);margin-left:4px}
-    .tlang{font-family:var(--mono);font-size:10px;color:var(--accent);background:rgba(255,61,61,.1);
-      border:1px solid rgba(255,61,61,.2);padding:2px 8px;border-radius:3px;margin-left:auto;transition:.4s}
-    body.py .tlang{color:var(--blue);background:rgba(79,195,247,.1);border-color:rgba(79,195,247,.2)}
-    .ebody{display:flex;flex:1;overflow:hidden}
-    .lnums{font-family:var(--mono);font-size:13px;line-height:1.7;padding:16px 10px 16px 14px;
-      color:var(--text3);user-select:none;text-align:right;min-width:46px;
-      background:rgba(0,0,0,.2);border-right:1px solid var(--border);overflow:hidden;white-space:pre}
-    textarea{flex:1;font-family:var(--mono);font-size:13px;line-height:1.7;background:transparent;
-      color:var(--text);border:none;outline:none;resize:none;padding:16px;overflow-y:auto;tab-size:2}
+    /* ── HEADER ── */
+    header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 40px;
+      gap: 20px;
+    }
 
-    /* output */
-    .obox{border-radius:10px;border:1px solid var(--border2);background:var(--surface);
-      height:480px;display:flex;flex-direction:column;overflow:hidden;transition:.4s}
-    .obox.ok {border-color:rgba(35,209,139,.4);box-shadow:0 0 0 3px rgba(35,209,139,.08),0 8px 32px rgba(0,0,0,.4)}
-    .obox.err{border-color:rgba(255,61,61,.4); box-shadow:0 0 0 3px rgba(255,61,61,.08),0 8px 32px rgba(0,0,0,.4)}
-    .ostatus{font-family:var(--mono);font-size:11px;padding:2px 10px;border-radius:30px;margin-left:auto;transition:.3s}
-    .ostatus.idle{background:var(--surface2);color:var(--text2)}
-    .ostatus.good{background:rgba(35,209,139,.15);color:var(--green);border:1px solid rgba(35,209,139,.3)}
-    .ostatus.bad {background:rgba(255,61,61,.15); color:var(--accent);border:1px solid rgba(255,61,61,.3)}
-    .ocontent{flex:1;overflow-y:auto;padding:20px}
-    .idle-state{display:flex;flex-direction:column;align-items:center;justify-content:center;
-      height:100%;gap:12px;text-align:center}
-    .idle-ico{width:56px;height:56px;border-radius:50%;background:var(--surface2);border:1px solid var(--border2);
-      display:flex;align-items:center;justify-content:center;font-size:22px;color:var(--text3)}
-    .idle-txt{font-family:var(--mono);font-size:12px;color:var(--text3);line-height:1.6}
+    .logo-group {
+      display: flex;
+      flex-direction: column;
+    }
 
-    /* result */
-    .rblock{display:flex;flex-direction:column;gap:12px;animation:fi .3s ease}
-    @keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-    .rbanner{display:flex;align-items:flex-start;gap:12px;padding:14px 18px;border-radius:8px}
-    .rbanner.s{background:rgba(35,209,139,.1);border:1px solid rgba(35,209,139,.25)}
-    .rbanner.e{background:rgba(255,61,61,.1); border:1px solid rgba(255,61,61,.25)}
-    .bico{font-size:20px;flex-shrink:0}
-    .btitle{font-family:var(--display);font-size:16px;font-weight:800}
-    .rbanner.s .btitle{color:var(--green)}.rbanner.e .btitle{color:var(--accent)}
-    .bsub{font-size:12px;color:var(--text2);margin-top:2px}
-    .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-    .scard{background:rgba(0,0,0,.2);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center}
-    .snum{font-family:var(--display);font-size:22px;font-weight:900;color:var(--green)}
-    .slbl{font-family:var(--mono);font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-top:3px}
+    .logo-eyebrow {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--accent);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .logo-eyebrow::before {
+      content: '';
+      width: 20px;
+      height: 1px;
+      background: var(--accent);
+    }
 
-    /* lua single error */
-    .edetail{background:rgba(0,0,0,.3);border:1px solid var(--border2);border-radius:8px;overflow:hidden}
-    .edhdr{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.15em;color:var(--text3);
-      padding:8px 14px;border-bottom:1px solid var(--border);background:rgba(0,0,0,.2);
-      display:flex;align-items:center;justify-content:space-between}
-    .cpbtn{font-family:var(--mono);font-size:10px;background:var(--surface2);border:1px solid var(--border2);
-      color:var(--text2);padding:3px 10px;border-radius:4px;cursor:pointer;display:flex;align-items:center;
-      gap:5px;transition:.2s;text-transform:none;letter-spacing:0}
-    .cpbtn:hover{background:var(--bg3);color:var(--text)}
-    .cpbtn.cp{color:var(--green);border-color:rgba(35,209,139,.3)}
-    .edbody{padding:14px;font-family:var(--mono);font-size:12px;color:#ff9090;line-height:1.7;word-break:break-word}
+    .logo-title {
+      font-family: var(--display);
+      font-size: clamp(28px, 4vw, 48px);
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -2px;
+      color: var(--text);
+    }
+    .logo-title span {
+      color: var(--accent);
+    }
 
-    /* python multi-error list */
-    .elist{display:flex;flex-direction:column;gap:8px}
-    .eitem{display:flex;gap:10px;padding:10px 12px;border-radius:6px;
-      background:rgba(255,61,61,.06);border:1px solid rgba(255,61,61,.15);animation:fi .2s ease}
-    .eline{font-family:var(--mono);font-size:10px;color:var(--accent);background:rgba(255,61,61,.15);
-      border-radius:3px;padding:2px 7px;white-space:nowrap;height:fit-content;margin-top:2px}
-    .emsg{font-family:var(--mono);font-size:12px;color:#ff9090;line-height:1.5}
-    .etype{font-size:10px;color:var(--text3);margin-top:3px}
+    .logo-sub {
+      font-size: 14px;
+      color: var(--text2);
+      margin-top: 10px;
+      font-weight: 500;
+    }
 
-    /* suggestions */
-    .sug-sec{border-radius:8px;overflow:hidden;border:1px solid rgba(245,197,24,.2);
-      background:linear-gradient(135deg,rgba(245,197,24,.04) 0%,rgba(255,112,67,.04) 100%)}
-    .sug-hdr{display:flex;align-items:center;gap:10px;padding:10px 14px;
-      border-bottom:1px solid rgba(245,197,24,.15);background:rgba(0,0,0,.2)}
-    .sug-ico{width:22px;height:22px;border-radius:5px;background:rgba(245,197,24,.15);
-      display:flex;align-items:center;justify-content:center;color:var(--yellow);font-size:11px}
-    .sug-ttl{font-family:var(--display);font-size:13px;font-weight:800;color:var(--yellow)}
-    .sug-body{padding:12px;display:flex;flex-direction:column;gap:8px}
-    .sug-item{display:flex;gap:10px;padding:9px 12px;border-radius:6px;
-      background:rgba(0,0,0,.2);border:1px solid var(--border)}
-    .sug-bul{width:18px;height:18px;border-radius:50%;background:rgba(245,197,24,.15);
-      display:flex;align-items:center;justify-content:center;font-size:8px;color:var(--yellow);
-      flex-shrink:0;margin-top:1px}
-    .sug-txt{font-size:12px;color:var(--text);line-height:1.5}
+    /* Stats badges */
+    .header-badges {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+    }
+    .badge {
+      font-family: var(--mono);
+      font-size: 11px;
+      padding: 5px 12px;
+      border-radius: 4px;
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      color: var(--text2);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 6px var(--green);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
 
-    /* controls */
-    .controls{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-    .btn{font-family:var(--display);font-size:14px;font-weight:800;padding:13px 26px;border:none;
-      border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:8px;transition:.25s;letter-spacing:.02em}
-    #checkBtn{background:var(--accent);color:#fff;position:relative;overflow:hidden;transition:background .4s,box-shadow .25s,transform .2s}
-    #checkBtn::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.15) 0%,transparent 60%)}
-    #checkBtn:hover{transform:translateY(-2px);box-shadow:0 8px 28px var(--accent-glow)}
-    #checkBtn.busy{background:#b02020;pointer-events:none}
-    body.py #checkBtn{background:#0288d1}
-    body.py #checkBtn:hover{box-shadow:0 8px 28px var(--blue-glow)}
-    body.py #checkBtn.busy{background:#01579b}
-    #clearBtn{background:var(--surface2);color:var(--text2);border:1px solid var(--border2)}
-    #clearBtn:hover{background:var(--bg3);color:var(--text);transform:translateY(-2px)}
-    #copyBtn{background:transparent;color:var(--text2);border:1px solid var(--border2)}
-    #copyBtn:hover{background:var(--surface2);color:var(--text);transform:translateY(-2px)}
-    .ctrl-r{display:flex;gap:8px;margin-left:auto}
-    .shint{font-family:var(--mono);font-size:11px;color:var(--text3);display:flex;align-items:center;gap:4px;margin-left:4px}
-    kbd{background:var(--surface2);border:1px solid var(--border2);border-radius:3px;padding:2px 6px;font-size:10px;color:var(--text2)}
+    /* ── TOOLBAR ── */
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .toolbar-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+    }
+    .toolbar-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    .toolbar-stat {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text2);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 3px 10px;
+      border-radius: 4px;
+    }
 
-    footer{margin-top:40px;padding-top:20px;border-top:1px solid var(--border);
-      display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
-    .ftl{font-family:var(--mono);font-size:11px;color:var(--text3);display:flex;align-items:center;gap:6px}
-    .ftl span{color:var(--accent);transition:.4s}
-    body.py .ftl span{color:var(--blue)}
-    .ftags{display:flex;gap:8px;flex-wrap:wrap}
-    .ftag{font-family:var(--mono);font-size:10px;color:var(--text3);border:1px solid var(--border);padding:3px 8px;border-radius:3px}
-    .ftag.al{color:var(--accent);border-color:rgba(255,61,61,.3);background:rgba(255,61,61,.07);transition:.4s}
-    body.py .ftag.al{color:var(--blue);border-color:rgba(79,195,247,.3);background:rgba(79,195,247,.07)}
+    /* ── MAIN GRID ── */
+    .editor-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
 
-    ::-webkit-scrollbar{width:6px;height:6px}
-    ::-webkit-scrollbar-track{background:transparent}
-    ::-webkit-scrollbar-thumb{background:var(--surface2);border-radius:10px}
-    @media(max-width:900px){.grid{grid-template-columns:1fr}.ebox,.obox{height:340px}.badges,.ctrl-r{display:none}}
-    @media(max-width:600px){.controls{flex-direction:column;align-items:stretch}.btn{justify-content:center}}
+    .panel-wrap {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .panel-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--text3);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .panel-label-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .panel-label-left i { color: var(--accent); font-size: 10px; }
+
+    /* Editor container with line numbers */
+    .editor-box {
+      position: relative;
+      border-radius: 10px;
+      border: 1px solid var(--border2);
+      background: var(--surface);
+      overflow: hidden;
+      transition: border-color 0.3s, box-shadow 0.3s;
+      height: 480px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .editor-titlebar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      background: var(--bg3);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .titlebar-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+    .dot-r { background: #ff5f57; }
+    .dot-y { background: #febc2e; }
+    .dot-g { background: #28c840; }
+    .titlebar-name {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text2);
+      margin-left: 4px;
+    }
+    .titlebar-lang {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--accent);
+      background: rgba(255,61,61,0.1);
+      border: 1px solid rgba(255,61,61,0.2);
+      padding: 2px 8px;
+      border-radius: 3px;
+      margin-left: auto;
+    }
+
+    .editor-body {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .line-numbers {
+      font-family: var(--mono);
+      font-size: 13px;
+      line-height: 1.7;
+      padding: 16px 10px 16px 14px;
+      color: var(--text3);
+      user-select: none;
+      text-align: right;
+      min-width: 46px;
+      background: rgba(0,0,0,0.2);
+      border-right: 1px solid var(--border);
+      overflow: hidden;
+      white-space: pre;
+    }
+
+    textarea {
+      flex: 1;
+      font-family: var(--mono);
+      font-size: 13px;
+      line-height: 1.7;
+      background: transparent;
+      color: var(--text);
+      border: none;
+      outline: none;
+      resize: none;
+      padding: 16px;
+      overflow-y: auto;
+      tab-size: 2;
+    }
+    .editor-box:focus-within {
+      border-color: rgba(255,61,61,0.5);
+      box-shadow: 0 0 0 3px rgba(255,61,61,0.1), 0 8px 32px rgba(0,0,0,0.4);
+    }
+
+    /* Output panel */
+    .output-box {
+      border-radius: 10px;
+      border: 1px solid var(--border2);
+      background: var(--surface);
+      height: 480px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transition: border-color 0.4s, box-shadow 0.4s;
+    }
+    .output-box.state-success {
+      border-color: rgba(35,209,139,0.4);
+      box-shadow: 0 0 0 3px rgba(35,209,139,0.08), 0 8px 32px rgba(0,0,0,0.4);
+    }
+    .output-box.state-error {
+      border-color: rgba(255,61,61,0.4);
+      box-shadow: 0 0 0 3px rgba(255,61,61,0.08), 0 8px 32px rgba(0,0,0,0.4);
+    }
+
+    .output-titlebar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      background: var(--bg3);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .output-status {
+      font-family: var(--mono);
+      font-size: 11px;
+      padding: 2px 10px;
+      border-radius: 30px;
+      margin-left: auto;
+      transition: all 0.3s;
+    }
+    .output-status.idle {
+      background: var(--surface2);
+      color: var(--text2);
+    }
+    .output-status.ok {
+      background: rgba(35,209,139,0.15);
+      color: var(--green);
+      border: 1px solid rgba(35,209,139,0.3);
+    }
+    .output-status.err {
+      background: rgba(255,61,61,0.15);
+      color: var(--accent);
+      border: 1px solid rgba(255,61,61,0.3);
+    }
+
+    .output-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+    }
+
+    .output-idle {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      gap: 12px;
+      text-align: center;
+    }
+    .idle-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      color: var(--text3);
+    }
+    .idle-text {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text3);
+      line-height: 1.6;
+    }
+
+    /* Result blocks */
+    .result-block {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      animation: fadeIn 0.3s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .result-banner {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 18px;
+      border-radius: 8px;
+    }
+    .result-banner.success {
+      background: rgba(35,209,139,0.1);
+      border: 1px solid rgba(35,209,139,0.25);
+    }
+    .result-banner.error {
+      background: rgba(255,61,61,0.1);
+      border: 1px solid rgba(255,61,61,0.25);
+    }
+    .banner-icon {
+      font-size: 20px;
+    }
+    .banner-title {
+      font-family: var(--display);
+      font-size: 16px;
+      font-weight: 800;
+    }
+    .result-banner.success .banner-title { color: var(--green); }
+    .result-banner.error .banner-title { color: var(--accent); }
+    .banner-sub {
+      font-size: 12px;
+      color: var(--text2);
+      margin-top: 2px;
+    }
+
+    .error-detail {
+      background: rgba(0,0,0,0.3);
+      border: 1px solid var(--border2);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .error-detail-header {
+      font-family: var(--mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--text3);
+      padding: 8px 14px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(0,0,0,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .copy-error-btn {
+      font-family: var(--mono);
+      font-size: 10px;
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      color: var(--text2);
+      padding: 3px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.2s;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+    .copy-error-btn:hover {
+      background: var(--bg3);
+      color: var(--text);
+    }
+    .copy-error-btn.copied {
+      color: var(--green);
+      border-color: rgba(35,209,139,0.3);
+    }
+    .error-detail-body {
+      padding: 14px;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: #ff9090;
+      line-height: 1.7;
+      word-break: break-word;
+    }
+
+    /* Stats row for success */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+    .stat-card {
+      background: rgba(0,0,0,0.2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
+    }
+    .stat-num {
+      font-family: var(--display);
+      font-size: 22px;
+      font-weight: 900;
+      color: var(--green);
+    }
+    .stat-lbl {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-top: 3px;
+    }
+
+    /* ── SUGGESTIONS (AI) ── */
+    .ai-section {
+      margin-top: 20px;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid rgba(245,197,24,0.2);
+      background: linear-gradient(135deg, rgba(245,197,24,0.04) 0%, rgba(255,112,67,0.04) 100%);
+      animation: fadeIn 0.4s ease 0.1s both;
+    }
+    .ai-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 20px;
+      border-bottom: 1px solid rgba(245,197,24,0.15);
+      background: rgba(0,0,0,0.2);
+    }
+    .ai-header-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      background: rgba(245,197,24,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--yellow);
+      font-size: 13px;
+    }
+    .ai-header-title {
+      font-family: var(--display);
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--yellow);
+    }
+    .ai-header-sub {
+      font-size: 11px;
+      color: var(--text2);
+      margin-left: auto;
+      font-family: var(--mono);
+    }
+    .ai-body {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* AI powered by Claude */
+    .ai-loading {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 16px;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text2);
+    }
+    .ai-spinner {
+      width: 16px; height: 16px;
+      border: 2px solid var(--border2);
+      border-top-color: var(--yellow);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      flex-shrink: 0;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .ai-suggestion-item {
+      display: flex;
+      gap: 12px;
+      padding: 12px 14px;
+      border-radius: 8px;
+      background: rgba(0,0,0,0.2);
+      border: 1px solid var(--border);
+      animation: fadeIn 0.3s ease;
+    }
+    .suggestion-bullet {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: rgba(245,197,24,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 9px;
+      color: var(--yellow);
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .suggestion-text {
+      font-size: 13px;
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    /* ── CONTROLS ── */
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      font-family: var(--display);
+      font-size: 14px;
+      font-weight: 800;
+      padding: 14px 28px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.25s;
+      letter-spacing: 0.02em;
+    }
+    #checkBtn {
+      background: var(--accent);
+      color: white;
+      box-shadow: 0 0 0 0 var(--accent-glow);
+      position: relative;
+      overflow: hidden;
+    }
+    #checkBtn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 60%);
+    }
+    #checkBtn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px var(--accent-glow);
+    }
+    #checkBtn:active { transform: translateY(0); }
+    #checkBtn.checking {
+      background: #b02020;
+      pointer-events: none;
+    }
+    #clearBtn {
+      background: var(--surface2);
+      color: var(--text2);
+      border: 1px solid var(--border2);
+    }
+    #clearBtn:hover {
+      background: var(--bg3);
+      color: var(--text);
+      transform: translateY(-2px);
+    }
+    #copyBtn {
+      background: transparent;
+      color: var(--text2);
+      border: 1px solid var(--border2);
+    }
+    #copyBtn:hover {
+      background: var(--surface2);
+      color: var(--text);
+      transform: translateY(-2px);
+    }
+
+    .controls-right {
+      display: flex;
+      gap: 8px;
+      margin-left: auto;
+    }
+
+    .shortcut-hint {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text3);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-left: 6px;
+    }
+    kbd {
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: 3px;
+      padding: 2px 6px;
+      font-size: 10px;
+      color: var(--text2);
+    }
+
+
+    .logo-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--accent) 0%, #c02020 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--mono);
+      font-size: 20px;
+      font-weight: 700;
+      color: white;
+      box-shadow: 0 4px 20px rgba(255,61,61,0.4);
+      flex-shrink: 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .logo-icon::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 50%;
+      background: rgba(255,255,255,0.12);
+      border-radius: 12px 12px 0 0;
+    }
+    .logo-group {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .logo-text-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .footer-left {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text3);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .footer-left span { color: var(--accent); }
+    .footer-tags {
+      display: flex;
+      gap: 8px;
+    }
+    .footer-tag {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--text3);
+      border: 1px solid var(--border);
+      padding: 3px 8px;
+      border-radius: 3px;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--surface2); border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--border2); }
+
+    @media (max-width: 900px) {
+      .editor-grid { grid-template-columns: 1fr; }
+      .editor-box, .output-box { height: 360px; }
+      .header-badges { display: none; }
+      .controls-right { display: none; }
+    }
+    @media (max-width: 600px) {
+      .controls { flex-direction: column; align-items: stretch; }
+      .btn { justify-content: center; }
+    }
   </style>
 </head>
 <body>
-<div class="w">
 
+<div class="wrapper">
+
+  <!-- HEADER -->
   <header>
     <div class="logo-group">
-      <div class="logo-icon" id="lico">{ }</div>
-      <div class="logo-text">
-        <div class="eyebrow" id="leyb">Roblox Development Tool</div>
-        <div class="logo-title">Lua<span id="lspan">.check</span></div>
-        <div class="logo-sub" id="lsub">Syntax checker &amp; smart debugger untuk kode Roblox Lua</div>
+      <div class="logo-icon">{ }</div>
+      <div class="logo-text-group">
+        <div class="logo-eyebrow">Roblox Development Tool</div>
+        <div class="logo-title">Lua<span>.check</span></div>
+        <div class="logo-sub">Syntax checker & AI debugger untuk kode Roblox Lua</div>
       </div>
     </div>
-    <div class="badges">
-      <div class="badge"><div class="dot"></div> Engine aktif</div>
-      <div class="badge"><i class="fas fa-microchip" style="color:var(--accent);font-size:9px"></i> Fengari v0.1.4</div>
-      <div class="badge"><i class="fas fa-bolt" style="color:var(--yellow);font-size:9px"></i> Smart Parser</div>
+    <div class="header-badges">
+      <div class="badge"><div class="badge-dot"></div> Engine aktif</div>
+      <div class="badge"><i class="fas fa-microchip" style="color:var(--accent);font-size:9px;"></i> Fengari v0.1.4</div>
+      <div class="badge"><i class="fas fa-robot" style="color:var(--yellow);font-size:9px;"></i> AI Debug siap</div>
     </div>
   </header>
 
-  <div class="ls-wrap">
-    <span class="ls-label">Bahasa</span>
-    <div class="ls-box">
-      <i class="fas fa-code ls-icon"></i>
-      <select id="langSel">
-        <option value="lua">🌙  Lua 5.3 (Roblox)</option>
-        <option value="python">🐍  Python 3.x</option>
-      </select>
-      <span class="ls-arr"><i class="fas fa-chevron-down"></i></span>
-    </div>
-    <span class="pill lua" id="lpill"><i class="fas fa-moon"></i> Lua</span>
-    <span class="vtag" id="lver">Lua 5.3</span>
-  </div>
-
-  <div class="py-note">
-    <i class="fas fa-info-circle"></i>
-    Mode Python: menggunakan smart parser — deteksi indentasi, bracket, string, keyword, dan struktur syntax secara lokal.
-  </div>
-
+  <!-- TOOLBAR -->
   <div class="toolbar">
-    <span class="tb-lbl">Editor</span>
-    <span class="tb-stat" id="sChars">0 karakter</span>
-    <span class="tb-stat" id="sLines">1 baris</span>
-    <span class="tb-stat" id="sTokens">— token</span>
+    <div class="toolbar-left">
+      <span class="toolbar-label">Editor</span>
+      <span class="toolbar-stat" id="statChars">0 karakter</span>
+      <span class="toolbar-stat" id="statLines">1 baris</span>
+      <span class="toolbar-stat" id="statTokens">— token</span>
+    </div>
   </div>
 
-  <div class="grid">
-    <!-- editor -->
-    <div class="panel">
-      <div class="plbl">
-        <div class="plbl-l"><i class="fas fa-circle"></i><span>source file</span></div>
-        <span style="color:var(--text3);font-size:10px" id="flbl">script.lua</span>
-      </div>
-      <div class="ebox">
-        <div class="tbar">
-          <div class="td dr"></div><div class="td dy"></div><div class="td dg"></div>
-          <span class="tname" id="tname">script.lua</span>
-          <span class="tlang" id="tlang">Lua 5.3</span>
+  <!-- EDITOR GRID -->
+  <div class="editor-grid">
+
+    <!-- INPUT -->
+    <div class="panel-wrap">
+      <div class="panel-label">
+        <div class="panel-label-left">
+          <i class="fas fa-circle"></i>
+          <span>source file</span>
         </div>
-        <div class="ebody">
-          <div class="lnums" id="lnums">1</div>
-          <textarea id="code" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off"></textarea>
+        <span style="color:var(--text3);font-size:10px;">script.lua</span>
+      </div>
+      <div class="editor-box" id="editorBox">
+        <div class="editor-titlebar">
+          <div class="titlebar-dot dot-r"></div>
+          <div class="titlebar-dot dot-y"></div>
+          <div class="titlebar-dot dot-g"></div>
+          <span class="titlebar-name">script.lua</span>
+          <span class="titlebar-lang">Lua 5.3</span>
+        </div>
+        <div class="editor-body">
+          <div class="line-numbers" id="lineNums">1</div>
+          <textarea id="luaCode" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off"></textarea>
         </div>
       </div>
     </div>
 
-    <!-- output -->
-    <div class="panel">
-      <div class="plbl">
-        <div class="plbl-l"><i class="fas fa-circle"></i><span>hasil pemeriksaan</span></div>
-        <span id="otime" style="color:var(--text3);font-size:10px"></span>
-      </div>
-      <div class="obox" id="obox">
-        <div class="tbar">
-          <div class="td dr"></div><div class="td dy"></div><div class="td dg"></div>
-          <span class="tname">output.log</span>
-          <span class="ostatus idle" id="ostatus">IDLE</span>
+    <!-- OUTPUT -->
+    <div class="panel-wrap">
+      <div class="panel-label">
+        <div class="panel-label-left">
+          <i class="fas fa-circle"></i>
+          <span>hasil pemeriksaan</span>
         </div>
-        <div class="ocontent" id="ocontent">
-          <div class="idle-state">
-            <div class="idle-ico"><i class="fas fa-terminal"></i></div>
-            <div class="idle-txt" id="itxt">Tempel kode Lua di editor kiri<br>lalu klik <strong>Check Syntax</strong></div>
+        <span id="outputTimestamp" style="color:var(--text3);font-size:10px;"></span>
+      </div>
+      <div class="output-box" id="outputBox">
+        <div class="output-titlebar">
+          <div class="titlebar-dot dot-r"></div>
+          <div class="titlebar-dot dot-y"></div>
+          <div class="titlebar-dot dot-g"></div>
+          <span class="titlebar-name">output.log</span>
+          <span class="output-status idle" id="outputStatus">IDLE</span>
+        </div>
+        <div class="output-content" id="outputContent">
+          <div class="output-idle" id="idleState">
+            <div class="idle-icon"><i class="fas fa-terminal"></i></div>
+            <div class="idle-text">Tempel kode Lua di editor kiri<br>lalu klik <strong>Check Syntax</strong></div>
           </div>
         </div>
       </div>
     </div>
+
   </div>
 
+  <!-- CONTROLS -->
   <div class="controls">
-    <button id="checkBtn" class="btn"><i class="fas fa-bolt"></i> Check Syntax</button>
-    <button id="clearBtn" class="btn"><i class="fas fa-trash-alt"></i> Clear</button>
-    <span class="shint"><kbd>Ctrl</kbd>+<kbd>Enter</kbd></span>
-    <div class="ctrl-r">
-      <button id="copyBtn" class="btn"><i class="fas fa-copy"></i> Salin Kode</button>
+    <button id="checkBtn" class="btn">
+      <i class="fas fa-bolt"></i> Check Syntax
+    </button>
+    <button id="clearBtn" class="btn">
+      <i class="fas fa-trash-alt"></i> Clear
+    </button>
+    <span class="shortcut-hint"><kbd>Ctrl</kbd>+<kbd>Enter</kbd></span>
+
+    <div class="controls-right">
+      <button id="copyBtn" class="btn">
+        <i class="fas fa-copy"></i> Salin Kode
+      </button>
     </div>
   </div>
 
+  <!-- AI SUGGESTIONS (shows after error) -->
+  <div class="ai-section" id="aiSection" style="display:none;">
+    <div class="ai-header">
+      <div class="ai-header-icon"><i class="fas fa-robot"></i></div>
+      <div>
+        <div class="ai-header-title">AI Debug Assistant</div>
+      </div>
+      <span class="ai-header-sub" id="aiPoweredBy">powered by Claude</span>
+    </div>
+    <div class="ai-body" id="aiBody">
+      <div class="ai-loading" id="aiLoading">
+        <div class="ai-spinner"></div>
+        Menganalisis error dengan AI...
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
   <footer>
-    <div class="ftl"><i class="fas fa-code" style="color:var(--accent)"></i> Lua<span>.check</span> PRO &nbsp;·&nbsp; Untuk developer <span id="ftgt">Roblox</span></div>
-    <div class="ftags">
-      <span class="ftag al" id="ftag">Lua 5.3</span>
-      <span class="ftag">Fengari</span>
-      <span class="ftag">Smart Parser</span>
-      <span class="ftag">v2.2</span>
+    <div class="footer-left">
+      <i class="fas fa-code" style="color:var(--accent);"></i>
+      Lua<span>.check</span> PRO &nbsp;·&nbsp; Dibuat untuk developer <span>Roblox</span>
+    </div>
+    <div class="footer-tags">
+      <span class="footer-tag">Lua 5.3</span>
+      <span class="footer-tag">Fengari</span>
+      <span class="footer-tag">AI-Powered</span>
+      <span class="footer-tag">v2.0</span>
     </div>
   </footer>
+
 </div>
 
 <script>
-const codeEl  = document.getElementById('code');
-const obox    = document.getElementById('obox');
-const ostatus = document.getElementById('ostatus');
-const ocontent= document.getElementById('ocontent');
-const lnums   = document.getElementById('lnums');
-const checkBtn= document.getElementById('checkBtn');
+  const luaCodeEl = document.getElementById('luaCode');
+  const outputContent = document.getElementById('outputContent');
+  const outputBox = document.getElementById('outputBox');
+  const outputStatus = document.getElementById('outputStatus');
+  const outputTimestamp = document.getElementById('outputTimestamp');
+  const lineNums = document.getElementById('lineNums');
+  const aiSection = document.getElementById('aiSection');
+  const aiBody = document.getElementById('aiBody');
+  const aiLoading = document.getElementById('aiLoading');
+  const checkBtn = document.getElementById('checkBtn');
+  const clearBtn = document.getElementById('clearBtn');
+  const copyBtn = document.getElementById('copyBtn');
+  const statChars = document.getElementById('statChars');
+  const statLines = document.getElementById('statLines');
+  const statTokens = document.getElementById('statTokens');
+  const idleState = document.getElementById('idleState');
 
-let lang = 'lua';
+  // ── Line numbers ──
+  function updateLineNumbers() {
+    const lines = luaCodeEl.value.split('\n').length;
+    lineNums.textContent = Array.from({length: lines}, (_, i) => i + 1).join('\n');
+  }
 
-const SAMPLES = {
-  lua:`-- Contoh kode Lua Roblox
+  // Sync scroll
+  luaCodeEl.addEventListener('scroll', () => {
+    lineNums.scrollTop = luaCodeEl.scrollTop;
+  });
+
+  // Tabs support
+  luaCodeEl.addEventListener('keydown', e => {
+    if (e.key === 'Tab') {
+      e.preventDefault();
+      const s = luaCodeEl.selectionStart;
+      const v = luaCodeEl.value;
+      luaCodeEl.value = v.substring(0, s) + '  ' + v.substring(luaCodeEl.selectionEnd);
+      luaCodeEl.selectionStart = luaCodeEl.selectionEnd = s + 2;
+    }
+    if (e.ctrlKey && e.key === 'Enter') { e.preventDefault(); checkLua(); }
+  });
+
+  luaCodeEl.addEventListener('input', () => {
+    updateLineNumbers();
+    const code = luaCodeEl.value;
+    const chars = code.length;
+    const lines = code.split('\n').length;
+    const tokens = code.trim() ? code.trim().split(/\s+/).length : 0;
+    statChars.textContent = `${chars.toLocaleString()} karakter`;
+    statLines.textContent = `${lines} baris`;
+    statTokens.textContent = `${tokens} token`;
+  });
+
+  // ── Check ──
+  async function checkLua() {
+    const code = luaCodeEl.value.trim();
+    if (!code) { return; }
+
+    checkBtn.classList.add('checking');
+    checkBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Memeriksa...';
+    aiSection.style.display = 'none';
+
+    // Timestamp
+    const now = new Date();
+    outputTimestamp.textContent = now.toLocaleTimeString('id-ID');
+
+    await new Promise(r => setTimeout(r, 120));
+
+    try {
+      fengari.load(code);
+      showSuccess(code);
+    } catch(err) {
+      showError(err, code);
+    }
+
+    checkBtn.classList.remove('checking');
+    checkBtn.innerHTML = '<i class="fas fa-bolt"></i> Check Syntax';
+  }
+
+  function showSuccess(code) {
+    outputBox.className = 'output-box state-success';
+    outputStatus.className = 'output-status ok';
+    outputStatus.textContent = 'VALID';
+
+    const lines = code.split('\n').length;
+    const chars = code.length;
+    const funcs = (code.match(/\bfunction\b/g) || []).length;
+
+    outputContent.innerHTML = `
+      <div class="result-block">
+        <div class="result-banner success">
+          <span class="banner-icon">✅</span>
+          <div>
+            <div class="banner-title">No Syntax Errors</div>
+            <div class="banner-sub">Kode Anda valid dan siap dijalankan di Roblox Studio</div>
+          </div>
+        </div>
+        <div class="stats-row">
+          <div class="stat-card">
+            <div class="stat-num">${lines}</div>
+            <div class="stat-lbl">Baris</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num">${chars}</div>
+            <div class="stat-lbl">Karakter</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num">${funcs}</div>
+            <div class="stat-lbl">Fungsi</div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  function showError(err, code) {
+    outputBox.className = 'output-box state-error';
+    outputStatus.className = 'output-status err';
+    outputStatus.textContent = 'ERROR';
+
+    outputContent.innerHTML = `
+      <div class="result-block">
+        <div class="result-banner error">
+          <span class="banner-icon">❌</span>
+          <div>
+            <div class="banner-title">Syntax Error Detected</div>
+            <div class="banner-sub">Perbaiki error berikut sebelum menjalankan kode</div>
+          </div>
+        </div>
+        <div class="error-detail">
+          <div class="error-detail-header">
+            <span>Error Message</span>
+            <button class="copy-error-btn" onclick="copyError(this, \`${escHtml(err.message)}\`)">
+              <i class="fas fa-copy"></i> Salin Error
+            </button>
+          </div>
+          <div class="error-detail-body">${escHtml(err.message)}</div>
+        </div>
+      </div>
+    `;
+
+    // Show AI section
+    aiSection.style.display = 'block';
+    aiBody.innerHTML = `<div class="ai-loading" id="aiLoading"><div class="ai-spinner"></div> Menganalisis error dengan AI...</div>`;
+    getAISuggestions(err.message, code);
+  }
+
+  function copyError(btn, text) {
+    navigator.clipboard.writeText(text).then(() => {
+      btn.classList.add('copied');
+      btn.innerHTML = '<i class="fas fa-check"></i> Tersalin!';
+      setTimeout(() => {
+        btn.classList.remove('copied');
+        btn.innerHTML = '<i class="fas fa-copy"></i> Salin Error';
+      }, 2000);
+    });
+  }
+
+  function escHtml(s) {
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  // ── AI Suggestions via Claude ──
+  async function getAISuggestions(errorMsg, code) {
+    const prompt = `Kamu adalah ahli debugging Lua Roblox. Seorang developer mendapat error berikut saat memeriksa syntax kode Luanya:
+
+ERROR: ${errorMsg}
+
+KODE:
+\`\`\`lua
+${code.substring(0, 2000)}
+\`\`\`
+
+Berikan TEPAT 3-4 saran perbaikan yang konkret dan spesifik dalam bahasa Indonesia. Format: JSON array of strings, contoh:
+["Saran 1 yang konkret.", "Saran 2 yang spesifik.", "Saran 3."]
+
+PENTING: Balas HANYA dengan JSON array, tanpa teks lain.`;
+
+    try {
+      const resp = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 1000,
+          messages: [{ role: 'user', content: prompt }]
+        })
+      });
+      const data = await resp.json();
+      const text = (data.content || []).find(b => b.type === 'text')?.text || '';
+      const clean = text.replace(/```json|```/g, '').trim();
+      let suggestions;
+      try { suggestions = JSON.parse(clean); } catch { suggestions = null; }
+
+      if (suggestions && Array.isArray(suggestions)) {
+        renderSuggestions(suggestions);
+      } else {
+        renderFallbackSuggestions(errorMsg, document.getElementById('luaCode').value);
+      }
+    } catch(e) {
+      renderFallbackSuggestions(errorMsg, document.getElementById('luaCode').value);
+    }
+  }
+
+  function renderSuggestions(list) {
+    aiBody.innerHTML = list.map((s, i) => `
+      <div class="ai-suggestion-item">
+        <div class="suggestion-bullet"><i class="fas fa-lightbulb"></i></div>
+        <div class="suggestion-text">${escHtml(s)}</div>
+      </div>
+    `).join('');
+  }
+
+  function renderFallbackSuggestions(errorMsg, code) {
+    const msg = errorMsg.toLowerCase();
+    const items = [];
+
+    if (msg.includes('expected') || msg.includes('near')) {
+      items.push('Periksa baris yang disebutkan dalam pesan error — kemungkinan ada tanda baca yang hilang atau salah tempat.');
+    }
+    if (msg.includes('unfinished string')) {
+      items.push('String tidak ditutup: pastikan setiap tanda kutip (\' atau \") memiliki pasangan penutupnya.');
+    }
+    if ((code.match(/\(/g)||[]).length !== (code.match(/\)/g)||[]).length) {
+      items.push('Jumlah kurung buka "(" dan tutup ")" tidak seimbang. Hitung ulang dan pastikan semua berpasangan.');
+    }
+    if ((code.match(/\bfunction\b/g)||[]).length > (code.match(/\bend\b/g)||[]).length) {
+      items.push('Setiap blok function, if, for, atau while harus diakhiri dengan "end". Cek apakah ada yang terlewat.');
+    }
+    items.push('Coba isolasi bagian kode yang error dengan menghapus sementara beberapa baris untuk mempersempit masalah.');
+    items.push('Gunakan print() untuk debugging bertahap dan memastikan setiap bagian kode berjalan dengan benar.');
+
+    renderSuggestions(items.slice(0, 4));
+  }
+
+  // ── Clear ──
+  function clearCode() {
+    luaCodeEl.value = '';
+    updateLineNumbers();
+    statChars.textContent = '0 karakter';
+    statLines.textContent = '1 baris';
+    statTokens.textContent = '— token';
+    outputBox.className = 'output-box';
+    outputStatus.className = 'output-status idle';
+    outputStatus.textContent = 'IDLE';
+    outputTimestamp.textContent = '';
+    outputContent.innerHTML = `<div class="output-idle" id="idleState"><div class="idle-icon"><i class="fas fa-terminal"></i></div><div class="idle-text">Tempel kode Lua di editor kiri<br>lalu klik <strong>Check Syntax</strong></div></div>`;
+    aiSection.style.display = 'none';
+    luaCodeEl.focus();
+  }
+
+  // ── Copy ──
+  copyBtn.addEventListener('click', () => {
+    navigator.clipboard.writeText(luaCodeEl.value).then(() => {
+      copyBtn.innerHTML = '<i class="fas fa-check"></i> Tersalin!';
+      setTimeout(() => { copyBtn.innerHTML = '<i class="fas fa-copy"></i> Salin Kode'; }, 2000);
+    });
+  });
+
+  checkBtn.addEventListener('click', checkLua);
+  clearBtn.addEventListener('click', clearCode);
+
+  // ── Default code ──
+  window.addEventListener('DOMContentLoaded', () => {
+    luaCodeEl.value = `-- Contoh kode Lua Roblox
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
@@ -343,355 +1199,14 @@ local function welcomePlayer(player)
     coins.Value = 100
     coins.Parent = leaderstats
 
-    print(player.Name .. " bergabung dengan " .. game.Name)
+    print(player.Name .. " telah bergabung dengan " .. game.Name)
 end
 
 Players.PlayerAdded:Connect(welcomePlayer)
-print("Script berhasil!")`,
-
-  python:`# Contoh kode Python
-def greet_user(name: str) -> str:
-    """Menyapa pengguna."""
-    message = f"Halo, {name}! Selamat datang."
-    return message
-
-class Counter:
-    def __init__(self, start: int = 0):
-        self.count = start
-
-    def increment(self, step: int = 1):
-        self.count += step
-        return self.count
-
-    def reset(self):
-        self.count = 0
-
-counter = Counter(10)
-for i in range(5):
-    counter.increment()
-
-print(greet_user("Developer"))
-print(f"Counter akhir: {counter.count}")`
-};
-
-// ════════════════════════════════════════
-// PYTHON SMART PARSER (pure JS, no API)
-// ════════════════════════════════════════
-function parsePython(src) {
-  const errors = [];
-  const lines  = src.split('\n');
-
-  // helper: strip strings & comments from a line for structural checks
-  function stripLine(s) {
-    let out='', inSt=false, ch='';
-    for(let i=0;i<s.length;i++){
-      const c=s[i];
-      if(!inSt&&(c==='"'||c==="'")){
-        const tr=s.slice(i,i+3);
-        if(tr==='"""'||tr==="'''"){i+=2;inSt=true;ch=tr;continue}
-        inSt=true;ch=c;
-      } else if(inSt){
-        if(ch.length===3&&s.slice(i,i+3)===ch){i+=2;inSt=false;ch='';continue}
-        if(ch.length===1&&c===ch&&s[i-1]!=='\\'){inSt=false;ch=''}
-      } else if(c==='#'){break}
-      else out+=c;
-    }
-    return out;
-  }
-
-  // 1. BRACKET BALANCE (tracks full source)
-  {
-    const open={'(':')','{':'}','[':']'};
-    const close=new Set([')','}',']']);
-    const stk=[];
-    let inSt=false,stCh='';
-    for(let li=0;li<lines.length;li++){
-      const ln=lines[li];
-      let i=0;
-      while(i<ln.length){
-        const c=ln[i];
-        if(!inSt&&(c==='"'||c==="'")){
-          const tr=ln.slice(i,i+3);
-          if(tr==='"""'||tr==="'''"){i+=2;inSt=true;stCh=tr;}
-          else{inSt=true;stCh=c;}
-        } else if(inSt){
-          if(stCh.length===3&&ln.slice(i,i+3)===stCh){i+=2;inSt=false;stCh='';}
-          else if(stCh.length===1&&c===stCh&&ln[i-1]!=='\\'){inSt=false;stCh='';}
-        } else if(c==='#') break;
-        else if(open[c]) stk.push({c,li:li+1});
-        else if(close.has(c)){
-          if(!stk.length||open[stk[stk.length-1].c]!==c)
-            errors.push({line:li+1,type:'SyntaxError',msg:`Penutup '${c}' tidak punya pembuka — periksa bracket di sekitar baris ini`});
-          else stk.pop();
-        }
-        i++;
-      }
-      // unclosed inline string (single-char)
-      if(inSt&&stCh.length===1)
-        errors.push({line:li+1,type:'SyntaxError',msg:`String tidak ditutup — tanda kutip '${stCh}' belum berpasangan`});
-    }
-    if(stk.length){
-      const last=stk[stk.length-1];
-      errors.push({line:last.li,type:'SyntaxError',msg:`Pembuka '${last.c}' tidak pernah ditutup (dibuka di baris ${last.li})`});
-    }
-  }
-
-  // 2. INDENTATION
-  {
-    const BLOCK=/^\s*(if|elif|else|for|while|with|try|except|finally|def|class|async\s+(def|for|with))\b/;
-    const istk=[0];
-    for(let li=0;li<lines.length;li++){
-      const raw=lines[li];
-      const stripped=stripLine(raw).trimEnd();
-      if(!stripped.trim()) continue;
-      // tab+space mix
-      const indChunk=raw.match(/^[\t ]*/)[0];
-      if(indChunk.includes('\t')&&indChunk.includes(' '))
-        errors.push({line:li+1,type:'TabError',msg:'Campuran tab dan spasi — gunakan satu jenis secara konsisten (disarankan: 4 spasi)'});
-      const indent=indChunk.replace(/\t/g,'    ').length;
-      const top=istk[istk.length-1];
-      const prevStripped=li>0?stripLine(lines[li-1]).trimEnd():'';
-      if(prevStripped.endsWith(':')&&indent<=top&&stripped.trim()!=='pass'&&stripped.trim()!=='')
-        errors.push({line:li+1,type:'IndentationError',msg:`Blok baru diharapkan setelah ':' di baris ${li} — tambahkan indentasi`});
-      if(indent>top) istk.push(indent);
-      else if(indent<top){
-        while(istk.length>1&&istk[istk.length-1]>indent) istk.pop();
-        if(istk[istk.length-1]!==indent)
-          errors.push({line:li+1,type:'IndentationError',msg:`Level indentasi ${indent} tidak cocok dengan blok di atasnya (${istk[istk.length-1]})`});
-      }
-    }
-  }
-
-  // 3. PER-LINE KEYWORD CHECKS
-  const BKWS=/^\s*(if|elif|else|for|while|with|try|except|finally|def|class|async\s+def|async\s+for|async\s+with)\b/;
-  for(let li=0;li<lines.length;li++){
-    const raw=lines[li];
-    const cl=stripLine(raw).trimEnd();
-    if(!cl.trim()) continue;
-    const tr=cl.trim();
-
-    // block keyword must end with :
-    if(BKWS.test(cl)&&!/:\s*$/.test(cl))
-      errors.push({line:li+1,type:'SyntaxError',msg:`'${tr.split(/[\s(]/)[0]}' harus diakhiri dengan ':' — contoh: if x > 0:`});
-
-    // print without parens (Python 2)
-    if(/^\s*print\s+[^(]/.test(raw)&&!/^\s*print\s*$/.test(raw))
-      errors.push({line:li+1,type:'SyntaxWarning',msg:`print tanpa kurung terdeteksi — di Python 3 gunakan: print(...)`});
-
-    // = inside if/while condition (common typo)
-    if(/^\s*(if|elif|while)\s/.test(cl)){
-      const cond=cl.replace(/^\s*(if|elif|while)\s*/,'').replace(/:.*$/,'');
-      if(/[^=!<>]=[^=]/.test(cond.replace(/:=/g,'').replace(/=>/g,'')))
-        errors.push({line:li+1,type:'SyntaxWarning',msg:`Kemungkinan '=' (assignment) di kondisi — maksudnya '==' (perbandingan)?`});
-    }
-
-    // def without name
-    if(/^\s*def\s*\(/.test(cl))
-      errors.push({line:li+1,type:'SyntaxError',msg:`'def' harus diikuti nama fungsi — contoh: def my_func():`});
-
-    // class without name
-    if(/^\s*class\s*[:(]/.test(cl)&&!/^\s*class\s+\w/.test(cl))
-      errors.push({line:li+1,type:'SyntaxError',msg:`'class' harus diikuti nama — contoh: class MyClass:`});
-
-    // lambda without colon
-    if(/\blambda\b/.test(cl)&&!/\blambda\b.*:/.test(cl))
-      errors.push({line:li+1,type:'SyntaxError',msg:`'lambda' harus punya ':' — contoh: lambda x: x + 1`});
-
-    // return/yield outside function (very rough — just flag if at col 0)
-    if(/^(return|yield)\b/.test(tr))
-      errors.push({line:li+1,type:'SyntaxError',msg:`'${tr.split(' ')[0]}' di luar fungsi — pindahkan ke dalam blok def`});
-  }
-
-  // deduplicate & limit
-  const seen=new Set();
-  return errors.filter(e=>{
-    const k=`${e.line}:${e.type}:${e.msg.slice(0,28)}`;
-    if(seen.has(k))return false;seen.add(k);return true;
-  }).slice(0,7);
-}
-
-function pyTips(errors) {
-  const tips=new Set();
-  for(const e of errors){
-    const m=e.msg.toLowerCase(),t=e.type;
-    if(t==='IndentationError'||t==='TabError'){
-      tips.add('Gunakan 4 spasi per level indentasi. Jangan campur tab dan spasi.');
-      tips.add("Setiap baris setelah ':' harus diindentasi 4 spasi lebih dalam dari baris sebelumnya.");
-    }
-    if(m.includes("':'"))    tips.add("Setiap if/for/while/def/class/else/elif/try/except harus diakhiri ':'");
-    if(m.includes('string')||m.includes('kutip')) tips.add("Pastikan setiap string punya pembuka & penutup yang sama: 'teks' atau \"teks\".");
-    if(m.includes('bracket')||m.includes('pembuka')||m.includes('penutup')) tips.add("Periksa keseimbangan bracket: jumlah '(' harus sama dengan ')'. Begitu juga [ ] dan { }.");
-    if(m.includes('print'))  tips.add("Python 3: gunakan print('teks') — tanda kurung WAJIB.");
-    if(m.includes("'=='"))   tips.add("Kondisi: gunakan '==' untuk membandingkan. '=' hanya untuk assignment.");
-    if(m.includes('lambda')) tips.add("Sintaks lambda: lambda param: ekspresi — misal: fn = lambda x: x * 2");
-    if(m.includes('return')) tips.add("'return' dan 'yield' hanya boleh ada di dalam blok def (fungsi).");
-  }
-  if(!tips.size){
-    tips.add('Periksa kembali baris yang ditandai — perhatikan tanda baca dan indentasi.');
-    tips.add('Coba jalankan kode sedikit demi sedikit untuk mempersempit sumber error.');
-  }
-  return [...tips].slice(0,4);
-}
-
-function luaTips(msg, code) {
-  const m=msg.toLowerCase(), tips=[];
-  if(m.includes('expected')||m.includes('near')) tips.push('Periksa baris error — kemungkinan ada tanda baca yang hilang atau salah letak.');
-  if(m.includes('unfinished string'))            tips.push("String tidak ditutup: setiap tanda kutip (' atau \") harus punya pasangan penutup.");
-  if((code.match(/\(/g)||[]).length!==(code.match(/\)/g)||[]).length) tips.push('Jumlah "(" dan ")" tidak seimbang — hitung ulang semua pasangan bracket.');
-  if((code.match(/\bfunction\b/g)||[]).length>(code.match(/\bend\b/g)||[]).length) tips.push('Setiap function/if/for/while harus diakhiri "end".');
-  tips.push('Isolasi bagian yang error: hapus sementara beberapa baris untuk mempersempit masalah.');
-  tips.push('Gunakan print() untuk debug bertahap setiap bagian kode.');
-  return tips.slice(0,4);
-}
-
-// ── RENDER HELPERS ──
-function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
-
-function sugBlock(tips){
-  if(!tips.length) return '';
-  return `<div class="sug-sec">
-    <div class="sug-hdr"><div class="sug-ico"><i class="fas fa-lightbulb"></i></div><div class="sug-ttl">Saran Perbaikan</div></div>
-    <div class="sug-body">${tips.map(t=>`<div class="sug-item"><div class="sug-bul"><i class="fas fa-lightbulb"></i></div><div class="sug-txt">${esc(t)}</div></div>`).join('')}</div>
-  </div>`;
-}
-
-function showSuccess(code, l) {
-  obox.className='obox ok';
-  ostatus.className='ostatus good'; ostatus.textContent='VALID';
-  const lines=code.split('\n').length, chars=code.length;
-  const cnt = l==='lua' ? (code.match(/\bfunction\b/g)||[]).length : (code.match(/\bdef\b|\bclass\b/g)||[]).length;
-  const lbl = l==='lua' ? 'Fungsi' : 'Fungsi/Class';
-  const sub = l==='lua' ? 'Kode valid dan siap dijalankan di Roblox Studio' : 'Kode Python bebas dari syntax errors';
-  ocontent.innerHTML=`<div class="rblock">
-    <div class="rbanner s"><span class="bico">✅</span><div><div class="btitle">No Syntax Errors</div><div class="bsub">${sub}</div></div></div>
-    <div class="stats-row">
-      <div class="scard"><div class="snum">${lines}</div><div class="slbl">Baris</div></div>
-      <div class="scard"><div class="snum">${chars}</div><div class="slbl">Karakter</div></div>
-      <div class="scard"><div class="snum">${cnt}</div><div class="slbl">${lbl}</div></div>
-    </div>
-  </div>`;
-}
-
-function showLuaErr(msg, code) {
-  obox.className='obox err';
-  ostatus.className='ostatus bad'; ostatus.textContent='ERROR';
-  const tips=luaTips(msg,code);
-  ocontent.innerHTML=`<div class="rblock">
-    <div class="rbanner e"><span class="bico">❌</span><div><div class="btitle">Syntax Error Detected</div><div class="bsub">Perbaiki error ini sebelum menjalankan di Roblox</div></div></div>
-    <div class="edetail">
-      <div class="edhdr"><span>Error Message</span><button class="cpbtn" id="cperr"><i class="fas fa-copy"></i> Salin</button></div>
-      <div class="edbody">${esc(msg)}</div>
-    </div>
-    ${sugBlock(tips)}
-  </div>`;
-  document.getElementById('cperr').onclick=function(){
-    navigator.clipboard.writeText(msg).then(()=>{this.classList.add('cp');this.innerHTML='<i class="fas fa-check"></i> Tersalin!';setTimeout(()=>{this.classList.remove('cp');this.innerHTML='<i class="fas fa-copy"></i> Salin'},2000)});
-  };
-}
-
-function showPyErrs(errs, code) {
-  obox.className='obox err';
-  ostatus.className='ostatus bad'; ostatus.textContent=`${errs.length} ERROR`;
-  const tips=pyTips(errs);
-  const items=errs.map(e=>`<div class="eitem"><span class="eline">Baris ${e.line}</span><div><div class="emsg">${esc(e.msg)}</div><div class="etype">${e.type}</div></div></div>`).join('');
-  ocontent.innerHTML=`<div class="rblock">
-    <div class="rbanner e"><span class="bico">❌</span><div><div class="btitle">${errs.length} Error Ditemukan</div><div class="bsub">Perbaiki error berikut sebelum menjalankan kode Python</div></div></div>
-    <div class="elist">${items}</div>
-    ${sugBlock(tips)}
-  </div>`;
-}
-
-// ── LINE NUMBERS ──
-function updLN(){
-  const n=codeEl.value.split('\n').length;
-  lnums.textContent=Array.from({length:n},(_,i)=>i+1).join('\n');
-}
-codeEl.addEventListener('scroll',()=>{lnums.scrollTop=codeEl.scrollTop});
-codeEl.addEventListener('keydown',e=>{
-  if(e.key==='Tab'){e.preventDefault();const s=codeEl.selectionStart,v=codeEl.value;codeEl.value=v.slice(0,s)+'  '+v.slice(codeEl.selectionEnd);codeEl.selectionStart=codeEl.selectionEnd=s+2}
-  if(e.ctrlKey&&e.key==='Enter'){e.preventDefault();runCheck()}
-});
-codeEl.addEventListener('input',()=>{
-  updLN();
-  const c=codeEl.value;
-  document.getElementById('sChars').textContent=`${c.length.toLocaleString()} karakter`;
-  document.getElementById('sLines').textContent=`${c.split('\n').length} baris`;
-  document.getElementById('sTokens').textContent=`${c.trim()?c.trim().split(/\s+/).length:0} token`;
-});
-
-// ── MAIN CHECK ──
-async function runCheck(){
-  const src=codeEl.value.trim();
-  if(!src) return;
-  checkBtn.classList.add('busy');
-  checkBtn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> Memeriksa...';
-  document.getElementById('otime').textContent=new Date().toLocaleTimeString('id-ID');
-  await new Promise(r=>setTimeout(r,80));
-  if(lang==='lua'){
-    try{ fengari.load(src); showSuccess(src,'lua'); }
-    catch(err){ showLuaErr(err.message,src); }
-  } else {
-    const errs=parsePython(src);
-    errs.length===0 ? showSuccess(src,'python') : showPyErrs(errs,src);
-  }
-  checkBtn.classList.remove('busy');
-  checkBtn.innerHTML='<i class="fas fa-bolt"></i> Check Syntax';
-}
-
-// ── LANG SWITCH ──
-function applyLang(){
-  const isPy=lang==='python';
-  document.body.classList.toggle('py',isPy);
-  const pill=document.getElementById('lpill');
-  pill.className='pill '+(isPy?'py':'lua');
-  pill.innerHTML=isPy?'<i class="fas fa-dragon"></i> Python':'<i class="fas fa-moon"></i> Lua';
-  document.getElementById('lver').textContent   =isPy?'Python 3.x':'Lua 5.3';
-  document.getElementById('tname').textContent  =isPy?'script.py':'script.lua';
-  document.getElementById('tlang').textContent  =isPy?'Python 3':'Lua 5.3';
-  document.getElementById('flbl').textContent   =isPy?'script.py':'script.lua';
-  document.getElementById('leyb').textContent   =isPy?'Python Development Tool':'Roblox Development Tool';
-  document.getElementById('lsub').textContent   =isPy?'Syntax checker & smart debugger untuk kode Python':'Syntax checker & smart debugger untuk kode Roblox Lua';
-  document.getElementById('itxt').innerHTML     =`Tempel kode ${isPy?'Python':'Lua'} di editor kiri<br>lalu klik <strong>Check Syntax</strong>`;
-  document.getElementById('ftgt').textContent   =isPy?'Python':'Roblox';
-  document.getElementById('ftag').textContent   =isPy?'Python 3.x':'Lua 5.3';
-  document.getElementById('lico').textContent   =isPy?'🐍':'{ }';
-}
-
-function resetOut(){
-  obox.className='obox';
-  ostatus.className='ostatus idle'; ostatus.textContent='IDLE';
-  document.getElementById('otime').textContent='';
-  const l=lang==='lua'?'Lua':'Python';
-  ocontent.innerHTML=`<div class="idle-state"><div class="idle-ico"><i class="fas fa-terminal"></i></div><div class="idle-txt">Tempel kode ${l} di editor kiri<br>lalu klik <strong>Check Syntax</strong></div></div>`;
-}
-
-document.getElementById('langSel').addEventListener('change',e=>{
-  lang=e.target.value; applyLang(); resetOut();
-  codeEl.value=SAMPLES[lang]; codeEl.dispatchEvent(new Event('input'));
-});
-
-document.getElementById('clearBtn').onclick=()=>{
-  codeEl.value=''; updLN();
-  document.getElementById('sChars').textContent='0 karakter';
-  document.getElementById('sLines').textContent='1 baris';
-  document.getElementById('sTokens').textContent='— token';
-  resetOut(); codeEl.focus();
-};
-
-document.getElementById('copyBtn').onclick=()=>{
-  navigator.clipboard.writeText(codeEl.value).then(()=>{
-    document.getElementById('copyBtn').innerHTML='<i class="fas fa-check"></i> Tersalin!';
-    setTimeout(()=>{document.getElementById('copyBtn').innerHTML='<i class="fas fa-copy"></i> Salin Kode'},2000);
+print("Script berhasil dijalankan!")`;
+    luaCodeEl.dispatchEvent(new Event('input'));
   });
-};
-
-checkBtn.addEventListener('click',runCheck);
-
-window.addEventListener('DOMContentLoaded',()=>{
-  codeEl.value=SAMPLES.lua;
-  codeEl.dispatchEvent(new Event('input'));
-  applyLang();
-});
 </script>
+
 </body>
 </html>
